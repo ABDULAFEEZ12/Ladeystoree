@@ -1,4 +1,1 @@
-
-venv\Scripts\activate
-pip install gunicorn
-pip freeze > requirements.txt
+gunicorn==21.2.0
