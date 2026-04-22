@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
-  <title>LADEY STOREE · Timeless Elegance</title>
+  <title>New Arrivals · LADEY STOREE</title>
 
   <!-- Premium Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -87,7 +87,7 @@
     }
     #overlay.active { display: block; }
 
-    /* ---------- TOP BAR (KIKKY STYLE) ---------- */
+    /* ---------- TOP BAR ---------- */
     #top-bar {
       position: fixed;
       top: 0;
@@ -198,6 +198,7 @@
         transition: border-color 0.3s;
       }
       .desktop-nav a:hover { border-bottom-color: var(--ash-dark); }
+      .desktop-nav a.active { border-bottom-color: var(--charcoal); }
       .brand-logo { margin: 0 auto; }
       #top-bar { justify-content: space-between; }
     }
@@ -461,247 +462,18 @@
 
     .btn-outline:hover { background: var(--charcoal); color: white; }
 
-    /* ---------- HERO SECTION ---------- */
-    .hero-split {
-      margin-top: 70px;
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      min-height: calc(100vh - 70px);
-      background: var(--off-white);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-split::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 80%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(184,184,184,0.08) 0%, transparent 70%);
-      animation: rotateSlow 30s linear infinite;
-    }
-
-    @keyframes rotateSlow {
-      from { transform: rotate(0deg); }
-      to { transform: rotate(360deg); }
-    }
-
-    .hero-left {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 2rem 8% 2rem 12%;
-      background: linear-gradient(135deg, var(--white-pure) 0%, rgba(250,250,250,0.95) 100%);
-      position: relative;
-      z-index: 2;
-    }
-
-    .hero-left h1 {
-      font-size: clamp(3rem, 8vw, 6rem);
-      font-weight: 500;
-      line-height: 1;
-      letter-spacing: 10px;
-      text-transform: uppercase;
-      color: var(--charcoal);
-      margin-bottom: 1rem;
-      animation: fadeUpSoft 1s var(--transition-soft);
-    }
-
-    @keyframes fadeUpSoft {
-      from { opacity: 0; transform: translateY(40px); filter: blur(4px); }
-      to { opacity: 1; transform: translateY(0); filter: blur(0); }
-    }
-
-    .hero-tagline {
-      font-family: var(--font-serif);
-      font-size: 1.4rem;
-      font-weight: 300;
-      font-style: italic;
-      color: var(--ash-dark);
-      margin-bottom: 2rem;
-      animation: fadeUpSoft 1s 0.15s var(--transition-soft) backwards;
-    }
-
-    .hero-description {
-      font-size: 1rem;
-      line-height: 1.8;
-      color: #555;
-      max-width: 480px;
-      margin-bottom: 2.5rem;
-      animation: fadeUpSoft 1s 0.3s var(--transition-soft) backwards;
-    }
-
-    .hero-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      border: 2px solid var(--charcoal);
-      background: transparent;
-      padding: 16px 42px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--charcoal);
-      width: fit-content;
-      transition: all 0.5s var(--transition-smooth);
-      margin-top: 1rem;
-      position: relative;
-      overflow: hidden;
-      animation: fadeUpSoft 1s 0.45s var(--transition-soft) backwards;
-    }
-
-    .hero-cta::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: -100%;
-      width: 100%;
-      height: 100%;
-      background: var(--charcoal);
-      transition: left 0.5s var(--transition-smooth);
-      z-index: -1;
-    }
-
-    .hero-cta:hover { color: white; transform: translateY(-5px); box-shadow: var(--shadow-lift); }
-    .hero-cta:hover::before { left: 0; }
-
-    .hero-right {
-      position: relative;
-      overflow: hidden;
-      background: #e8e8e8;
-    }
-
-    .hero-img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 1.5s var(--transition-smooth);
-      filter: grayscale(15%);
-      animation: scaleInSoft 1.2s var(--transition-smooth);
-    }
-
-    @keyframes scaleInSoft {
-      from { opacity: 0; transform: scale(1.1); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    .hero-right:hover .hero-img { transform: scale(1.04); filter: grayscale(0%); }
-
-    .hero-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(0,0,0,0.15), transparent 60%);
-    }
-
-    .hero-badge {
-      position: absolute;
-      bottom: 3rem;
-      right: 2rem;
-      background: rgba(255,255,255,0.95);
-      backdrop-filter: blur(10px);
-      padding: 1rem 2rem;
-      border-left: 3px solid var(--ash-dark);
-      box-shadow: var(--shadow-soft);
-      animation: floatSoft 4s ease-in-out infinite;
-    }
-
-    @keyframes floatSoft {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-10px); }
-    }
-
-    .hero-badge span {
-      font-family: var(--font-serif);
-      font-size: 1.1rem;
-      color: var(--charcoal);
-    }
-
-    @media (max-width: 860px) {
-      .hero-split { grid-template-columns: 1fr; min-height: auto; }
-      .hero-left { order: 2; padding: 4rem 6%; text-align: center; align-items: center; }
-      .hero-right { order: 1; height: 65vh; }
-      .hero-cta { margin: 1.5rem auto 0; }
-      .hero-description { max-width: 100%; }
-      .hero-badge { bottom: 1.5rem; right: 1.5rem; padding: 0.8rem 1.5rem; }
-    }
-
-    /* ---------- MARQUEE ---------- */
-    .marquee-strip {
-      background: var(--charcoal-warm);
-      color: var(--ash-light);
-      padding: 16px 0;
-      overflow: hidden;
-      white-space: nowrap;
-      font-weight: 400;
-      letter-spacing: 3px;
-      font-size: 0.8rem;
-      border-top: 1px solid rgba(184,184,184,0.1);
-      border-bottom: 1px solid rgba(184,184,184,0.1);
-    }
-
-    .marquee-inner {
-      display: inline-flex;
-      animation: marqueeSoft 40s linear infinite;
-    }
-
-    .marquee-item {
-      display: inline-flex;
-      align-items: center;
-      gap: 15px;
-      margin-right: 3.5rem;
-      text-transform: uppercase;
-    }
-
-    .marquee-dot {
-      width: 4px;
-      height: 4px;
-      background: var(--ash);
-      border-radius: 50%;
-      animation: blinkSoft 2s infinite;
-    }
-
-    @keyframes blinkSoft {
-      0%, 100% { opacity: 0.3; }
-      50% { opacity: 1; }
-    }
-
-    @keyframes marqueeSoft {
-      0% { transform: translateX(0); }
-      100% { transform: translateX(-50%); }
-    }
-
-    /* ---------- SECTION HEADERS ---------- */
-    .section-header {
+    /* ---------- PAGE HEADER ---------- */
+    .page-header {
+      padding-top: 120px;
+      padding-bottom: 2rem;
       text-align: center;
-      margin-bottom: 4.5rem;
       position: relative;
     }
 
-    .section-eyebrow {
-      font-size: 0.75rem;
-      letter-spacing: 5px;
-      text-transform: uppercase;
-      color: var(--ash-dark);
-      margin-bottom: 1rem;
-      font-weight: 500;
-    }
-
-    .section-header h2 {
-      font-size: clamp(2.2rem, 5vw, 3.5rem);
-      font-weight: 300;
-      letter-spacing: 3px;
-      color: var(--charcoal);
-      position: relative;
-      display: inline-block;
-    }
-
-    .section-header h2::after {
+    .page-header::after {
       content: '';
       position: absolute;
-      bottom: -12px;
+      bottom: 0;
       left: 50%;
       transform: translateX(-50%);
       width: 60px;
@@ -709,68 +481,36 @@
       background: var(--ash-dark);
     }
 
-    /* ---------- CATEGORY CARDS ---------- */
-    .category-grid {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 2.5rem;
+    .page-header h1 {
+      font-size: clamp(2.8rem, 6vw, 4.5rem);
+      font-weight: 400;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      animation: fadeUpSoft 0.8s var(--transition-soft);
     }
 
-    .category-card {
-      position: relative;
-      overflow: hidden;
-      aspect-ratio: 4 / 5;
-      cursor: pointer;
-      border: 1px solid transparent;
-      transition: all 0.4s var(--transition-smooth);
-      box-shadow: var(--shadow-soft);
+    @keyframes fadeUpSoft {
+      from { opacity: 0; transform: translateY(30px); filter: blur(4px); }
+      to { opacity: 1; transform: translateY(0); filter: blur(0); }
     }
 
-    .category-card:hover {
-      transform: translateY(-10px);
-      box-shadow: var(--shadow-lift);
-      border-color: var(--ash);
+    .breadcrumb {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 3px;
+      color: var(--ash-dark);
+      margin-bottom: 0.8rem;
+      animation: fadeUpSoft 0.8s 0.1s var(--transition-soft) backwards;
     }
 
-    .category-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      transition: transform 1s var(--transition-smooth);
-      filter: grayscale(25%);
-    }
+    .breadcrumb a { transition: color 0.3s; }
+    .breadcrumb a:hover { color: var(--charcoal); }
 
-    .category-card:hover img { transform: scale(1.08); filter: grayscale(0%); }
-
-    .category-overlay {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(to top, rgba(26,26,26,0.6), transparent 50%);
-      display: flex;
-      align-items: flex-end;
-      justify-content: center;
-      padding-bottom: 2.5rem;
-      opacity: 0;
-      transition: opacity 0.4s var(--transition-smooth);
-    }
-
-    .category-card:hover .category-overlay { opacity: 1; }
-
-    .category-overlay span {
-      background: rgba(255,255,255,0.95);
-      padding: 12px 36px;
-      font-family: var(--font-serif);
-      font-size: 1.4rem;
-      letter-spacing: 4px;
-      color: var(--charcoal);
-      transform: translateY(20px);
-      transition: transform 0.4s var(--transition-smooth) 0.1s;
-    }
-
-    .category-card:hover .category-overlay span { transform: translateY(0); }
-
-    @media (max-width: 700px) {
-      .category-grid { grid-template-columns: 1fr; gap: 2rem; }
+    .product-count {
+      font-size: 0.8rem;
+      color: var(--ash-dark);
+      margin-top: 0.8rem;
+      animation: fadeUpSoft 0.8s 0.2s var(--transition-soft) backwards;
     }
 
     /* ---------- PRODUCT CARDS ---------- */
@@ -778,6 +518,7 @@
       display: grid;
       grid-template-columns: repeat(4, 1fr);
       gap: 2.2rem;
+      padding: 2rem 0 5rem;
     }
 
     .product-card {
@@ -888,107 +629,6 @@
       .product-grid { grid-template-columns: repeat(2, 1fr); gap: 1.5rem; }
     }
 
-    /* ---------- BRAND STORY ---------- */
-    .brand-story {
-      background: linear-gradient(135deg, var(--charcoal-warm) 0%, var(--charcoal) 100%);
-      color: var(--off-white);
-      padding: 7rem 5%;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .brand-story::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      right: 0;
-      width: 60%;
-      height: 100%;
-      background: radial-gradient(circle at 70% 30%, rgba(184,184,184,0.08) 0%, transparent 70%);
-      pointer-events: none;
-    }
-
-    .brand-story-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 5rem;
-      align-items: center;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .story-content h2 {
-      font-size: 2.8rem;
-      margin-bottom: 2rem;
-      color: white;
-      letter-spacing: 3px;
-    }
-
-    .story-content p {
-      font-size: 1.05rem;
-      line-height: 1.9;
-      color: var(--ash);
-      margin-bottom: 1.5rem;
-    }
-
-    .story-image {
-      position: relative;
-      aspect-ratio: 3/4;
-      overflow: hidden;
-      border-radius: 4px;
-      box-shadow: 0 30px 50px -20px rgba(0,0,0,0.4);
-    }
-
-    .story-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      filter: grayscale(30%);
-      transition: all 0.8s var(--transition-smooth);
-    }
-
-    .story-image:hover img { filter: grayscale(0%); transform: scale(1.03); }
-
-    @media (max-width: 860px) {
-      .brand-story-grid { grid-template-columns: 1fr; gap: 3rem; }
-      .story-image { order: -1; max-width: 500px; margin: 0 auto; }
-    }
-
-    /* ---------- VALUES STRIP ---------- */
-    .values-strip {
-      background: linear-gradient(135deg, var(--ash), var(--ash-light));
-      padding: 5rem 0;
-      color: var(--charcoal);
-    }
-
-    .values-container {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 2.5rem;
-      text-align: center;
-    }
-
-    .value-item i {
-      font-size: 2.8rem;
-      margin-bottom: 1.5rem;
-      color: var(--charcoal);
-      transition: transform 0.3s var(--transition-bounce);
-    }
-
-    .value-item:hover i { transform: scale(1.1) translateY(-5px); }
-
-    .value-item h4 {
-      font-size: 1.2rem;
-      letter-spacing: 3px;
-      margin-bottom: 0.8rem;
-    }
-
-    .value-item p { color: rgba(26,26,26,0.7); font-size: 0.9rem; }
-
-    @media (max-width: 700px) {
-      .values-container { grid-template-columns: repeat(2, 1fr); gap: 2.5rem; }
-    }
-
     /* ---------- FOOTER ---------- */
     footer {
       background: var(--charcoal-soft);
@@ -1089,12 +729,6 @@
     }
 
     .fade-up.visible { opacity: 1; transform: translateY(0); }
-
-    .section-padding { padding: 7rem 0; }
-
-    @media (max-width: 600px) {
-      .section-padding { padding: 5rem 0; }
-    }
   </style>
 </head>
 <body>
@@ -1140,14 +774,13 @@
 <header id="top-bar">
   <button id="menu-toggle" aria-label="Menu">☰</button>
   <div class="brand-logo">
-  </div>
   <nav class="desktop-nav">
-    <a href="/">Home</a>
-    <a href="/new-arrivals">New</a>
-    <a href="/dresses">Dresses</a>
-    <a href="/tops">Tops</a>
-    <a href="/collection">Shop</a>
-    <a href="/about">About</a>
+    <a href="/">HOME</a>
+    <a href="/new-arrivals" class="active">NEW ARRIVALS</a>
+    <a href="/dresses">DRESSES</a>
+    <a href="/tops">TOPS</a>
+    <a href="/collection">COLLECTION</a>
+    <a href="/about">ABOUT</a>
   </nav>
   <div class="header-actions">
     <div class="cart-icon" id="cartIcon">
@@ -1174,113 +807,40 @@
 </div>
 
 <main>
-  <!-- HERO SPLIT -->
-  <section class="hero-split">
-    <div class="hero-left">
-      <h1>LADEY<br>STOREE</h1>
-      <div class="hero-tagline">Timeless Stories, Worn Beautifully</div>
-      <p class="hero-description">
-        Discover our curated collection of sophisticated essentials designed for the modern woman who values timeless elegance over fleeting trends.
-      </p>
-      <a href="/collection" class="hero-cta">
-        EXPLORE COLLECTION 
-        <i class="ri-arrow-right-line"></i>
-      </a>
-    </div>
-    <div class="hero-right">
-      <img class="hero-img" src="{{ url_for('static', filename='Ladey.jpeg') }}" alt="LADEY STOREE Editorial" loading="eager">
-      <div class="hero-overlay"></div>
-      <div class="hero-badge">
-        <span>New Collection</span><br>
-        <small style="color:var(--ash-dark);">Spring 2026</small>
-      </div>
-    </div>
-  </section>
-
-  <!-- MARQUEE -->
-  <div class="marquee-strip">
-    <div class="marquee-inner" id="marqueeInner"></div>
+  <!-- PAGE HEADER -->
+  <div class="page-header container">
+    <div class="breadcrumb"><a href="/">Home</a> / New Arrivals</div>
+    <h1>New Arrivals</h1>
+    <div class="product-count">{{ products|length }} products</div>
   </div>
 
-  <!-- CATEGORY SHOWCASE -->
-  <section class="container section-padding">
-    <div class="section-header fade-up">
-      <div class="section-eyebrow">Curated Collections</div>
-      <h2>Signature Edit</h2>
-    </div>
-    <div class="category-grid">
-      <a href="/new-arrivals" class="category-card fade-up">
-        <img src="https://images.unsplash.com/photo-1485462537746-965f33f7f6a7?w=600&auto=format" alt="New Arrivals" loading="lazy">
-        <div class="category-overlay"><span>New Arrivals</span></div>
-      </a>
-      <a href="/dresses" class="category-card fade-up">
-        <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&auto=format" alt="Dresses" loading="lazy">
-        <div class="category-overlay"><span>Dresses</span></div>
-      </a>
-      <a href="/tops" class="category-card fade-up">
-        <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&auto=format" alt="Tops" loading="lazy">
-        <div class="category-overlay"><span>Tops</span></div>
-      </a>
-    </div>
-  </section>
-
-  <!-- FEATURED PRODUCTS -->
-  <section class="container section-padding" style="padding-top: 2rem;">
-    <div class="section-header fade-up">
-      <div class="section-eyebrow">Handpicked For You</div>
-      <h2>Essential Selection</h2>
-    </div>
+  <!-- PRODUCT GRID -->
+  <div class="container">
+    {% if products %}
     <div class="product-grid" id="productGrid">
-      {% if products %}
-        {% for product in products[:8] %}
-        <div class="product-card fade-up">
-          <a href="/product/{{ product._id }}">
-            <div class="product-img-wrap">
-              <img src="{{ product.image or 'https://via.placeholder.com/400x500/f0f0f0/9E9E9E?text=LADEY' }}" alt="{{ product.name }}" loading="lazy">
-              <button class="quick-add" data-id="{{ product._id }}" data-name="{{ product.name }}" data-price="{{ product.price }}">
-                <i class="ri-add-line"></i>
-              </button>
-            </div>
-            <div class="product-info">
-              <div class="product-brand">LADEY STOREE</div>
-              <div class="product-name">{{ product.name }}</div>
-              <div class="product-price">${{ "%.2f"|format(product.price) }}</div>
-            </div>
-          </a>
-        </div>
-        {% endfor %}
-      {% else %}
-        <div class="empty-state">
-          <i class="ri-inbox-line"></i>
-          <p>No products available yet.</p>
-        </div>
-      {% endif %}
-    </div>
-  </section>
-
-  <!-- BRAND STORY -->
-  <section class="brand-story">
-    <div class="brand-story-grid">
-      <div class="story-content fade-up">
-        <h2>Our Story</h2>
-        <p>LADEY STOREE was born from a simple belief: that true elegance is timeless, not seasonal. We create pieces that transcend trends, designed to become cherished staples in your wardrobe.</p>
-        <p>Every garment tells a story of craftsmanship, ethical production, and conscious design. We partner with artisans who share our commitment to quality and sustainability.</p>
-        <a href="/about" class="hero-cta" style="margin-top: 2.5rem; color: white; border-color: var(--ash);">Discover More <i class="ri-arrow-right-line"></i></a>
+      {% for product in products %}
+      <div class="product-card fade-up">
+        <a href="/product/{{ product._id }}">
+          <div class="product-img-wrap">
+            <img src="{{ product.image or 'https://via.placeholder.com/400x500/f0f0f0/9E9E9E?text=LADEY' }}" alt="{{ product.name }}" loading="lazy">
+            <button class="quick-add" data-id="{{ product._id }}" data-name="{{ product.name }}" data-price="{{ product.price }}"><i class="ri-add-line"></i></button>
+          </div>
+          <div class="product-info">
+            <div class="product-brand">LADEY STOREE</div>
+            <div class="product-name">{{ product.name }}</div>
+            <div class="product-price">${{ "%.2f"|format(product.price) }}</div>
+          </div>
+        </a>
       </div>
-      <div class="story-image fade-up">
-        <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format" alt="Atelier" loading="lazy">
-      </div>
+      {% endfor %}
     </div>
-  </section>
-
-  <!-- VALUES STRIP -->
-  <div class="values-strip">
-    <div class="container values-container">
-      <div class="value-item fade-up"><i class="ri-leaf-line"></i><h4>Ethically Made</h4><p>Conscious sourcing</p></div>
-      <div class="value-item fade-up"><i class="ri-time-line"></i><h4>Timeless Design</h4><p>Beyond seasons</p></div>
-      <div class="value-item fade-up"><i class="ri-arrow-go-back-line"></i><h4>Free Returns</h4><p>14-day policy</p></div>
-      <div class="value-item fade-up"><i class="ri-heart-line"></i><h4>Conscious Fashion</h4><p>Slow luxury</p></div>
+    {% else %}
+    <div class="empty-state">
+      <i class="ri-inbox-line"></i>
+      <p>No new arrivals yet.</p>
+      <p style="margin-top: 1rem; font-size: 0.8rem;">Check back soon for our latest pieces!</p>
     </div>
+    {% endif %}
   </div>
 </main>
 
@@ -1289,7 +849,7 @@
   <div class="footer-grid">
     <div class="footer-col">
       <h4>LADEY STOREE</h4>
-      <p>Timeless stories, worn beautifully. Modern elegance for the discerning woman who values quality, craftsmanship, and conscious luxury.</p>
+      <p>Timeless stories, worn beautifully. Modern elegance for the discerning woman.</p>
       <div class="social-links">
         <a href="#" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
         <a href="#" aria-label="Facebook"><i class="ri-facebook-line"></i></a>
@@ -1299,6 +859,7 @@
     <div class="footer-col">
       <h4>Shop</h4>
       <ul>
+        <li><a href="/">Home</a></li>
         <li><a href="/new-arrivals">New Arrivals</a></li>
         <li><a href="/dresses">Dresses</a></li>
         <li><a href="/tops">Tops</a></li>
@@ -1437,11 +998,6 @@
       if(cart.length > 0) alert('Proceeding to checkout...');
       else alert('Your cart is empty!');
     });
-
-    const marqueeItems = ['NEW ARRIVALS', 'FREE SHIPPING OVER $150', 'ETHICALLY MADE', 'TIMELESS DESIGN', 'CONSCIOUS LUXURY', 'SLOW FASHION'];
-    const marqueeInner = document.getElementById('marqueeInner');
-    const marqueeContent = marqueeItems.map(t => `<span class="marquee-item"><span class="marquee-dot"></span>${t}</span>`).join('');
-    marqueeInner.innerHTML = marqueeContent + marqueeContent + marqueeContent;
 
     setTimeout(() => document.querySelectorAll('.product-card.fade-up').forEach(card => observer.observe(card)), 100);
   })();

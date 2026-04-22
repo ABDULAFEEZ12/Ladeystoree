@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <title>404 · LADEY STOREE</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --ash: #B8B8B8; --ash-dark: #9E9E9E; --charcoal: #1A1A1A; --charcoal-soft: #0D0D0D;
+      --white-pure: #FFFFFF; --off-white: #FAFAFA;
+      --font-serif: 'Cormorant Garamond', serif; --font-sans: 'Inter', sans-serif;
+    }
+    body {
+      font-family: var(--font-sans);
+      background: var(--off-white);
+      color: var(--charcoal);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 2rem;
+    }
+    .error-container { max-width: 600px; }
+    .error-number {
+      font-family: var(--font-serif);
+      font-size: 8rem;
+      font-weight: 300;
+      letter-spacing: 8px;
+      color: var(--ash-dark);
+      line-height: 1;
+      margin-bottom: 1rem;
+    }
+    h1 {
+      font-family: var(--font-serif);
+      font-size: 2rem;
+      font-weight: 400;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 1.5rem;
+    }
+    p {
+      color: #666;
+      margin-bottom: 2.5rem;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 14px 32px;
+      background: transparent;
+      border: 1.5px solid var(--charcoal);
+      color: var(--charcoal);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .btn:hover { background: var(--charcoal); color: white; }
+    .brand {
+      margin-top: 3rem;
+      font-family: var(--font-serif);
+      font-size: 1.2rem;
+      letter-spacing: 6px;
+      color: var(--ash-dark);
+    }
+  </style>
+</head>
+<body>
+  <div class="error-container">
+    <div class="error-number">404</div>
+    <h1>Page Not Found</h1>
+    <p>The page you're looking for doesn't exist or has been moved.<br>Let's get you back to timeless elegance.</p>
+    <a href="/" class="btn"><i class="ri-arrow-left-line"></i> Return Home</a>
+    <div class="brand">LADEY STOREE</div>
+  </div>
+</body>
+</html>

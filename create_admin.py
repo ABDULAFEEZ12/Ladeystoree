@@ -5,18 +5,32 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-client = MongoClient(os.getenv("MONGO_URI"))
-db = client["kikky"]
+MONGO_URI = os.getenv("MONGO_URI")
+
+if not MONGO_URI:
+    print("❌ MONGO_URI not found")
+    exit()
+
+client = MongoClient(MONGO_URI)
+
+# ✅ FIXED DATABASE NAME
+db = client["ladeystoree"]
+admins = db["admins"]
 
 email = "admin@email.com"
-password = "yourpassword"
+password = "admin123"
 
-hashed_password = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+if admins.find_one({"email": email}):
+    print("⚠️ Admin already exists")
+else:
+    hashed_password = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
 
-db["admins"].insert_one({
-    "email": email,
-    "password": hashed_password
-})
+    admins.insert_one({
+        "email": email,
+        "password": hashed_password,
+        "role": "superadmin"
+    })
 
-print("Admin created successfully.")
-print("Loaded URI:", os.getenv("MONGO_URI"))
+    print("✅ Admin created successfully")
+
+print("Using DB:", db.name)

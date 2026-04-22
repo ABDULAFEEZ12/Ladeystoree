@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KikkyHair · shop all</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>KikkyHair · Gold & Brown Luxury | Full Collection</title>
   <!-- Google Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
@@ -35,7 +35,7 @@
     a { text-decoration: none; color: inherit; }
     .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
-    /* ----- top bar (sticky) ----- */
+    /* ----- top bar (sticky, no hero) ----- */
     #top-bar {
       position: sticky;
       top: 0;
@@ -114,7 +114,7 @@
       .desktop-nav a:hover { border-bottom-color: var(--gold); }
     }
 
-    /* ----- MAIN SHOP SECTION ----- */
+    /* ----- COLLECTION HEADER ----- */
     .collection-header {
       text-align: center;
       padding: 40px 20px 10px;
@@ -132,22 +132,73 @@
       margin-top: 8px;
     }
 
-    /* shop layout with sidebar */
+    /* MOBILE CATEGORY SLIDER (horizontal pills) - hidden on desktop */
+    .mobile-categories-wrapper {
+      display: none;
+      width: 100%;
+      margin: 20px 0 20px 0;
+      padding: 0 16px;
+    }
+    .category-slider {
+      display: flex;
+      gap: 12px;
+      overflow-x: auto;
+      scrollbar-width: thin;
+      scrollbar-color: var(--gold) #2a241f;
+      padding-bottom: 8px;
+      -webkit-overflow-scrolling: touch;
+    }
+    .category-slider::-webkit-scrollbar {
+      height: 4px;
+    }
+    .category-slider::-webkit-scrollbar-track {
+      background: #2a241f;
+      border-radius: 10px;
+    }
+    .category-slider::-webkit-scrollbar-thumb {
+      background: var(--gold);
+      border-radius: 10px;
+    }
+    .category-pill {
+      flex-shrink: 0;
+      background: #2a241f;
+      color: #e0d6cc;
+      padding: 8px 22px;
+      border-radius: 60px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      font-family: var(--font-body);
+      letter-spacing: 0.3px;
+      transition: all 0.2s ease;
+      border: 1px solid rgba(179,135,40,0.3);
+      white-space: nowrap;
+      cursor: pointer;
+    }
+    .category-pill.active {
+      background: var(--gold);
+      color: #000;
+      border-color: var(--gold);
+      box-shadow: 0 4px 10px rgba(179,135,40,0.4);
+    }
+    .category-pill:active { transform: scale(0.96); }
+
+    /* shop layout with sidebar (desktop) */
     .shop-layout { display: flex; gap: 40px; align-items: flex-start; margin-top: 20px; }
     .shop-sidebar {
-      width: 270px; flex-shrink: 0; background: var(--bg-soft); border: 1px solid #2a2a2a;
+      width: 280px; flex-shrink: 0; background: var(--bg-soft); border: 1px solid #2a2a2a;
       border-radius: 24px; padding: 24px 20px; position: sticky; top: 90px;
     }
     .filter-group h3 { font-size: 1.2rem; margin-bottom: 18px; color: var(--gold); border-bottom: 1px dashed var(--gold); padding-bottom: 8px; }
-    .category-list { margin-bottom: 30px; }
-    .category-list li { margin-bottom: 10px; list-style: none; }
+    .category-list { margin-bottom: 30px; display: flex; flex-direction: column; gap: 8px; }
+    .category-list li { list-style: none; margin-bottom: 0; }
     .category-list a {
       display: flex; align-items: center; justify-content: space-between; padding: 10px 16px;
       background: #2a241f; border-radius: 50px; color: #ccc; transition: 0.2s;
       border: 1px solid transparent; cursor: pointer;
+      font-size: 0.9rem;
     }
-    .category-list a i { color: var(--gold); opacity: 0; }
-    .category-list a:hover, .category-list a.active { background: var(--gold); color: #000; transform: translateX(5px); }
+    .category-list a i { color: var(--gold); opacity: 0; transition: 0.2s; }
+    .category-list a:hover, .category-list a.active { background: var(--gold); color: #000; transform: translateX(5px); border-color: var(--gold);}
     .category-list a:hover i, .category-list a.active i { opacity: 1; color: #000; }
 
     .filter-note {
@@ -206,17 +257,6 @@
     .page-link.active { background: var(--gold); color: #000; border-color: var(--gold); }
     .page-link.next, .page-link.prev { background: transparent; border: 1px solid var(--gold); color: var(--gold); }
 
-    /* comparison & testimonials (kept for consistency) */
-    .kikky-section { background: transparent; padding: 60px 5%; border-top: 1px solid #2a2a2a; }
-    .comparison-container { position: relative; max-width: 700px; margin: 2rem auto; border-radius: 50px; overflow: hidden; box-shadow: 0 20px 30px -10px #000; }
-    .comparison-image { width: 100%; display: block; }
-    .comparison-overlay { position: absolute; top: 0; left: 0; width: 50%; height: 100%; overflow: hidden; border-right: 3px solid var(--gold); }
-    .slider-handle { position: absolute; top: 0; left: 50%; width: 4px; height: 100%; background: var(--gold); cursor: ew-resize; transform: translateX(-50%); z-index: 20; }
-    .slider-handle::after { content: ""; position: absolute; top: 50%; left: 50%; width: 42px; height: 42px; background: white; border: 2px solid var(--gold); border-radius: 50%; transform: translate(-50%,-50%); }
-
-    .testimonial-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px,1fr)); gap: 2rem; margin-top: 3rem; }
-    .testimonial-card { background: #1e1814; padding: 2rem; border-radius: 28px; border: 1px solid #2a2a2a; }
-
     /* cart panel */
     .cart-panel {
       position: fixed; top: 0; right: -400px; width: 360px; height: 100vh;
@@ -260,12 +300,20 @@
     .footer-col a:hover { color: var(--gold); }
     .footer-bottom { text-align: center; padding-top: 30px; color: #666; }
 
+    /* ----- RESPONSIVE: hide sidebar, show horizontal slider on mobile ----- */
     @media (max-width: 968px) {
       .shop-layout { flex-direction: column; }
-      .shop-sidebar { width: 100%; position: static; }
-    }
-    @media (max-width: 600px) {
+      .shop-sidebar { display: none; }  /* Hide vertical sidebar on mobile */
+      .mobile-categories-wrapper { display: block; } /* Show category slider */
+      .collection-header h2 { font-size: 2rem; }
       .product-grid { grid-template-columns: repeat(2,1fr); gap: 15px; }
+      .card-image-wrapper { height: 180px; }
+    }
+    @media (min-width: 969px) {
+      .mobile-categories-wrapper { display: none !important; }
+      .shop-sidebar { display: block; }
+    }
+    @media (max-width: 480px) {
       .card-image-wrapper { height: 160px; }
     }
   </style>
@@ -275,29 +323,30 @@
   <div id="top-bar">
     <div style="display: flex; align-items: center; gap: 1rem;">
       <button id="menu-toggle"><i class="ri-menu-line"></i></button>
-      <div class="brand-logo"><a href="{{ url_for('home') }}"><img src="https://via.placeholder.com/120x50/120e0c/b38728?text=KIKKY" alt="KikkyHair"></a></div>
+      <div class="brand-logo"><a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='kikkyhairs.jpeg') }}" alt="Kikky Hairs logo"></a></div>
     </div>
     <div class="header-actions">
       <div class="cart-icon" id="cartIcon"><i class="ri-shopping-cart-line"></i><span id="cartCount">0</span></div>
     </div>
     <nav class="desktop-nav">
       <a href="{{ url_for('home') }}">Home</a>
-      <a href="{{ url_for('collection') }}">Collection</a>
       <a href="{{ url_for('shop') }}">Shop</a>
+      <a href="#">Gallery</a>
     </nav>
   </div>
 
   <!-- side menu -->
   <div id="side-menu">
     <div class="sidebar-header">
-      <img src="https://via.placeholder.com/120x40/120e0c/b38728?text=KIKKY" alt="KikkyHair">
+      <img src="{{ url_for('static', filename='kikkyhairs.jpeg') }}" alt="Kikky Hairs logo">
       <i class="ri-close-line close-icon" id="closeSidebar"></i>
     </div>
     <nav class="sidebar-nav">
       <ul>
         <li><a href="{{ url_for('home') }}"><i class="ri-home-4-line"></i> Home</a></li>
-        <li><a href="{{ url_for('collection') }}"><i class="ri-store-line"></i> Collection</a></li>
-        <li><a href="{{ url_for('shop') }}"><i class="ri-shopping-bag-line"></i> Shop all</a></li>
+        <li><a href="{{ url_for('shop') }}"><i class="ri-store-line"></i> Shop</a></li>
+        <li><a href="{{ url_for('collection') }}?cat=bone"><i class="ri-folder-line"></i> Bone straight</a></li>
+        <li><a href="{{ url_for('collection') }}?cat=bounce"><i class="ri-folder-line"></i> Bounce curls</a></li>
       </ul>
     </nav>
     <div class="sidebar-social">
@@ -308,30 +357,28 @@
   </div>
   <div id="overlay"></div>
 
-  <!-- SHOP HEADER -->
+  <!-- EXPLORE COLLECTION SECTION -->
   <div class="collection-header">
-    <h2>shop all</h2>
-    <div class="gold-label">real human hair · gold label</div>
+    <h2>explore collection</h2>
+    <div class="gold-label">Affordable & Luxury</div>
   </div>
 
   <section class="product-grid-section">
     <div class="container">
+      <!-- mobile horizontal categories (pill slider) -->
+      <div class="mobile-categories-wrapper" id="mobileCategoriesWrapper">
+        <div class="category-slider" id="mobileCategorySlider"></div>
+      </div>
+
       <div class="shop-layout">
-        <!-- sidebar categories (same as collection) -->
+        <!-- desktop sidebar - dynamic categories (includes new wigtools category) -->
         <aside class="shop-sidebar">
           <div class="filter-group">
             <h3><i class="ri-filter-3-line"></i> Categories</h3>
-            <ul class="category-list" id="categoryList">
-              <li><a data-cat="all" class="active"><span>All</span><i class="ri-check-line"></i></a></li>
-              <li><a data-cat="bone"><span>Black bone straight</span><i class="ri-check-line"></i></a></li>
-              <li><a data-cat="bounce"><span>Bounce curls</span><i class="ri-check-line"></i></a></li>
-              <li><a data-cat="colored"><span>Colored units</span><i class="ri-check-line"></i></a></li>
-              <li><a data-cat="wave"><span>Deep wave</span><i class="ri-check-line"></i></a></li>
-              <li><a data-cat="frontal"><span>Frontal bob wigs</span><i class="ri-check-line"></i></a></li>
-            </ul>
+            <ul class="category-list" id="categoryList"></ul>
           </div>
           <div class="filter-note">
-            <i class="ri-gem-line" style="color: var(--gold);"></i> 24k gold standard · only premium
+            <i class="ri-gem-line" style="color: var(--gold);"></i> kikkyhairs · only premium
           </div>
         </aside>
 
@@ -345,30 +392,11 @@
     </div>
   </section>
 
-  <!-- before & after + testimonials (optional, kept for design consistency) -->
-  <section class="kikky-section">
-    <div class="container">
-      <h2 style="text-align: center; font-size: 2.2rem;">before <span style="color: var(--gold);">&</span> after</h2>
-      <div class="comparison-container" id="comparisonSlider">
-        <img src="https://via.placeholder.com/700x400/2c2420/5a4a3a?text=BEFORE" class="comparison-image" alt="before">
-        <div class="comparison-overlay" id="overlayImg" style="width:50%;">
-          <img src="https://via.placeholder.com/700x400/b38728/ffffff?text=AFTER" style="width:100%; height:100%; object-fit:cover;" alt="after">
-        </div>
-        <div class="slider-handle" id="sliderHandle"></div>
-      </div>
-      <div class="testimonial-grid">
-        <div class="testimonial-card">“Absolutely in love! The gold bounce is unreal.” – <strong>Chioma</strong></div>
-        <div class="testimonial-card">“Black bone straight, zero shedding. Worth every naira.” – <strong>Debbie</strong></div>
-        <div class="testimonial-card">“Fast shipping and the video preview is so helpful.” – <strong>Lara</strong></div>
-      </div>
-    </div>
-  </section>
-
   <!-- cart panel -->
   <div class="cart-panel" id="cartPanel">
     <div class="cart-header"><h3>your cart</h3><button class="close-cart" id="closeCart"><i class="ri-close-line"></i></button></div>
     <div class="cart-items" id="cartItems"><div class="empty-cart">your cart glows empty ✨</div></div>
-    <div class="cart-footer"><div class="cart-total"><span>total</span><span id="cartTotal">₦0</span></div><div class="cart-actions"><a href="{{ url_for('cart') }}" class="btn">checkout</a></div></div>
+    <div class="cart-footer"><div class="cart-total"><span>total</span><span id="cartTotal">₦0</span></div><div class="cart-actions"><a href="{{ url_for('checkout') }}" class="btn">checkout</a></div></div>
   </div>
 
   <!-- modal container -->
@@ -378,85 +406,98 @@
   <footer class="footer">
     <div class="footer-grid">
       <div class="footer-col"><h4>KikkyHair</h4><p>gold-standard human hair, curated for the bold.</p></div>
-      <div class="footer-col"><h4>quick</h4><ul><li><a href="{{ url_for('home') }}">Home</a></li><li><a href="{{ url_for('collection') }}">Collection</a></li><li><a href="{{ url_for('shop') }}">Shop all</a></li></ul></div>
-      <div class="footer-col"><h4>connect</h4><ul><li><a href="#"><i class="ri-instagram-line"></i> @kikkyhair</a></li><li><a href="#"><i class="ri-whatsapp-line"></i> +234 800 000</a></li></ul></div>
+      <div class="footer-col"><h4>quick</h4><ul><li><a href="{{ url_for('home') }}">Home</a></li><li><a href="{{ url_for('shop') }}">Shop</a></li></ul></div>
+      <div class="footer-col"><h4>connect</h4><ul><li><a href="#"><i class="ri-instagram-line"></i> @kikkyhairs</a></li><li><a href="#"><i class="ri-whatsapp-line"></i> +234 814 701 4346</a></li></ul></div>
     </div>
     <div class="footer-bottom">© 2026 KikkyHair — gold & brown elegance</div>
   </footer>
 
   <script>
     (function() {
-      // ----- LEFT MENU -----
+      // ----- SIDE MENU TOGGLE -----
       const menuToggle = document.getElementById('menu-toggle');
       const sideMenu = document.getElementById('side-menu');
       const overlay = document.getElementById('overlay');
       const closeSidebar = document.getElementById('closeSidebar');
-
       function openMenu() { sideMenu.classList.add('active'); overlay.classList.add('active'); }
       function closeMenu() { sideMenu.classList.remove('active'); overlay.classList.remove('active'); }
-
       menuToggle.addEventListener('click', openMenu);
       closeSidebar.addEventListener('click', closeMenu);
       overlay.addEventListener('click', closeMenu);
       document.querySelectorAll('.sidebar-nav a').forEach(link => link.addEventListener('click', closeMenu));
-
-      // ----- GET PRODUCTS FROM FLASK -----
+      
+      // ---------- PRODUCTS FROM FLASK (exact DB data) ----------
       const productsFromServer = {{ products | tojson }};
-      const products = productsFromServer.map(p => ({
-        id: p._id,
-        name: p.name || 'Unnamed product',
-        cat: p.category || 'uncategorized',
-        price: p.price || 0,
-        length: p.length || 16,
-        image: p.image || 'https://via.placeholder.com/400x500/1e1814/b38728?text=No+Image',
-        video: p.image || 'https://via.placeholder.com/400x500/b38728/1e1814?text=Video'
-      }));
+      const products = productsFromServer.map(p => {
+        let id = p._id;
+        if (id && id.$oid) id = id.$oid;
+        return {
+          id: id,
+          name: p.name || 'Unnamed product',
+          cat: p.category || 'uncategorized',
+          price: p.price || 0,
+          length: p.length || 16,
+          image: p.image || 'https://via.placeholder.com/400x500/1e1814/b38728?text=No+Image',
+          video: p.image || 'https://via.placeholder.com/400x500/b38728/1e1814?text=Video'
+        };
+      });
 
-      // Category display names (same as before)
-      const categoryNames = {
-        bone: 'bone straight',
-        bounce: 'bounce curls',
-        colored: 'colored units',
-        wave: 'deep wave',
-        frontal: 'frontal bob'
-      };
-
+      // ---------- UPDATED CATEGORY LIST (added "Wigtools.ng by Kikkyhairs" just like Frontals) ----------
+      const EXACT_CATEGORIES = [
+        "Frontals and ponytail collections",
+        "Black bone straight",
+        "Colored bone straight",
+        "Bounce curls / wavy units",
+        "Deepwave units",
+        "Pixie curls units",
+        "Closure bobs / frontal bobs units",
+        "Silky straight units",
+        "Wigtools.ng by Kikkyhairs"
+      ];
+      
+      // State
       let currentCategory = 'all';
       let currentPage = 1;
       const itemsPerPage = 6;
 
+      // Helper: filter products based on exact category string
       function filterProducts() {
         if (currentCategory === 'all') return products;
         return products.filter(p => p.cat === currentCategory);
       }
 
+      // Escape HTML
+      function escapeHtml(str) { 
+        return String(str).replace(/[&<>]/g, function(m){if(m==='&') return '&amp;'; if(m==='<') return '&lt;'; if(m==='>') return '&gt;'; return m;}); 
+      }
+
+      // Render product grid & pagination
       function renderProducts() {
         const filtered = filterProducts();
         const totalItems = filtered.length;
         const start = (currentPage - 1) * itemsPerPage;
         const end = start + itemsPerPage;
         const pageItems = filtered.slice(start, end);
-
         const grid = document.getElementById('productGrid');
+        if (!grid) return;
         grid.innerHTML = pageItems.map(p => {
-          const lengthDouble = `${p.length}${p.length}`;
+          const lengthDisplay = `${p.length}"`;   // fixed: shows length with inch symbol (e.g., 16")
           return `
-            <div class="product-card reveal-item">
+            <div class="product-card">
               <div class="card-image-wrapper">
                 <img class="product-image" src="${p.image}" alt="${p.name}">
                 <img class="product-video" src="${p.video}" alt="${p.name} video">
-                <button class="quick-add-btn add-to-cart-btn" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}"><i class="ri-shopping-cart-2-line"></i></button>
+                <button class="quick-add-btn add-to-cart-btn" data-id="${p.id}" data-name="${escapeHtml(p.name)}" data-price="${p.price}"><i class="ri-shopping-cart-2-line"></i></button>
               </div>
               <div class="card-details">
-                <div class="product-length">${lengthDouble}</div>
-                <span class="category-tag">${categoryNames[p.cat] || p.cat}</span>
-                <h3 class="product-title">${p.name}</h3>
-                <div class="price-row"><span class="price">₦${p.price.toLocaleString()}</span><a href="#" class="view-link"><i class="ri-arrow-right-line"></i></a></div>
+                <div class="product-length">${lengthDisplay}</div>
+                <span class="category-tag">${escapeHtml(p.cat)}</span>
+                <h3 class="product-title">${escapeHtml(p.name)}</h3>
+                <div class="price-row"><span class="price">₦${p.price.toLocaleString()}</span><a href="/product/${p.id}" class="view-link"><i class="ri-arrow-right-line"></i></a></div>
               </div>
             </div>
           `;
         }).join('');
-
         document.getElementById('shown').innerText = pageItems.length;
         document.getElementById('total').innerText = totalItems;
         renderPagination(totalItems);
@@ -478,20 +519,68 @@
         }
         document.getElementById('pagination').innerHTML = html;
       }
-
-      // category click
-      document.querySelectorAll('.category-list a').forEach(link => {
-        link.addEventListener('click', function(e) {
-          e.preventDefault();
-          document.querySelectorAll('.category-list a').forEach(l => l.classList.remove('active'));
-          this.classList.add('active');
-          currentCategory = this.dataset.cat;
-          currentPage = 1;
-          renderProducts();
+      
+      // ----- Category UI Generation (Desktop Sidebar + Mobile Pills) including new Wigtools category -----
+      function buildCategoryUI() {
+        const desktopList = document.getElementById('categoryList');
+        const mobileSlider = document.getElementById('mobileCategorySlider');
+        if (!desktopList || !mobileSlider) return;
+        
+        desktopList.innerHTML = '';
+        mobileSlider.innerHTML = '';
+        
+        const categoriesToShow = ['all', ...EXACT_CATEGORIES];
+        
+        categoriesToShow.forEach(cat => {
+          // Desktop link
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = '#';
+          a.setAttribute('data-cat', cat);
+          a.innerHTML = `<span>${cat === 'all' ? 'All' : cat}</span><i class="ri-check-line"></i>`;
+          if (cat === currentCategory) a.classList.add('active');
+          a.addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveCategory(cat);
+          });
+          li.appendChild(a);
+          desktopList.appendChild(li);
+          
+          // Mobile pill
+          const pill = document.createElement('div');
+          pill.className = 'category-pill';
+          if (cat === currentCategory) pill.classList.add('active');
+          pill.setAttribute('data-cat', cat);
+          pill.innerText = cat === 'all' ? 'All' : cat;
+          pill.addEventListener('click', (e) => {
+            e.preventDefault();
+            setActiveCategory(cat);
+          });
+          mobileSlider.appendChild(pill);
         });
-      });
-
-      // pagination click
+      }
+      
+      // central function to change category and update UI both desktop & mobile
+      function setActiveCategory(cat) {
+        if (currentCategory === cat) return;
+        currentCategory = cat;
+        currentPage = 1;
+        // update desktop active class
+        document.querySelectorAll('#categoryList a').forEach(link => {
+          const linkCat = link.getAttribute('data-cat');
+          if (linkCat === cat) link.classList.add('active');
+          else link.classList.remove('active');
+        });
+        // update mobile pills active class
+        document.querySelectorAll('#mobileCategorySlider .category-pill').forEach(pill => {
+          const pillCat = pill.getAttribute('data-cat');
+          if (pillCat === cat) pill.classList.add('active');
+          else pill.classList.remove('active');
+        });
+        renderProducts();
+      }
+      
+      // pagination event delegation
       document.addEventListener('click', function(e) {
         const target = e.target.closest('.page-link');
         if (!target) return;
@@ -502,46 +591,40 @@
           renderProducts();
         }
       });
-
-      // ----- CART FUNCTIONALITY (enhanced) -----
+      
+      // ----- CART LOGIC -----
       let cart = JSON.parse(localStorage.getItem('kikkyCart')) || [];
-
       function updateCartCount() {
-        document.getElementById('cartCount').innerText = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const countEl = document.getElementById('cartCount');
+        if (countEl) countEl.innerText = cart.reduce((sum, item) => sum + item.quantity, 0);
       }
-
       function renderCartItems() {
         const cartItemsEl = document.getElementById('cartItems');
         const cartTotalEl = document.getElementById('cartTotal');
+        if (!cartItemsEl) return;
         if (cart.length === 0) {
           cartItemsEl.innerHTML = '<div class="empty-cart">your cart glows empty ✨</div>';
-          cartTotalEl.innerText = '₦0';
+          if (cartTotalEl) cartTotalEl.innerText = '₦0';
           return;
         }
         let html = '';
         let total = 0;
         cart.forEach(item => {
           total += item.price * item.quantity;
-          html += `<p>${item.name} x${item.quantity} – ₦${(item.price * item.quantity).toLocaleString()}</p>`;
+          html += `<p style="margin-bottom: 8px;">${escapeHtml(item.name)} x${item.quantity} – ₦${(item.price * item.quantity).toLocaleString()}</p>`;
         });
         cartItemsEl.innerHTML = html;
-        cartTotalEl.innerText = '₦' + total.toLocaleString();
+        if (cartTotalEl) cartTotalEl.innerText = '₦' + total.toLocaleString();
       }
-
       function addToCart(productId, productName, productPrice) {
         const existing = cart.find(item => item.id === productId);
-        if (existing) {
-          existing.quantity += 1;
-        } else {
-          cart.push({ id: productId, name: productName, price: productPrice, quantity: 1 });
-        }
+        if (existing) existing.quantity += 1;
+        else cart.push({ id: productId, name: productName, price: productPrice, quantity: 1 });
         localStorage.setItem('kikkyCart', JSON.stringify(cart));
         updateCartCount();
         renderCartItems();
-        // optional: show modal
-        // showModal('success', '✨ added', `${productName} now in your cart`, null);
+        showModal('success', '✨ added', `${productName} now in your cart`, null);
       }
-
       document.addEventListener('click', function(e) {
         const btn = e.target.closest('.add-to-cart-btn');
         if (!btn) return;
@@ -549,26 +632,20 @@
         const id = btn.dataset.id;
         const name = btn.dataset.name;
         const price = parseInt(btn.dataset.price);
-        addToCart(id, name, price);
+        if (id && name && !isNaN(price)) addToCart(id, name, price);
       });
-
-      document.getElementById('clear-cart')?.addEventListener('click', () => {
-        cart = [];
-        localStorage.removeItem('kikkyCart');
-        updateCartCount();
-        renderCartItems();
-      });
-
-      // ----- CART PANEL TOGGLE -----
+      
+      // Cart panel toggle
       const cartPanel = document.getElementById('cartPanel');
       const cartIcon = document.getElementById('cartIcon');
       const closeCart = document.getElementById('closeCart');
-      cartIcon.addEventListener('click', () => cartPanel.classList.toggle('open'));
-      closeCart.addEventListener('click', () => cartPanel.classList.remove('open'));
-
-      // ----- MODAL FUNCTIONS (unchanged) -----
+      if (cartIcon && cartPanel) cartIcon.addEventListener('click', () => cartPanel.classList.toggle('open'));
+      if (closeCart) closeCart.addEventListener('click', () => cartPanel.classList.remove('open'));
+      
+      // Modal functions
       window.showModal = function(type, title, msg, cb) {
         const cont = document.getElementById('modalContainer');
+        if (!cont) return;
         const icons = {success:'ri-checkbox-circle-fill', error:'ri-error-warning-fill'};
         cont.innerHTML = `
           <div class="modal-overlay active">
@@ -579,28 +656,14 @@
             </div>
           </div>
         `;
-      }
+      };
       window.closeModal = function() {
-        document.getElementById('modalContainer').innerHTML = '';
-      }
-
-      // ----- COMPARISON SLIDER (unchanged) -----
-      const slider = document.getElementById('sliderHandle');
-      const overlayImg = document.getElementById('overlayImg');
-      let dragging = false;
-      slider.addEventListener('mousedown', (e)=>{ dragging = true; e.preventDefault(); });
-      window.addEventListener('mousemove', (e)=>{
-        if (!dragging) return;
-        const rect = document.getElementById('comparisonSlider').getBoundingClientRect();
-        let x = e.clientX - rect.left;
-        x = Math.max(0, Math.min(x, rect.width));
-        const percent = (x / rect.width) * 100;
-        overlayImg.style.width = percent + '%';
-        slider.style.left = percent + '%';
-      });
-      window.addEventListener('mouseup', ()=>{ dragging = false; });
-
-      // Initial render
+        const cont = document.getElementById('modalContainer');
+        if (cont) cont.innerHTML = '';
+      };
+      
+      // Initialize everything: build categories, render products, cart init
+      buildCategoryUI();
       renderProducts();
       updateCartCount();
       renderCartItems();

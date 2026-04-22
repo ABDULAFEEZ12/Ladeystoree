@@ -2,138 +2,286 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KikkyHairs · Admin Login</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+  <title>LADEY STOREE · Admin Login</title>
+
+  <!-- Premium Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
+
   <style>
     * {
       margin: 0;
       padding: 0;
       box-sizing: border-box;
     }
+
+    :root {
+      --ash: #B8B8B8;
+      --ash-dark: #9E9E9E;
+      --charcoal: #1A1A1A;
+      --charcoal-soft: #0D0D0D;
+      --charcoal-light: #2A2A2A;
+      --white-pure: #FFFFFF;
+      --off-white: #FAFAFA;
+      
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-sans: 'Inter', sans-serif;
+      
+      --transition-smooth: cubic-bezier(0.23, 1, 0.32, 1);
+    }
+
     body {
-      font-family: 'Montserrat', sans-serif;
-      background: linear-gradient(to bottom, #0c0c0c, #111);
-      color: #f4f4f4;
+      font-family: var(--font-sans);
+      background: var(--charcoal-soft);
+      color: var(--off-white);
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
+      padding: 2rem;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
     }
-    .login-container {
-      background: #1e1814;
-      border: 1px solid rgba(179,135,40,0.3);
-      border-radius: 28px;
-      padding: 40px;
+
+    .login-wrapper {
       width: 100%;
-      max-width: 400px;
-      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      max-width: 440px;
     }
-    h2 {
-      font-family: 'Playfair Display', serif;
-      color: #b38728;
+
+    .login-container {
+      background: var(--charcoal-light);
+      border: 1px solid rgba(184, 184, 184, 0.15);
+      padding: 3rem 2.5rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+    }
+
+    .brand {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .brand h1 {
+      font-family: var(--font-serif);
       font-size: 2rem;
+      font-weight: 500;
+      letter-spacing: 8px;
+      text-transform: uppercase;
+      color: var(--white-pure);
       margin-bottom: 0.5rem;
-      text-align: center;
     }
-    .sub {
-      text-align: center;
-      color: #aaa;
-      margin-bottom: 2rem;
-      font-size: 0.9rem;
-      border-bottom: 1px dashed #333;
-      padding-bottom: 1rem;
+
+    .brand span {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 4px;
+      color: var(--ash-dark);
+      display: block;
+      border-bottom: 1px solid rgba(184, 184, 184, 0.15);
+      padding-bottom: 1.5rem;
     }
+
     .flash-message {
-      background: rgba(179,135,40,0.15);
-      border-left: 4px solid #b38728;
-      padding: 12px 15px;
-      border-radius: 8px;
-      margin-bottom: 25px;
-      color: #fff;
+      background: rgba(184, 184, 184, 0.08);
+      border-left: 3px solid var(--ash);
+      padding: 14px 18px;
+      margin-bottom: 2rem;
+      font-size: 0.8rem;
+      color: var(--ash);
+      letter-spacing: 0.5px;
     }
+
+    .flash-message.error {
+      border-left-color: #E8A0A0;
+      color: #E8A0A0;
+      background: rgba(232, 160, 160, 0.05);
+    }
+
+    .flash-message.success {
+      border-left-color: #81C784;
+      color: #81C784;
+      background: rgba(129, 199, 132, 0.05);
+    }
+
     .form-group {
-      margin-bottom: 20px;
+      margin-bottom: 1.5rem;
     }
+
     label {
       display: block;
-      margin-bottom: 8px;
-      color: #ccc;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      color: var(--ash);
+      margin-bottom: 0.75rem;
       font-weight: 500;
     }
+
+    .input-wrapper {
+      position: relative;
+    }
+
+    .input-wrapper i {
+      position: absolute;
+      left: 16px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--ash-dark);
+      font-size: 1.1rem;
+    }
+
     input {
       width: 100%;
-      padding: 14px 18px;
-      background: #2a241f;
-      border: 1px solid #3a3a3a;
-      border-radius: 50px;
-      color: #fff;
-      font-size: 1rem;
-      transition: 0.2s;
-    }
-    input:focus {
-      outline: none;
-      border-color: #b38728;
-      box-shadow: 0 0 0 2px rgba(179,135,40,0.2);
-    }
-    button {
-      width: 100%;
-      padding: 16px;
-      background: #b38728;
-      border: none;
-      border-radius: 50px;
-      color: #000;
-      font-weight: 700;
-      font-size: 1rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      cursor: pointer;
-      transition: 0.2s;
-      margin-top: 10px;
-    }
-    button:hover {
-      background: #d4a259;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(179,135,40,0.3);
-    }
-    .back-link {
-      display: block;
-      text-align: center;
-      margin-top: 25px;
-      color: #aaa;
-      text-decoration: none;
+      padding: 14px 16px 14px 48px;
+      background: var(--charcoal);
+      border: 1px solid rgba(184, 184, 184, 0.15);
+      color: var(--white-pure);
+      font-family: var(--font-sans);
       font-size: 0.9rem;
+      transition: border-color 0.25s var(--transition-smooth);
+      outline: none;
     }
+
+    input:focus {
+      border-color: var(--ash);
+    }
+
+    input::placeholder {
+      color: var(--ash-dark);
+      font-weight: 300;
+      font-size: 0.85rem;
+    }
+
+    .btn {
+      width: 100%;
+      padding: 15px;
+      background: transparent;
+      border: 1.5px solid var(--ash);
+      color: var(--ash);
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.3s var(--transition-smooth);
+      margin-top: 1rem;
+    }
+
+    .btn:hover {
+      background: var(--ash);
+      color: var(--charcoal);
+    }
+
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2rem;
+      color: var(--ash-dark);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
     .back-link:hover {
-      color: #b38728;
+      color: var(--ash);
+    }
+
+    .back-link i {
+      font-size: 1rem;
+    }
+
+    .footer-note {
+      text-align: center;
+      margin-top: 2rem;
+      color: var(--ash-dark);
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+    }
+
+    @media (max-width: 480px) {
+      body {
+        padding: 1rem;
+      }
+      
+      .login-container {
+        padding: 2.5rem 1.5rem;
+      }
+      
+      .brand h1 {
+        font-size: 1.6rem;
+        letter-spacing: 6px;
+      }
     }
   </style>
 </head>
 <body>
-  <div class="login-container">
-    <h2>admin login</h2>
-    <div class="sub">kikky hairs · gold label</div>
 
-    <!-- Flash messages (e.g., "Admin not found") will appear here -->
-    {% with messages = get_flashed_messages() %}
+<div class="login-wrapper">
+  
+  <div class="login-container">
+    
+    <div class="brand">
+      <h1>LADEY STOREE</h1>
+      <span>Administration</span>
+    </div>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
       {% if messages %}
-        {% for message in messages %}
-          <div class="flash-message">{{ message }}</div>
+        {% for category, message in messages %}
+          <div class="flash-message {{ category }}">
+            <i class="ri-information-line" style="margin-right: 8px;"></i>
+            {{ message }}
+          </div>
         {% endfor %}
       {% endif %}
     {% endwith %}
 
+    <!-- Login Form -->
     <form method="POST">
       <div class="form-group">
-        <label>Email address</label>
-        <input type="email" name="email" required placeholder="admin@kikky.ng">
+        <label>Email Address</label>
+        <div class="input-wrapper">
+          <i class="ri-mail-line"></i>
+          <input type="email" name="email" placeholder="admin@ladeystoree.com" required autofocus>
+        </div>
       </div>
+
       <div class="form-group">
         <label>Password</label>
-        <input type="password" name="password" required placeholder="••••••••">
+        <div class="input-wrapper">
+          <i class="ri-lock-line"></i>
+          <input type="password" name="password" placeholder="••••••••" required>
+        </div>
       </div>
-      <button type="submit">Login</button>
+
+      <button type="submit" class="btn">
+        <i class="ri-login-box-line" style="margin-right: 8px;"></i>
+        Sign In
+      </button>
     </form>
-    <a href="{{ url_for('home') }}" class="back-link">← back to home</a>
+
+    <!-- Back to Store -->
+    <div style="display: flex; justify-content: center;">
+      <a href="{{ url_for('home') }}" class="back-link">
+        <i class="ri-arrow-left-line"></i> Return to Store
+      </a>
+    </div>
+
   </div>
+
+  <div class="footer-note">
+    © 2026 LADEY STOREE · Secure Access
+  </div>
+
+</div>
+
 </body>
 </html>

@@ -3,225 +3,493 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>KikkyHairs · Admin</title>
-  <!-- Fonts & icons -->
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+  <title>LADEY STOREE · Admin</title>
+
+  <!-- Premium Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
+
   <style>
+    /* ---------- RESET & VARIABLES ---------- */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     :root {
-      --gold: #b38728;
-      --bg-dark: #120e0c;
-      --bg-soft: #1e1814;
-      --white-off: #f4f4f4;
+      --ash: #B8B8B8;
+      --ash-dark: #9E9E9E;
+      --charcoal: #1A1A1A;
+      --charcoal-soft: #0D0D0D;
+      --charcoal-light: #2A2A2A;
+      --white-pure: #FFFFFF;
+      --off-white: #FAFAFA;
+      --cream-bg: #F5F5F5;
+      --border-light: rgba(184, 184, 184, 0.2);
+      
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-sans: 'Inter', sans-serif;
+      
+      --transition-smooth: cubic-bezier(0.23, 1, 0.32, 1);
+      --shadow-soft: 0 12px 30px -8px rgba(0,0,0,0.15);
     }
-    * { margin: 0; padding: 0; box-sizing: border-box; }
+
     body {
-      font-family: 'Montserrat', sans-serif;
-      background: var(--bg-dark);
-      color: var(--white-off);
+      font-family: var(--font-sans);
+      background: var(--charcoal-soft);
+      color: var(--off-white);
       line-height: 1.6;
-      padding: 30px 20px;
+      padding: 32px 5%;
+      min-height: 100vh;
     }
-    .dashboard {
+
+    h1, h2, h3 {
+      font-family: var(--font-serif);
+      font-weight: 400;
+      letter-spacing: 1px;
+    }
+
+    h1 {
+      font-size: 2.8rem;
+      font-weight: 300;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--white-pure);
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 1.5rem;
+    }
+
+    h2 {
+      font-size: 1.6rem;
+      font-weight: 300;
+      letter-spacing: 3px;
+      color: var(--ash);
+      margin-bottom: 1.5rem;
+    }
+
+    /* ---------- LAYOUT ---------- */
+    .admin-container {
       max-width: 1400px;
       margin: 0 auto;
     }
-    h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 2.5rem;
-      margin-bottom: 0.2rem;
-    }
-    .gold {
-      color: var(--gold);
-    }
-    .header-bar {
+
+    .admin-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
+      margin-bottom: 2rem;
       flex-wrap: wrap;
-      gap: 20px;
-      margin-bottom: 40px;
-      padding-bottom: 20px;
-      border-bottom: 1px solid #2a2a2a;
+      gap: 1rem;
     }
+
     .admin-actions {
       display: flex;
-      gap: 15px;
-      flex-wrap: wrap;
+      gap: 1rem;
     }
+
     .btn {
       display: inline-flex;
       align-items: center;
       gap: 8px;
       padding: 12px 24px;
-      border-radius: 50px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: 0.2s;
-      border: none;
-      cursor: pointer;
-      font-size: 0.95rem;
-    }
-    .btn-gold {
-      background: var(--gold);
-      color: #000;
-    }
-    .btn-gold:hover {
-      background: #d4a259;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 20px rgba(179,135,40,0.3);
-    }
-    .btn-outline {
       background: transparent;
-      border: 1px solid var(--gold);
-      color: var(--gold);
+      border: 1px solid var(--ash-dark);
+      color: var(--ash);
+      font-family: var(--font-sans);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s var(--transition-smooth);
+      border-radius: 0;
     }
-    .btn-outline:hover {
-      background: rgba(179,135,40,0.1);
+
+    .btn:hover {
+      background: var(--ash);
+      color: var(--charcoal);
+      border-color: var(--ash);
     }
-    .btn-sm {
-      padding: 8px 16px;
-      font-size: 0.85rem;
+
+    .btn-primary {
+      background: var(--ash);
+      color: var(--charcoal);
+      border-color: var(--ash);
     }
+
+    .btn-primary:hover {
+      background: var(--white-pure);
+      border-color: var(--white-pure);
+    }
+
+    .btn-danger {
+      border-color: #8B4E4E;
+      color: #E8A0A0;
+    }
+
+    .btn-danger:hover {
+      background: #8B4E4E;
+      color: white;
+    }
+
+    .btn-small {
+      padding: 6px 14px;
+      font-size: 0.65rem;
+    }
+
+    /* ---------- SECTIONS ---------- */
     .section {
-      background: var(--bg-soft);
-      border: 1px solid #2a2a2a;
-      border-radius: 24px;
-      padding: 25px;
-      margin-bottom: 40px;
+      background: var(--charcoal-light);
+      border: 1px solid var(--border-light);
+      padding: 2rem;
+      margin-bottom: 2rem;
     }
-    .section-title {
+
+    /* ---------- FORMS ---------- */
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .form-group label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--ash);
+    }
+
+    input, select, textarea {
+      background: var(--charcoal);
+      border: 1px solid var(--border-light);
+      padding: 12px 16px;
+      color: var(--white-pure);
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      transition: border-color 0.2s;
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--ash);
+    }
+
+    input::placeholder {
+      color: var(--ash-dark);
+    }
+
+    textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    .file-input-wrapper {
+      position: relative;
       display: flex;
       align-items: center;
-      gap: 10px;
-      font-family: 'Playfair Display', serif;
-      font-size: 1.8rem;
-      margin-bottom: 20px;
     }
-    .section-title i {
-      color: var(--gold);
-      font-size: 2rem;
+
+    .file-input-wrapper input[type="file"] {
+      position: absolute;
+      opacity: 0;
+      width: 100%;
+      height: 100%;
+      cursor: pointer;
     }
+
+    .file-input-custom {
+      width: 100%;
+      padding: 12px 16px;
+      background: var(--charcoal);
+      border: 1px solid var(--border-light);
+      color: var(--ash-dark);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+
+    .file-input-custom i {
+      margin-right: 8px;
+    }
+
+    .file-input-wrapper:hover .file-input-custom {
+      border-color: var(--ash);
+    }
+
+    /* ---------- TABLES ---------- */
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
     table {
       width: 100%;
       border-collapse: collapse;
+      font-size: 0.8rem;
     }
+
     th {
       text-align: left;
-      padding: 15px 10px;
-      color: var(--gold);
-      font-weight: 600;
-      border-bottom: 2px solid #3a3a3a;
+      padding: 1rem 0.75rem;
+      font-weight: 500;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: var(--ash);
+      font-size: 0.65rem;
+      border-bottom: 1px solid var(--border-light);
     }
+
     td {
-      padding: 15px 10px;
-      border-bottom: 1px solid #2a2a2a;
+      padding: 1rem 0.75rem;
+      border-bottom: 1px solid rgba(184, 184, 184, 0.08);
+      vertical-align: middle;
     }
-    .product-img {
+
+    tr:last-child td {
+      border-bottom: none;
+    }
+
+    .product-image {
       width: 50px;
-      height: 50px;
+      height: 60px;
       object-fit: cover;
-      border-radius: 12px;
-      border: 1px solid #3a3a3a;
+      background: var(--charcoal);
     }
+
+    .action-links {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+    }
+
+    .action-links a {
+      color: var(--ash);
+      text-decoration: none;
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .action-links a:hover {
+      color: var(--white-pure);
+    }
+
+    .action-links .delete-link {
+      color: #E8A0A0;
+    }
+
+    .action-links .delete-link:hover {
+      color: #FF6B6B;
+    }
+
     .status-badge {
       display: inline-block;
-      padding: 5px 12px;
-      border-radius: 50px;
+      padding: 4px 10px;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      background: rgba(184, 184, 184, 0.15);
+      color: var(--ash);
+    }
+
+    .status-badge.delivered {
+      background: rgba(46, 125, 50, 0.2);
+      color: #81C784;
+    }
+
+    .status-badge.shipped {
+      background: rgba(25, 118, 210, 0.2);
+      color: #64B5F6;
+    }
+
+    .status-badge.paid {
+      background: rgba(184, 135, 40, 0.2);
+      color: #D4AF37;
+    }
+
+    .order-update-form {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    .order-update-form select {
+      width: auto;
+      padding: 8px 12px;
+      font-size: 0.7rem;
+    }
+
+    /* ---------- FLASH MESSAGES ---------- */
+    .flash-messages {
+      margin-bottom: 1.5rem;
+    }
+
+    .flash {
+      padding: 14px 20px;
+      margin-bottom: 0.5rem;
+      background: var(--charcoal-light);
+      border-left: 3px solid var(--ash);
+      color: var(--off-white);
       font-size: 0.8rem;
-      font-weight: 600;
-      background: #2a241f;
-      color: #ccc;
     }
-    .status-badge.paid { background: #1e3a2a; color: #8bc34a; }
-    .status-badge.shipped { background: #2a3a4a; color: #64b5f6; }
-    .status-badge.delivered { background: #2a3a2a; color: #81c784; }
-    .action-link {
-      color: var(--gold);
-      text-decoration: none;
-      font-size: 1.2rem;
-      margin: 0 5px;
+
+    .flash.success {
+      border-left-color: #4CAF50;
     }
-    .action-link:hover { opacity: 0.8; }
-    .delete-link { color: #ff6b6b; }
-    .flash-message {
-      background: rgba(179,135,40,0.15);
-      border-left: 4px solid var(--gold);
-      padding: 15px 20px;
-      border-radius: 12px;
-      margin-bottom: 25px;
+
+    .flash.error {
+      border-left-color: #E8A0A0;
     }
+
+    /* ---------- RESPONSIVE ---------- */
     @media (max-width: 768px) {
-      table { display: block; overflow-x: auto; }
+      body {
+        padding: 20px 4%;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+
+      .section {
+        padding: 1.5rem;
+      }
+
+      .admin-header {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      .order-update-form {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+    }
+
+    /* ---------- LOGOUT LINK ---------- */
+    .logout-link {
+      color: var(--ash-dark);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      text-decoration: none;
+      transition: color 0.2s;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .logout-link:hover {
+      color: var(--white-pure);
     }
   </style>
 </head>
 <body>
-  <div class="dashboard">
-    <!-- Flash messages -->
-    {% with messages = get_flashed_messages() %}
-      {% if messages %}
-        {% for message in messages %}
-          <div class="flash-message">{{ message }}</div>
+
+<div class="admin-container">
+  
+  <!-- Flash Messages -->
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-messages">
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
         {% endfor %}
-      {% endif %}
-    {% endwith %}
+      </div>
+    {% endif %}
+  {% endwith %}
 
-    <div class="header-bar">
-      <div>
-        <h1>kikky<span class="gold">admin</span></h1>
-        <p style="color:#aaa;">manage products, orders & admins</p>
-      </div>
-      <div class="admin-actions">
-        <!-- Register Admin link -->
-        <a href="{{ url_for('admin_register') }}" class="btn btn-gold">
-          <i class="ri-user-add-line"></i> New Admin
-        </a>
-        <!-- Add Product anchor -->
-        <a href="#add-product" class="btn btn-outline">
-          <i class="ri-add-circle-line"></i> Add Product
-        </a>
-      </div>
+  <!-- Header -->
+  <div class="admin-header">
+    <h1>LADEY STOREE<br><span style="font-size: 0.9rem; letter-spacing: 4px; color: var(--ash-dark);">ADMINISTRATION</span></h1>
+    <div class="admin-actions">
+      <a href="{{ url_for('admin_register') }}" class="btn btn-small"><i class="ri-user-add-line"></i> New Admin</a>
+      <a href="{{ url_for('home') }}" class="btn btn-small"><i class="ri-store-line"></i> View Store</a>
+      <a href="#" class="logout-link" onclick="document.cookie='admin_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'; window.location.href='/'"><i class="ri-logout-box-r-line"></i> Logout</a>
     </div>
+  </div>
 
-    <!-- ADD PRODUCT FORM (with file upload and category/length) -->
-    <div class="section" id="add-product">
-      <div class="section-title">
-        <i class="ri-gem-line"></i>
-        <span>add new product</span>
+  <!-- Add Product Section -->
+  <div class="section">
+    <h2><i class="ri-add-line" style="margin-right: 10px;"></i> Add New Product</h2>
+    
+    <form method="POST" action="{{ url_for('add_product') }}" enctype="multipart/form-data">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Product Name *</label>
+          <input type="text" name="name" placeholder="e.g., Silk Crepe Blouse" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Price (₦) *</label>
+          <input type="number" name="price" placeholder="0" step="0.01" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Category *</label>
+          <select name="category" required>
+            <option value="">Select Category</option>
+            <option value="New Arrivals">New Arrivals</option>
+            <option value="Dresses">Dresses</option>
+            <option value="Tops">Tops</option>
+            <option value="Knitwear">Knitwear</option>
+            <option value="Outerwear">Outerwear</option>
+            <option value="Trousers">Trousers</option>
+            <option value="Skirts">Skirts</option>
+            <option value="Accessories">Accessories</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>Length (optional)</label>
+          <input type="text" name="length" placeholder="e.g., Regular, Midi">
+        </div>
+        
+        <div class="form-group">
+          <label>Stock *</label>
+          <input type="number" name="stock" placeholder="0" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Product Image *</label>
+          <div class="file-input-wrapper">
+            <input type="file" name="image" accept="image/*" required>
+            <div class="file-input-custom">
+              <i class="ri-image-line"></i> Choose image...
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group" style="grid-column: span 2;">
+          <label>Description</label>
+          <textarea name="description" placeholder="Product description..."></textarea>
+        </div>
       </div>
-      <form method="POST" action="{{ url_for('add_product') }}" enctype="multipart/form-data" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 20px;">
-        <input type="text" name="name" placeholder="Product name" required style="padding:12px; background:#2a241f; border:1px solid #3a3a3a; border-radius:50px; color:#fff;">
-        <input type="number" step="0.01" name="price" placeholder="Price (₦)" required style="padding:12px; background:#2a241f; border:1px solid #3a3a3a; border-radius:50px; color:#fff;">
+      
+      <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem;">
+        <i class="ri-add-line"></i> Add Product
+      </button>
+    </form>
+  </div>
 
-        <!-- NEW: Category dropdown -->
-        <select name="category" required style="padding:12px; background:#2a241f; border:1px solid #3a3a3a; border-radius:50px; color:#fff;">
-          <option value="" disabled selected>Select category</option>
-          <option value="bone">Black bone straight</option>
-          <option value="bounce">Bounce curls</option>
-          <option value="colored">Colored units</option>
-          <option value="wave">Deep wave</option>
-          <option value="frontal">Frontal bob wigs</option>
-        </select>
-
-        <!-- NEW: Length input -->
-        <input type="number" name="length" placeholder="Length (inches)" required min="10" max="30" style="padding:12px; background:#2a241f; border:1px solid #3a3a3a; border-radius:50px; color:#fff;">
-
-        <!-- Image file input -->
-        <input type="file" name="image" accept="image/*" required style="padding:12px; background:#2a241f; border:1px solid #3a3a3a; border-radius:50px; color:#fff;">
-
-        <input type="text" name="description" placeholder="Short description" style="padding:12px; background:#2a241f; border:1px solid #3a3a3a; border-radius:50px; color:#fff;">
-        <input type="number" name="stock" placeholder="Stock" value="10" style="padding:12px; background:#2a241f; border:1px solid #3a3a3a; border-radius:50px; color:#fff;">
-        <button type="submit" class="btn btn-gold" style="grid-column: span 1;">Add Product</button>
-      </form>
-    </div>
-
-    <!-- PRODUCTS LIST (now with Category and Length columns) -->
-    <div class="section">
-      <div class="section-title">
-        <i class="ri-stack-line"></i>
-        <span>products ({{ products|length }})</span>
-      </div>
+  <!-- Products Section -->
+  <div class="section">
+    <h2><i class="ri-shirt-line" style="margin-right: 10px;"></i> Products</h2>
+    
+    <div class="table-wrapper">
       <table>
         <thead>
           <tr>
@@ -229,7 +497,7 @@
             <th>Name</th>
             <th>Category</th>
             <th>Length</th>
-            <th>Price (₦)</th>
+            <th>Price</th>
             <th>Stock</th>
             <th>Actions</th>
           </tr>
@@ -237,29 +505,49 @@
         <tbody>
           {% for product in products %}
           <tr>
-            <td><img src="{{ product.image or 'https://via.placeholder.com/50x50/2a241f/b38728?text=wig' }}" class="product-img" alt=""></td>
+            <td>
+              {% if product.image %}
+              <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
+              {% else %}
+              <div class="product-image" style="display: flex; align-items: center; justify-content: center; color: var(--ash-dark);">
+                <i class="ri-image-line"></i>
+              </div>
+              {% endif %}
+            </td>
             <td>{{ product.name }}</td>
-            <td>{{ product.category|capitalize or '—' }}</td>
-            <td>{{ product.length or '—' }}"</td>
-            <td>{{ "{:,.0f}".format(product.price) }}</td>
+            <td>{{ product.category }}</td>
+            <td>{{ product.length if product.length else '—' }}</td>
+            <td>₦{{ "%.2f"|format(product.price) }}</td>
             <td>{{ product.stock }}</td>
             <td>
-              <a href="{{ url_for('delete_product', product_id=product._id) }}" class="action-link delete-link" onclick="return confirm('Delete this product?')"><i class="ri-delete-bin-line"></i></a>
+              <div class="action-links">
+                <a href="{{ url_for('edit_product', product_id=product._id) }}">
+                  <i class="ri-edit-line"></i> Edit
+                </a>
+                <a href="{{ url_for('delete_product', product_id=product._id) }}" class="delete-link" onclick="return confirm('Delete this product?')">
+                  <i class="ri-delete-bin-line"></i> Delete
+                </a>
+              </div>
             </td>
           </tr>
           {% else %}
-          <tr><td colspan="7" style="text-align:center; color:#666;">No products yet.</td></tr>
+          <tr>
+            <td colspan="7" style="text-align: center; padding: 3rem; color: var(--ash-dark);">
+              <i class="ri-inbox-line" style="font-size: 2rem; display: block; margin-bottom: 1rem;"></i>
+              No products yet. Add your first product above.
+            </td>
+          </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
+  </div>
 
-    <!-- ORDERS LIST (unchanged) -->
-    <div class="section">
-      <div class="section-title">
-        <i class="ri-truck-line"></i>
-        <span>orders ({{ orders|length }})</span>
-      </div>
+  <!-- Orders Section -->
+  <div class="section">
+    <h2><i class="ri-shopping-bag-line" style="margin-right: 10px;"></i> Orders</h2>
+    
+    <div class="table-wrapper">
       <table>
         <thead>
           <tr>
@@ -274,36 +562,65 @@
         <tbody>
           {% for order in orders %}
           <tr>
-            <td style="font-family: monospace;">{{ order.paymentReference[:8] }}...</td>
-            <td>{{ order.customerEmail or 'N/A' }}</td>
-            <td>₦{{ "{:,.0f}".format(order.amount or 0) }}</td>
             <td>
-              <span class="status-badge {{ order.status|lower }}">{{ order.status }}</span>
+              <code style="background: var(--charcoal); padding: 4px 8px; font-size: 0.7rem;">
+                {{ order.paymentReference[:12] }}...
+              </code>
             </td>
-            <td>{{ order.createdAt.strftime('%Y-%m-%d') if order.createdAt else 'N/A' }}</td>
+            <td>{{ order.customerEmail or '—' }}</td>
+            <td>₦{{ "%.2f"|format(order.amount|default(0)) }}</td>
             <td>
-              <form method="POST" action="{{ url_for('update_order', reference=order.paymentReference) }}" style="display:flex; gap:5px;">
-                <select name="status" style="background:#2a241f; border:1px solid #3a3a3a; border-radius:20px; padding:5px; color:#fff;">
+              <span class="status-badge {{ order.status|lower }}">
+                {{ order.status }}
+              </span>
+            </td>
+            <td>
+              {% if order.createdAt %}
+                {{ order.createdAt.strftime('%d/%m/%Y') }}
+              {% else %}
+                —
+              {% endif %}
+            </td>
+            <td>
+              <form method="POST" action="{{ url_for('update_order', reference=order.paymentReference) }}" class="order-update-form">
+                <select name="status">
                   <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
                   <option value="Paid" {% if order.status == 'Paid' %}selected{% endif %}>Paid</option>
                   <option value="Shipped" {% if order.status == 'Shipped' %}selected{% endif %}>Shipped</option>
                   <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
                 </select>
-                <button type="submit" class="btn btn-sm btn-outline" style="padding:5px 10px;">Update</button>
+                <button type="submit" class="btn btn-small">Update</button>
               </form>
             </td>
           </tr>
           {% else %}
-          <tr><td colspan="6" style="text-align:center; color:#666;">No orders yet.</td></tr>
+          <tr>
+            <td colspan="6" style="text-align: center; padding: 3rem; color: var(--ash-dark);">
+              <i class="ri-shopping-bag-line" style="font-size: 2rem; display: block; margin-bottom: 1rem;"></i>
+              No orders yet.
+            </td>
+          </tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
-
-    <!-- Optional logout link -->
-    <div style="text-align:right; margin-top:20px;">
-      <a href="{{ url_for('admin_login_page') }}" style="color:#666;">← logout</a>
-    </div>
   </div>
+
+</div>
+
+<script>
+  // Update file input display text
+  document.querySelectorAll('.file-input-wrapper input[type="file"]').forEach(input => {
+    input.addEventListener('change', function() {
+      const customDisplay = this.parentElement.querySelector('.file-input-custom');
+      if (this.files && this.files[0]) {
+        customDisplay.innerHTML = `<i class="ri-file-line"></i> ${this.files[0].name}`;
+      } else {
+        customDisplay.innerHTML = `<i class="ri-image-line"></i> Choose image...`;
+      }
+    });
+  });
+</script>
+
 </body>
 </html>
