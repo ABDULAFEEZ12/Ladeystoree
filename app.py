@@ -55,15 +55,13 @@ def allowed_file(filename):
 # DATABASE - WITH SSL FIX
 # ==========================
 try:
-    # Try with certifi first
     client = MongoClient(
         MONGO_URI,
         tls=True,
         tlsCAFile=certifi.where(),
-        tlsAllowInvalidCertificates=True,  # Development only - fixes Windows SSL issue
+        tlsAllowInvalidCertificates=True,
         serverSelectionTimeoutMS=5000
     )
-    # Test connection
     client.admin.command('ping')
     print("✅ Connected to MongoDB Atlas!")
 except Exception as e:
@@ -80,25 +78,21 @@ admins_collection = db["admins"]
 # HELPER FUNCTIONS
 # ==========================
 def safe_objectid(id_str):
-    """Convert a string to ObjectId safely. Return None if invalid."""
     try:
         return ObjectId(id_str)
     except (InvalidId, TypeError):
         return None
 
 def convert_doc(doc):
-    """Convert a MongoDB document to a JSON‑friendly dict (ObjectId → str)."""
     if not doc:
         return doc
     doc["_id"] = str(doc["_id"])
     return doc
 
 def convert_cursor(cursor):
-    """Convert a cursor of MongoDB documents to a list of JSON‑friendly dicts."""
     return [convert_doc(doc) for doc in cursor]
 
 def validate_product_data(name, price, stock, length, category):
-    """Validate common product fields. Return (is_valid, error_message)."""
     if not name or not name.strip():
         return False, "Product name is required."
     try:
@@ -131,7 +125,6 @@ def validate_product_data(name, price, stock, length, category):
 # AUTH DECORATOR
 # ==========================
 def token_required(f):
-    """Decorator to protect admin routes. Extracts JWT from cookie and loads current admin."""
     @wraps(f)
     def decorated(*args, **kwargs):
         token = request.cookies.get("admin_token")
@@ -335,6 +328,34 @@ def order_status(reference):
 # ==========================
 # ADMIN ROUTES
 # ==========================
+
+# ---------------------------------------------------------
+# ONE-TIME SEED ROUTE — DELETE THIS AFTER FIRST USE
+# Visit /admin/seed once to create the first admin account.
+# Credentials are pulled from ADMIN_EMAIL and ADMIN_PASSWORD
+# env vars. Remove this route immediately after running it.
+# ---------------------------------------------------------
+@app.route("/admin/seed")
+def seed_admin():
+    email = os.getenv("ADMIN_EMAIL", "").strip().lower()
+    password = os.getenv("ADMIN_PASSWORD", "")
+
+    if not email or not password:
+        return "❌ ADMIN_EMAIL or ADMIN_PASSWORD env var is missing.", 400
+
+    if admins_collection.find_one({"email": email}):
+        return "⚠️ Admin already exists. No action taken.", 200
+
+    hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+    admins_collection.insert_one({
+        "email": email,
+        "password": hashed,
+        "role": "admin",
+        "created_at": datetime.datetime.utcnow()
+    })
+    return "✅ Admin created successfully. DELETE THIS ROUTE NOW.", 201
+
+
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login_page():
     if request.method == "POST":
