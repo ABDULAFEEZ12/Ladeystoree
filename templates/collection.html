@@ -182,66 +182,6 @@
       justify-content: center;
     }
 
-    /* ---------- MOBILE CATEGORY NAV (SCROLLABLE) ---------- */
-    .mobile-cat-nav {
-      position: fixed;
-      top: 70px;
-      left: 0;
-      right: 0;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(184,184,184,0.15);
-      z-index: 999;
-      padding: 10px 0;
-      overflow-x: auto;
-      overflow-y: hidden;
-      white-space: nowrap;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-      display: block;
-    }
-    
-    .mobile-cat-nav::-webkit-scrollbar { display: none; }
-    
-    .mobile-cat-nav-inner {
-      display: inline-flex;
-      gap: 0.5rem;
-      padding: 0 5%;
-    }
-    
-    .mobile-cat-link {
-      display: inline-block;
-      padding: 8px 18px;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      font-weight: 500;
-      color: var(--charcoal);
-      border-bottom: 2px solid transparent;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-    
-    .mobile-cat-link.active {
-      border-bottom-color: var(--charcoal);
-      color: var(--charcoal);
-    }
-    
-    .mobile-cat-link:active {
-      background: rgba(184,184,184,0.1);
-      border-radius: 4px;
-    }
-    
-    @media (min-width: 900px) {
-      .mobile-cat-nav { display: none; }
-    }
-    
-    /* Adjust page header padding when mobile nav is present */
-    @media (max-width: 899px) {
-      .page-header { padding-top: 170px; }
-    }
-
     /* Desktop navigation */
     .desktop-nav { display: none; }
     
@@ -272,7 +212,59 @@
       .brand-logo { margin: 0 auto; }
       #main-header { justify-content: space-between; }
       #menu-toggle { display: none; }
-      .page-header { padding-top: 120px; }
+    }
+
+    /* ---------- MOBILE CATEGORY NAV ---------- */
+    .mobile-cat-nav {
+      display: flex;
+      position: fixed;
+      top: 70px;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(184,184,184,0.15);
+      z-index: 999;
+      padding: 10px 0;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    
+    .mobile-cat-nav::-webkit-scrollbar { display: none; }
+    
+    .mobile-cat-nav-inner {
+      display: inline-flex;
+      gap: 0.5rem;
+      padding: 0 5%;
+    }
+    
+    .mobile-cat-link {
+      display: inline-block;
+      padding: 8px 18px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 500;
+      color: var(--charcoal);
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    
+    .mobile-cat-link.active {
+      border-bottom-color: var(--charcoal);
+    }
+    
+    .mobile-cat-link:active {
+      background: rgba(184,184,184,0.1);
+      border-radius: 4px;
+    }
+    
+    @media (min-width: 900px) {
+      .mobile-cat-nav { display: none; }
     }
 
     /* ---------- LEFT SLIDE-IN MENU ---------- */
@@ -562,7 +554,7 @@
       font-size: 0.9rem;
     }
 
-    /* ---------- BOTTOM NAVIGATION (MOBILE) ---------- */
+    /* ---------- BOTTOM NAVIGATION ---------- */
     .bottom-nav {
       display: flex;
       position: fixed;
@@ -614,9 +606,14 @@
 
     /* ---------- PAGE HEADER ---------- */
     .page-header {
+      padding-top: 120px;
       padding-bottom: 2rem;
       text-align: center;
       position: relative;
+    }
+
+    @media (max-width: 899px) {
+      .page-header { padding-top: 170px; }
     }
 
     .page-header::after {
@@ -1064,7 +1061,7 @@
   </div>
 </header>
 
-<!-- MOBILE CATEGORY NAVIGATION (SCROLLABLE) -->
+<!-- MOBILE CATEGORY NAV -->
 <nav class="mobile-cat-nav">
   <div class="mobile-cat-nav-inner">
     <a href="/new-arrivals" class="mobile-cat-link">NEW ARRIVALS</a>
@@ -1085,7 +1082,7 @@
     <p style="text-align:center; padding:3rem; color:#999;">Your cart is empty</p>
   </div>
   <div class="cart-footer">
-    <div class="cart-total"><span>Subtotal</span> <strong id="cartTotal">$0</strong></div>
+    <div class="cart-total"><span>Subtotal</span> <strong id="cartTotal">₦0</strong></div>
     <button class="btn" id="checkoutBtn">CHECKOUT</button>
     <button class="btn btn-outline" id="clearCartBtn">Clear Cart</button>
   </div>
@@ -1129,7 +1126,7 @@
           <div class="product-info">
             <div class="product-brand">LADEY STOREE</div>
             <div class="product-name">{{ product.name }}</div>
-            <div class="product-price">${{ "%.2f"|format(product.price) }}</div>
+            <div class="product-price">{{ format_currency(product.price) }}</div>
           </div>
         </a>
       </div>
@@ -1201,7 +1198,7 @@
   </div>
 </footer>
 
-<!-- BOTTOM NAVIGATION (MOBILE) -->
+<!-- BOTTOM NAVIGATION -->
 <nav class="bottom-nav">
   <a href="/" class="bottom-nav-item"><i class="ri-home-4-line"></i><span>Home</span></a>
   <a href="/collection" class="bottom-nav-item active"><i class="ri-store-line"></i><span>Shop</span></a>
@@ -1231,7 +1228,6 @@
     const filterSidebar = document.getElementById('filterSidebar');
     const closeFilter = document.getElementById('close-filter');
     
-    // Bottom nav elements
     const bottomCartToggle = document.getElementById('bottomCartToggle');
     const bottomMenuToggle = document.getElementById('bottomMenuToggle');
     
@@ -1260,12 +1256,10 @@
     overlay.addEventListener('click', closeMenu);
     document.querySelectorAll('.sidebar-nav a, .cat-chip').forEach(link => link.addEventListener('click', closeMenu));
 
-    // Filter sidebar
     filterToggle.addEventListener('click', () => filterSidebar.classList.add('open'));
     closeFilter.addEventListener('click', () => filterSidebar.classList.remove('open'));
     window.addEventListener('click', (e) => { if(e.target === filterSidebar) filterSidebar.classList.remove('open'); });
 
-    // Bottom nav actions
     if(bottomMenuToggle) bottomMenuToggle.addEventListener('click', openMenu);
     if(bottomCartToggle) bottomCartToggle.addEventListener('click', () => cartSidebar.classList.add('open'));
 
@@ -1277,7 +1271,7 @@
       
       if (!cart.length) {
         cartItemsDiv.innerHTML = '<p style="text-align:center; padding:3rem; color:#999;">Your cart is empty</p>';
-        cartTotalSpan.textContent = '$0';
+        cartTotalSpan.textContent = '₦0';
         return;
       }
       
@@ -1285,16 +1279,16 @@
       cart.forEach((item) => {
         total += item.price * item.quantity;
         html += `<div class="cart-item">
-          <div><strong>${item.name}</strong><br><small style="color:#999;">Qty: ${item.quantity} × $${item.price}</small></div>
+          <div><strong>${item.name}</strong><br><small style="color:#999;">Qty: ${item.quantity} × ₦${item.price.toLocaleString()}</small></div>
           <div style="display:flex; align-items:center; gap:12px;">
-            <span style="font-weight:600;">$${item.price * item.quantity}</span>
+            <span style="font-weight:600;">₦${(item.price * item.quantity).toLocaleString()}</span>
             <button class="remove-item" data-id="${item.id}" style="background:none;border:none;cursor:pointer;color:#999;font-size:1.5rem;">×</button>
           </div>
         </div>`;
       });
       
       cartItemsDiv.innerHTML = html;
-      cartTotalSpan.textContent = '$' + total;
+      cartTotalSpan.textContent = '₦' + total.toLocaleString();
       
       document.querySelectorAll('.remove-item').forEach(btn => {
         btn.addEventListener('click', () => {
