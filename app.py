@@ -329,32 +329,6 @@ def order_status(reference):
 # ADMIN ROUTES
 # ==========================
 
-# ---------------------------------------------------------
-# ONE-TIME SEED ROUTE — DELETE THIS AFTER FIRST USE
-# Visit /admin/seed once to create the first admin account.
-# Credentials are pulled from ADMIN_EMAIL and ADMIN_PASSWORD
-# env vars. Remove this route immediately after running it.
-# ---------------------------------------------------------
-@app.route("/admin/seed")
-def seed_admin():
-    email = os.getenv("ADMIN_EMAIL", "").strip().lower()
-    password = os.getenv("ADMIN_PASSWORD", "")
-
-    if not email or not password:
-        return "❌ ADMIN_EMAIL or ADMIN_PASSWORD env var is missing.", 400
-
-    if admins_collection.find_one({"email": email}):
-        return "⚠️ Admin already exists. No action taken.", 200
-
-    hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
-    admins_collection.insert_one({
-        "email": email,
-        "password": hashed,
-        "role": "admin",
-        "created_at": datetime.datetime.utcnow()
-    })
-    return "✅ Admin created successfully. DELETE THIS ROUTE NOW.", 201
-
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login_page():
