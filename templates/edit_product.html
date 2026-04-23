@@ -1,162 +1,252 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Edit Product - KikkyHairs Admin</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Product · LADEY STOREE</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+  <!-- Premium Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  
+  <!-- Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
 
-<style>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-body{
-background:#120e0c;
-color:#f4f4f4;
-font-family:Montserrat;
-padding:40px;
-}
+    :root {
+      --ash: #B8B8B8;
+      --ash-dark: #9E9E9E;
+      --charcoal: #1A1A1A;
+      --charcoal-soft: #0D0D0D;
+      --charcoal-light: #2A2A2A;
+      --white-pure: #FFFFFF;
+      --off-white: #FAFAFA;
+      --border-light: rgba(184, 184, 184, 0.2);
+      --font-serif: 'Cormorant Garamond', serif;
+      --font-sans: 'Inter', sans-serif;
+    }
 
-h1{
-font-family:Playfair Display;
-color:#b38728;
-}
+    body {
+      font-family: var(--font-sans);
+      background: var(--charcoal-soft);
+      color: var(--off-white);
+      line-height: 1.6;
+      padding: 32px 5%;
+      min-height: 100vh;
+    }
 
-.section{
-background:#1e1814;
-padding:25px;
-border-radius:15px;
-margin-bottom:30px;
-}
+    h1 {
+      font-family: var(--font-serif);
+      font-size: 2.5rem;
+      font-weight: 300;
+      letter-spacing: 6px;
+      text-transform: uppercase;
+      color: var(--white-pure);
+      margin-bottom: 2rem;
+      border-bottom: 1px solid var(--border-light);
+      padding-bottom: 1.5rem;
+    }
 
-input, select{
-width:100%;
-padding:12px;
-margin-bottom:15px;
-background:#2a241f;
-border:1px solid #3a3a3a;
-border-radius:8px;
-color:white;
-}
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+    }
 
-button{
-background:#b38728;
-color:black;
-padding:12px 25px;
-border:none;
-border-radius:8px;
-cursor:pointer;
-font-weight:600;
-margin-right:10px;
-}
+    .section {
+      background: var(--charcoal-light);
+      border: 1px solid var(--border-light);
+      padding: 2rem;
+    }
 
-.current-image{
-width:200px;
-height:200px;
-object-fit:cover;
-border-radius:8px;
-margin-bottom:15px;
-border: 2px solid #b38728;
-}
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 1.5rem;
+    }
 
-.image-preview{
-display:none;
-width:200px;
-height:200px;
-object-fit:cover;
-border-radius:8px;
-margin-bottom:15px;
-border: 2px solid #4CAF50;
-}
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
 
-.back-btn{
-background:#555;
-}
+    .form-group.full-width {
+      grid-column: span 2;
+    }
 
-label{
-display:block;
-margin-bottom:8px;
-color:#b38728;
-font-weight:600;
-}
+    .form-group label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      color: var(--ash);
+    }
 
-.image-section{
-background:#2a241f;
-padding:20px;
-border-radius:8px;
-margin-bottom:20px;
-}
+    input, select, textarea {
+      background: var(--charcoal);
+      border: 1px solid var(--border-light);
+      padding: 12px 16px;
+      color: var(--white-pure);
+      font-family: var(--font-sans);
+      font-size: 0.85rem;
+      transition: border-color 0.2s;
+      outline: none;
+    }
 
-</style>
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--ash);
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 12px 24px;
+      background: transparent;
+      border: 1px solid var(--ash-dark);
+      color: var(--ash);
+      font-size: 0.75rem;
+      font-weight: 500;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: all 0.25s;
+      text-decoration: none;
+      margin-top: 1.5rem;
+    }
+
+    .btn-primary {
+      background: var(--ash);
+      color: var(--charcoal);
+      border-color: var(--ash);
+    }
+
+    .btn-primary:hover {
+      background: var(--white-pure);
+      border-color: var(--white-pure);
+    }
+
+    .btn-secondary {
+      margin-left: 1rem;
+    }
+
+    .btn-secondary:hover {
+      background: var(--ash);
+      color: var(--charcoal);
+    }
+
+    .current-image {
+      margin-top: 0.5rem;
+    }
+
+    .current-image img {
+      max-width: 150px;
+      border-radius: 4px;
+    }
+
+    .flash {
+      padding: 14px 20px;
+      margin-bottom: 1.5rem;
+      background: var(--charcoal-light);
+      border-left: 3px solid var(--ash);
+      color: var(--off-white);
+      font-size: 0.8rem;
+    }
+
+    .flash.error {
+      border-left-color: #E8A0A0;
+    }
+
+    @media (max-width: 600px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+      .form-group.full-width {
+        grid-column: span 1;
+      }
+    }
+  </style>
 </head>
-
 <body>
 
-<h1>Edit Product</h1>
+<div class="container">
+  <h1>Edit Product</h1>
 
-<div class="section">
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="flash {{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
 
-<form method="POST" enctype="multipart/form-data">
-
-<div class="image-section">
-<label>Current Image:</label>
-<img src="{{ product.image }}" class="current-image" id="currentImage">
-
-<label>Change Image (optional - leave empty to keep current):</label>
-<input type="file" name="image" id="imageInput" accept="image/png,image/jpg,image/jpeg,image/gif,image/webp">
-<img id="imagePreview" class="image-preview">
+  <div class="section">
+    <form method="POST" action="{{ url_for('edit_product', product_id=product._id) }}" enctype="multipart/form-data">
+      <div class="form-grid">
+        <div class="form-group full-width">
+          <label>Product Name *</label>
+          <input type="text" name="name" value="{{ product.name }}" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Price (₦) *</label>
+          <input type="number" name="price" value="{{ product.price }}" step="0.01" min="0" required>
+        </div>
+        
+        <div class="form-group">
+          <label>Category *</label>
+          <select name="category" required>
+            <option value="New Arrivals" {% if product.category == 'New Arrivals' %}selected{% endif %}>New Arrivals</option>
+            <option value="Dresses" {% if product.category == 'Dresses' %}selected{% endif %}>Dresses</option>
+            <option value="Tops" {% if product.category == 'Tops' %}selected{% endif %}>Tops</option>
+            <option value="Knitwear" {% if product.category == 'Knitwear' %}selected{% endif %}>Knitwear</option>
+            <option value="Outerwear" {% if product.category == 'Outerwear' %}selected{% endif %}>Outerwear</option>
+            <option value="Trousers" {% if product.category == 'Trousers' %}selected{% endif %}>Trousers</option>
+            <option value="Skirts" {% if product.category == 'Skirts' %}selected{% endif %}>Skirts</option>
+            <option value="Accessories" {% if product.category == 'Accessories' %}selected{% endif %}>Accessories</option>
+          </select>
+        </div>
+        
+        <div class="form-group">
+          <label>Stock *</label>
+          <input type="number" name="stock" value="{{ product.stock }}" min="0" required>
+        </div>
+        
+        <div class="form-group full-width">
+          <label>Product Image (leave empty to keep current)</label>
+          <input type="file" name="image" accept="image/*">
+          {% if product.image %}
+          <div class="current-image">
+            <p style="color: var(--ash-dark); font-size: 0.7rem; margin: 8px 0 4px;">Current image:</p>
+            <img src="{{ product.image }}" alt="{{ product.name }}">
+          </div>
+          {% endif %}
+        </div>
+        
+        <div class="form-group full-width">
+          <label>Description</label>
+          <textarea name="description">{{ product.description or '' }}</textarea>
+        </div>
+      </div>
+      
+      <button type="submit" class="btn btn-primary">
+        <i class="ri-save-line"></i> Save Changes
+      </button>
+      <a href="{{ url_for('admin_dashboard') }}" class="btn btn-secondary">
+        <i class="ri-arrow-left-line"></i> Cancel
+      </a>
+    </form>
+  </div>
 </div>
-
-<label>Product Name:</label>
-<input type="text" name="name" value="{{ product.name }}" required>
-
-<label>Price (₦):</label>
-<input type="number" name="price" value="{{ product.price }}" required>
-
-<label>Category:</label>
-<select name="category" required>
-<option value="">Select Wig Category</option>
-<option value="Frontals and ponytail collections" {% if product.category == "Frontals and ponytail collections" %}selected{% endif %}>Frontals and ponytail collections</option>
-<option value="Black bone straight" {% if product.category == "Black bone straight" %}selected{% endif %}>Black bone straight</option>
-<option value="Colored bone straight" {% if product.category == "Colored bone straight" %}selected{% endif %}>Colored bone straight</option>
-<option value="Bounce curls / wavy units" {% if product.category == "Bounce curls / wavy units" %}selected{% endif %}>Bounce curls / wavy units</option>
-<option value="Deepwave units" {% if product.category == "Deepwave units" %}selected{% endif %}>Deepwave units</option>
-<option value="Pixie curls units" {% if product.category == "Pixie curls units" %}selected{% endif %}>Pixie curls units</option>
-<option value="Closure bobs / frontal bobs units" {% if product.category == "Closure bobs / frontal bobs units" %}selected{% endif %}>Closure bobs / frontal bobs units</option>
-<option value="Silky straight units" {% if product.category == "Silky straight units" %}selected{% endif %}>Silky straight units</option>
-<option value="Wigtools.ng by Kikkyhairs" {% if product.category == "Wigtools.ng by Kikkyhairs" %}selected{% endif %}>Wigtools.ng by Kikkyhairs</option>
-</select>
-
-<label>Length (inches):</label>
-<input type="number" name="length" value="{{ product.length }}">
-
-<label>Stock:</label>
-<input type="number" name="stock" value="{{ product.stock }}">
-
-<label>Description:</label>
-<input type="text" name="description" value="{{ product.description }}">
-
-<button type="submit">Update Product</button>
-<button type="button" class="back-btn" onclick="window.location.href='{{ url_for('admin_dashboard') }}'">Cancel</button>
-
-</form>
-
-</div>
-
-<script>
-// Preview image before upload
-document.getElementById('imageInput').addEventListener('change', function(e) {
-    const file = e.target.files[0];
-    if (file) {
-        const reader = new FileReader();
-        reader.onload = function(e) {
-            document.getElementById('imagePreview').src = e.target.result;
-            document.getElementById('imagePreview').style.display = 'block';
-            document.getElementById('currentImage').style.opacity = '0.3';
-        }
-        reader.readAsDataURL(file);
-    }
-});
-</script>
 
 </body>
 </html>
