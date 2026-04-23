@@ -182,6 +182,66 @@
       justify-content: center;
     }
 
+    /* ---------- MOBILE CATEGORY NAV (SCROLLABLE) ---------- */
+    .mobile-cat-nav {
+      position: fixed;
+      top: 70px;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(184,184,184,0.15);
+      z-index: 999;
+      padding: 10px 0;
+      overflow-x: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      display: block;
+    }
+    
+    .mobile-cat-nav::-webkit-scrollbar { display: none; }
+    
+    .mobile-cat-nav-inner {
+      display: inline-flex;
+      gap: 0.5rem;
+      padding: 0 5%;
+    }
+    
+    .mobile-cat-link {
+      display: inline-block;
+      padding: 8px 18px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 500;
+      color: var(--charcoal);
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    
+    .mobile-cat-link.active {
+      border-bottom-color: var(--charcoal);
+      color: var(--charcoal);
+    }
+    
+    .mobile-cat-link:active {
+      background: rgba(184,184,184,0.1);
+      border-radius: 4px;
+    }
+    
+    @media (min-width: 900px) {
+      .mobile-cat-nav { display: none; }
+    }
+    
+    /* Adjust page header padding when mobile nav is present */
+    @media (max-width: 899px) {
+      .page-header { padding-top: 170px; }
+    }
+
     /* Desktop navigation */
     .desktop-nav { display: none; }
     
@@ -212,6 +272,7 @@
       .brand-logo { margin: 0 auto; }
       #main-header { justify-content: space-between; }
       #menu-toggle { display: none; }
+      .page-header { padding-top: 120px; }
     }
 
     /* ---------- LEFT SLIDE-IN MENU ---------- */
@@ -553,7 +614,6 @@
 
     /* ---------- PAGE HEADER ---------- */
     .page-header {
-      padding-top: 120px;
       padding-bottom: 2rem;
       text-align: center;
       position: relative;
@@ -1003,6 +1063,17 @@
     </div>
   </div>
 </header>
+
+<!-- MOBILE CATEGORY NAVIGATION (SCROLLABLE) -->
+<nav class="mobile-cat-nav">
+  <div class="mobile-cat-nav-inner">
+    <a href="/new-arrivals" class="mobile-cat-link">NEW ARRIVALS</a>
+    <a href="/dresses" class="mobile-cat-link">DRESSES</a>
+    <a href="/tops" class="mobile-cat-link">TOPS</a>
+    <a href="/collection" class="mobile-cat-link active">COLLECTION</a>
+    <a href="/about" class="mobile-cat-link">ABOUT</a>
+  </div>
+</nav>
 
 <!-- CART SIDEBAR -->
 <div class="cart-sidebar" id="cartSidebar">
