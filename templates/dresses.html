@@ -80,11 +80,11 @@
     /* ---------- SCROLL PROGRESS ---------- */
     #scroll-progress {
       position: fixed;
-      top: 0;
+      top: 70px;
       left: 0;
       height: 3px;
       background: linear-gradient(90deg, var(--ash-dark), var(--charcoal), var(--ash));
-      z-index: 1003;
+      z-index: 1002;
       width: 0%;
       transition: width 0.1s ease;
       box-shadow: 0 0 10px rgba(184,184,184,0.5);
@@ -107,7 +107,7 @@
     #overlay.active { display: block; }
 
     /* ---------- TOP BAR ---------- */
-    #main-header {
+    #top-bar {
       position: fixed;
       top: 0;
       left: 0;
@@ -123,10 +123,7 @@
       z-index: 1002;
       border-bottom: 1px solid rgba(184,184,184,0.15);
       box-shadow: 0 2px 20px rgba(0,0,0,0.02);
-      transition: height 0.3s, background 0.3s;
     }
-
-    #main-header.scrolled { height: 60px; }
 
     #menu-toggle {
       width: 48px;
@@ -187,19 +184,15 @@
     
     @media (min-width: 900px) {
       .desktop-nav {
-        display: block;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-      }
-      .desktop-nav ul {
         display: flex;
         gap: 2.5rem;
-        list-style: none;
         font-size: 0.8rem;
         text-transform: uppercase;
         letter-spacing: 2px;
         font-weight: 500;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
       }
       .desktop-nav a {
         color: var(--charcoal);
@@ -210,8 +203,110 @@
       .desktop-nav a:hover { border-bottom-color: var(--ash-dark); }
       .desktop-nav a.active { border-bottom-color: var(--charcoal); }
       .brand-logo { margin: 0 auto; }
-      #main-header { justify-content: space-between; }
-      #menu-toggle { display: none; }
+      #top-bar { justify-content: space-between; }
+    }
+
+    /* ---------- MOBILE CATEGORY NAV ---------- */
+    .mobile-cat-nav {
+      display: flex;
+      position: fixed;
+      top: 70px;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(184,184,184,0.15);
+      z-index: 999;
+      padding: 10px 0;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    
+    .mobile-cat-nav::-webkit-scrollbar { display: none; }
+    
+    .mobile-cat-nav-inner {
+      display: inline-flex;
+      gap: 0.5rem;
+      padding: 0 5%;
+    }
+    
+    .mobile-cat-link {
+      display: inline-block;
+      padding: 8px 18px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 500;
+      color: var(--charcoal);
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    
+    .mobile-cat-link.active {
+      border-bottom-color: var(--charcoal);
+    }
+    
+    .mobile-cat-link:active {
+      background: rgba(184,184,184,0.1);
+      border-radius: 4px;
+    }
+    
+    @media (min-width: 900px) {
+      .mobile-cat-nav { display: none; }
+    }
+
+    /* ---------- BOTTOM NAVIGATION ---------- */
+    .bottom-nav {
+      display: flex;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: calc(70px + var(--safe-bottom));
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border-top: 1px solid rgba(184,184,184,0.2);
+      z-index: 1000;
+      padding-bottom: var(--safe-bottom);
+    }
+    
+    .bottom-nav-item {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: var(--ash-dark);
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: color 0.2s;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    
+    .bottom-nav-item i {
+      font-size: 1.6rem;
+      margin-bottom: 4px;
+    }
+    
+    .bottom-nav-item.active {
+      color: var(--charcoal);
+      font-weight: 500;
+    }
+    
+    .bottom-nav-item:active {
+      background: rgba(184,184,184,0.1);
+    }
+    
+    @media (min-width: 900px) {
+      .bottom-nav { display: none; }
+      body { padding-bottom: 0; }
     }
 
     /* ---------- LEFT SLIDE-IN MENU ---------- */
@@ -398,20 +493,20 @@
     }
 
     .cart-items { flex: 1; overflow-y: auto; padding: 1.5rem; }
-    
+
     .cart-item {
       display: flex;
       justify-content: space-between;
       padding: 1.2rem 0;
       border-bottom: 1px solid rgba(0,0,0,0.04);
     }
-    
+
     .cart-footer {
       padding: 1.8rem;
       border-top: 1px solid rgba(0,0,0,0.04);
       background: var(--cream);
     }
-    
+
     .cart-total {
       display: flex;
       justify-content: space-between;
@@ -437,64 +532,14 @@
       margin-bottom: 10px;
       border-radius: 4px;
     }
-    
+
     .btn-outline {
       background: transparent;
       border: 1.5px solid var(--charcoal);
       color: var(--charcoal);
     }
-    
-    .btn:active { transform: scale(0.98); }
 
-    /* ---------- BOTTOM NAVIGATION (MOBILE) ---------- */
-    .bottom-nav {
-      display: flex;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: calc(70px + var(--safe-bottom));
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(184,184,184,0.2);
-      z-index: 1000;
-      padding-bottom: var(--safe-bottom);
-    }
-    
-    .bottom-nav-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: var(--ash-dark);
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: color 0.2s;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-    
-    .bottom-nav-item i {
-      font-size: 1.6rem;
-      margin-bottom: 4px;
-    }
-    
-    .bottom-nav-item.active {
-      color: var(--charcoal);
-      font-weight: 500;
-    }
-    
-    .bottom-nav-item:active {
-      background: rgba(184,184,184,0.1);
-    }
-    
-    @media (min-width: 900px) {
-      .bottom-nav { display: none; }
-      body { padding-bottom: 0; }
-    }
+    .btn:active { transform: scale(0.98); }
 
     /* ---------- PAGE HEADER ---------- */
     .page-header {
@@ -502,6 +547,10 @@
       padding-bottom: 2rem;
       text-align: center;
       position: relative;
+    }
+
+    @media (max-width: 899px) {
+      .page-header { padding-top: 170px; }
     }
 
     .page-header::after {
@@ -654,10 +703,6 @@
       .quick-add { width: 40px; height: 40px; }
     }
 
-    @media (max-width: 480px) {
-      .page-header h1 { font-size: 2.5rem; }
-    }
-
     /* ---------- FOOTER ---------- */
     footer {
       background: var(--charcoal-soft);
@@ -707,28 +752,6 @@
 
     .footer-col a:hover { color: white; }
     .footer-col a:hover::after { width: 100%; }
-
-    .newsletter-input {
-      display: flex;
-      border-bottom: 1px solid var(--ash);
-      padding: 6px 0;
-    }
-
-    .newsletter-input input {
-      background: transparent;
-      border: none;
-      color: white;
-      padding: 8px 0;
-      width: 100%;
-      outline: none;
-    }
-
-    .newsletter-input button {
-      background: none;
-      border: none;
-      color: var(--ash);
-      cursor: pointer;
-    }
 
     .social-links { display: flex; gap: 1rem; margin-top: 1rem; }
 
@@ -822,19 +845,18 @@
 </aside>
 
 <!-- TOP BAR -->
-<header id="main-header">
+<header id="top-bar">
   <button id="menu-toggle" aria-label="Menu">☰</button>
   <div class="brand-logo">
     <a href="/" class="brand-script">Ladey Storee</a>
   </div>
   <nav class="desktop-nav">
-    <ul>
-      <li><a href="/new-arrivals">NEW ARRIVALS</a></li>
-      <li><a href="/dresses" class="active">DRESSES</a></li>
-      <li><a href="/tops">TOPS</a></li>
-      <li><a href="/collection">COLLECTION</a></li>
-      <li><a href="/about">ABOUT</a></li>
-    </ul>
+    <a href="/">HOME</a>
+    <a href="/new-arrivals">NEW ARRIVALS</a>
+    <a href="/dresses" class="active">DRESSES</a>
+    <a href="/tops">TOPS</a>
+    <a href="/collection">COLLECTION</a>
+    <a href="/about">ABOUT</a>
   </nav>
   <div class="header-actions">
     <div class="cart-icon" id="cartIcon">
@@ -843,6 +865,17 @@
     </div>
   </div>
 </header>
+
+<!-- MOBILE CATEGORY NAV -->
+<nav class="mobile-cat-nav">
+  <div class="mobile-cat-nav-inner">
+    <a href="/new-arrivals" class="mobile-cat-link">NEW ARRIVALS</a>
+    <a href="/dresses" class="mobile-cat-link active">DRESSES</a>
+    <a href="/tops" class="mobile-cat-link">TOPS</a>
+    <a href="/collection" class="mobile-cat-link">COLLECTION</a>
+    <a href="/about" class="mobile-cat-link">ABOUT</a>
+  </div>
+</nav>
 
 <!-- CART SIDEBAR -->
 <div class="cart-sidebar" id="cartSidebar">
@@ -854,7 +887,7 @@
     <p style="text-align:center; padding:3rem; color:#999;">Your cart is empty</p>
   </div>
   <div class="cart-footer">
-    <div class="cart-total"><span>Subtotal</span> <strong id="cartTotal">$0</strong></div>
+    <div class="cart-total"><span>Subtotal</span> <strong id="cartTotal">₦0</strong></div>
     <button class="btn" id="checkoutBtn">CHECKOUT</button>
     <button class="btn btn-outline" id="clearCartBtn">Clear Cart</button>
   </div>
@@ -877,14 +910,12 @@
         <a href="/product/{{ product._id }}">
           <div class="product-img-wrap">
             <img src="{{ product.image or 'https://via.placeholder.com/400x500/f0f0f0/9E9E9E?text=LADEY' }}" alt="{{ product.name }}" loading="lazy">
-            <button class="quick-add" data-id="{{ product._id }}" data-name="{{ product.name }}" data-price="{{ product.price }}" aria-label="Quick add">
-              <i class="ri-add-line"></i>
-            </button>
+            <button class="quick-add" data-id="{{ product._id }}" data-name="{{ product.name }}" data-price="{{ product.price }}" aria-label="Quick add"><i class="ri-add-line"></i></button>
           </div>
           <div class="product-info">
             <div class="product-brand">LADEY STOREE</div>
             <div class="product-name">{{ product.name }}</div>
-            <div class="product-price">${{ "%.2f"|format(product.price) }}</div>
+            <div class="product-price">{{ format_currency(product.price) }}</div>
           </div>
         </a>
       </div>
@@ -915,6 +946,7 @@
     <div class="footer-col">
       <h4>Shop</h4>
       <ul>
+        <li><a href="/">Home</a></li>
         <li><a href="/new-arrivals">New Arrivals</a></li>
         <li><a href="/dresses">Dresses</a></li>
         <li><a href="/tops">Tops</a></li>
@@ -922,19 +954,22 @@
       </ul>
     </div>
     <div class="footer-col">
-      <h4>Customer Care</h4>
+      <h4>About</h4>
       <ul>
-        <li><a href="/contact">Contact</a></li>
-        <li><a href="#">Shipping</a></li>
-        <li><a href="#">Returns</a></li>
+        <li><a href="/about">Our Story</a></li>
+        <li><a href="#">Sustainability</a></li>
+        <li><a href="#">Careers</a></li>
+        <li><a href="#">Journal</a></li>
       </ul>
     </div>
     <div class="footer-col">
-      <h4>Newsletter</h4>
-      <div class="newsletter-input">
-        <input type="email" placeholder="Your email">
-        <button><i class="ri-arrow-right-line"></i></button>
-      </div>
+      <h4>Customer Care</h4>
+      <ul>
+        <li><a href="/contact">Contact Us</a></li>
+        <li><a href="#">Shipping Info</a></li>
+        <li><a href="#">Returns</a></li>
+        <li><a href="#">FAQ</a></li>
+      </ul>
     </div>
   </div>
   <div class="footer-bottom">
@@ -946,7 +981,7 @@
   </div>
 </footer>
 
-<!-- BOTTOM NAVIGATION (MOBILE) -->
+<!-- BOTTOM NAVIGATION -->
 <nav class="bottom-nav">
   <a href="/" class="bottom-nav-item"><i class="ri-home-4-line"></i><span>Home</span></a>
   <a href="/collection" class="bottom-nav-item"><i class="ri-store-line"></i><span>Shop</span></a>
@@ -960,7 +995,6 @@
 
     let cart = JSON.parse(localStorage.getItem('ladeyCart')) || [];
     
-    const header = document.getElementById('main-header');
     const progressBar = document.getElementById('scroll-progress');
     const menuToggle = document.getElementById('menu-toggle');
     const sideMenu = document.getElementById('side-menu');
@@ -973,7 +1007,6 @@
     const cartItemsDiv = document.getElementById('cartItemsContainer');
     const cartTotalSpan = document.getElementById('cartTotal');
     
-    // Bottom nav elements
     const bottomCartToggle = document.getElementById('bottomCartToggle');
     const bottomMenuToggle = document.getElementById('bottomMenuToggle');
     
@@ -981,7 +1014,6 @@
       const scrolled = window.scrollY;
       const winH = document.documentElement.scrollHeight - window.innerHeight;
       progressBar.style.width = winH > 0 ? (scrolled / winH) * 100 + '%' : '0%';
-      header.classList.toggle('scrolled', scrolled > 20);
     }
     window.addEventListener('scroll', updateScroll);
     updateScroll();
@@ -1002,7 +1034,6 @@
     overlay.addEventListener('click', closeMenu);
     document.querySelectorAll('.sidebar-nav a, .cat-chip').forEach(link => link.addEventListener('click', closeMenu));
 
-    // Bottom nav actions
     if(bottomMenuToggle) bottomMenuToggle.addEventListener('click', openMenu);
     if(bottomCartToggle) bottomCartToggle.addEventListener('click', () => cartSidebar.classList.add('open'));
 
@@ -1014,7 +1045,7 @@
       
       if (!cart.length) {
         cartItemsDiv.innerHTML = '<p style="text-align:center; padding:3rem; color:#999;">Your cart is empty</p>';
-        cartTotalSpan.textContent = '$0';
+        cartTotalSpan.textContent = '₦0';
         return;
       }
       
@@ -1022,16 +1053,16 @@
       cart.forEach((item) => {
         total += item.price * item.quantity;
         html += `<div class="cart-item">
-          <div><strong>${item.name}</strong><br><small style="color:#999;">Qty: ${item.quantity} × $${item.price}</small></div>
+          <div><strong>${item.name}</strong><br><small style="color:#999;">Qty: ${item.quantity} × ₦${item.price.toLocaleString()}</small></div>
           <div style="display:flex; align-items:center; gap:12px;">
-            <span style="font-weight:600;">$${item.price * item.quantity}</span>
+            <span style="font-weight:600;">₦${(item.price * item.quantity).toLocaleString()}</span>
             <button class="remove-item" data-id="${item.id}" style="background:none;border:none;cursor:pointer;color:#999;font-size:1.5rem;">×</button>
           </div>
         </div>`;
       });
       
       cartItemsDiv.innerHTML = html;
-      cartTotalSpan.textContent = '$' + total;
+      cartTotalSpan.textContent = '₦' + total.toLocaleString();
       
       document.querySelectorAll('.remove-item').forEach(btn => {
         btn.addEventListener('click', () => {
