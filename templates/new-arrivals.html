@@ -206,6 +206,59 @@
       #top-bar { justify-content: space-between; }
     }
 
+    /* ---------- MOBILE CATEGORY NAV ---------- */
+    .mobile-cat-nav {
+      display: flex;
+      position: fixed;
+      top: 70px;
+      left: 0;
+      right: 0;
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(184,184,184,0.15);
+      z-index: 999;
+      padding: 10px 0;
+      overflow-x: auto;
+      white-space: nowrap;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    
+    .mobile-cat-nav::-webkit-scrollbar { display: none; }
+    
+    .mobile-cat-nav-inner {
+      display: inline-flex;
+      gap: 0.5rem;
+      padding: 0 5%;
+    }
+    
+    .mobile-cat-link {
+      display: inline-block;
+      padding: 8px 18px;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 2px;
+      font-weight: 500;
+      color: var(--charcoal);
+      border-bottom: 2px solid transparent;
+      transition: all 0.2s;
+      white-space: nowrap;
+    }
+    
+    .mobile-cat-link.active {
+      border-bottom-color: var(--charcoal);
+    }
+    
+    .mobile-cat-link:active {
+      background: rgba(184,184,184,0.1);
+      border-radius: 4px;
+    }
+    
+    @media (min-width: 900px) {
+      .mobile-cat-nav { display: none; }
+    }
+
     /* ---------- LEFT SLIDE-IN MENU ---------- */
     #side-menu {
       position: fixed;
@@ -438,7 +491,7 @@
     
     .btn:active { transform: scale(0.98); }
 
-    /* ---------- BOTTOM NAVIGATION (MOBILE) ---------- */
+    /* ---------- BOTTOM NAVIGATION ---------- */
     .bottom-nav {
       display: flex;
       position: fixed;
@@ -494,6 +547,10 @@
       padding-bottom: 2rem;
       text-align: center;
       position: relative;
+    }
+
+    @media (max-width: 899px) {
+      .page-header { padding-top: 170px; }
     }
 
     .page-header::after {
@@ -813,6 +870,17 @@
   </div>
 </header>
 
+<!-- MOBILE CATEGORY NAV -->
+<nav class="mobile-cat-nav">
+  <div class="mobile-cat-nav-inner">
+    <a href="/new-arrivals" class="mobile-cat-link active">NEW ARRIVALS</a>
+    <a href="/dresses" class="mobile-cat-link">DRESSES</a>
+    <a href="/tops" class="mobile-cat-link">TOPS</a>
+    <a href="/collection" class="mobile-cat-link">COLLECTION</a>
+    <a href="/about" class="mobile-cat-link">ABOUT</a>
+  </div>
+</nav>
+
 <!-- CART SIDEBAR -->
 <div class="cart-sidebar" id="cartSidebar">
   <div class="cart-header">
@@ -823,7 +891,7 @@
     <p style="text-align:center; padding:3rem; color:#999;">Your cart is empty</p>
   </div>
   <div class="cart-footer">
-    <div class="cart-total"><span>Subtotal</span> <strong id="cartTotal">$0</strong></div>
+    <div class="cart-total"><span>Subtotal</span> <strong id="cartTotal">₦0</strong></div>
     <button class="btn" id="checkoutBtn">CHECKOUT</button>
     <button class="btn btn-outline" id="clearCartBtn">Clear Cart</button>
   </div>
@@ -853,7 +921,7 @@
           <div class="product-info">
             <div class="product-brand">LADEY STOREE</div>
             <div class="product-name">{{ product.name }}</div>
-            <div class="product-price">${{ "%.2f"|format(product.price) }}</div>
+            <div class="product-price">{{ format_currency(product.price) }}</div>
           </div>
         </a>
       </div>
@@ -919,7 +987,7 @@
   </div>
 </footer>
 
-<!-- BOTTOM NAVIGATION (MOBILE) -->
+<!-- BOTTOM NAVIGATION -->
 <nav class="bottom-nav">
   <a href="/" class="bottom-nav-item"><i class="ri-home-4-line"></i><span>Home</span></a>
   <a href="/collection" class="bottom-nav-item"><i class="ri-store-line"></i><span>Shop</span></a>
@@ -945,7 +1013,6 @@
     const cartItemsDiv = document.getElementById('cartItemsContainer');
     const cartTotalSpan = document.getElementById('cartTotal');
     
-    // Bottom nav elements
     const bottomCartToggle = document.getElementById('bottomCartToggle');
     const bottomMenuToggle = document.getElementById('bottomMenuToggle');
     
@@ -973,7 +1040,6 @@
     overlay.addEventListener('click', closeMenu);
     document.querySelectorAll('.sidebar-nav a, .cat-chip').forEach(link => link.addEventListener('click', closeMenu));
 
-    // Bottom nav actions
     if(bottomMenuToggle) bottomMenuToggle.addEventListener('click', openMenu);
     if(bottomCartToggle) bottomCartToggle.addEventListener('click', () => cartSidebar.classList.add('open'));
 
@@ -985,7 +1051,7 @@
       
       if (!cart.length) {
         cartItemsDiv.innerHTML = '<p style="text-align:center; padding:3rem; color:#999;">Your cart is empty</p>';
-        cartTotalSpan.textContent = '$0';
+        cartTotalSpan.textContent = '₦0';
         return;
       }
       
@@ -993,16 +1059,16 @@
       cart.forEach((item) => {
         total += item.price * item.quantity;
         html += `<div class="cart-item">
-          <div><strong>${item.name}</strong><br><small style="color:#999;">Qty: ${item.quantity} × $${item.price}</small></div>
+          <div><strong>${item.name}</strong><br><small style="color:#999;">Qty: ${item.quantity} × ₦${item.price.toLocaleString()}</small></div>
           <div style="display:flex; align-items:center; gap:12px;">
-            <span style="font-weight:600;">$${item.price * item.quantity}</span>
+            <span style="font-weight:600;">₦${(item.price * item.quantity).toLocaleString()}</span>
             <button class="remove-item" data-id="${item.id}" style="background:none;border:none;cursor:pointer;color:#999;font-size:1.5rem;">×</button>
           </div>
         </div>`;
       });
       
       cartItemsDiv.innerHTML = html;
-      cartTotalSpan.textContent = '$' + total;
+      cartTotalSpan.textContent = '₦' + total.toLocaleString();
       
       document.querySelectorAll('.remove-item').forEach(btn => {
         btn.addEventListener('click', () => {
