@@ -7,6 +7,7 @@ import datetime
 import requests
 import certifi
 import uuid
+import base64
 from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, send_from_directory, abort
 from flask_cors import CORS
@@ -36,20 +37,49 @@ MONGO_URI = os.getenv("MONGO_URI")
 JWT_SECRET = os.getenv("JWT_SECRET")
 PAYSTACK_SECRET = os.getenv("PAYSTACK_SECRET")
 PAYSTACK_PUBLIC_KEY = os.getenv("PAYSTACK_PUBLIC_KEY")
+IMGBB_API_KEY = os.getenv("IMGBB_API_KEY")
 
 # ==========================
 # FILE UPLOAD CONFIGURATION
 # ==========================
-UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
-
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def allowed_file(filename):
     """Check if the uploaded file has an allowed extension."""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+def upload_image(file):
+    """Upload image to ImgBB."""
+    if not IMGBB_API_KEY:
+        print("⚠️ IMGBB_API_KEY not configured. Using placeholder.")
+        return "https://via.placeholder.com/400x500/f0f0f0/9E9E9E?text=LADEY"
+    
+    try:
+        # Read and encode image to base64
+        file_data = file.read()
+        encoded_image = base64.b64encode(file_data).decode('utf-8')
+        
+        # Upload to ImgBB
+        url = "https://api.imgbb.com/1/upload"
+        payload = {
+            "key": IMGBB_API_KEY,
+            "image": encoded_image,
+        }
+        
+        response = requests.post(url, data=payload)
+        result = response.json()
+        
+        if result.get("success"):
+            image_url = result["data"]["url"]
+            print(f"✅ Image uploaded to ImgBB: {image_url}")
+            return image_url
+        else:
+            print(f"❌ ImgBB upload failed: {result}")
+            return None
+            
+    except Exception as e:
+        print(f"❌ Error uploading to ImgBB: {e}")
+        return None
 
 # ==========================
 # DATABASE - WITH SSL FIX
@@ -92,7 +122,7 @@ def convert_doc(doc):
 def convert_cursor(cursor):
     return [convert_doc(doc) for doc in cursor]
 
-def validate_product_data(name, price, stock, length, category):
+def validate_product_data(name, price, stock, category):
     if not name or not name.strip():
         return False, "Product name is required."
     try:
@@ -109,17 +139,20 @@ def validate_product_data(name, price, stock, length, category):
     except (ValueError, TypeError):
         return False, "Stock must be a valid integer."
 
-    try:
-        length_val = int(length) if length else 0
-        if length_val < 0:
-            return False, "Length cannot be negative."
-    except (ValueError, TypeError):
-        return False, "Length must be a valid integer."
-
     if not category or not category.strip():
         return False, "Category is required."
 
     return True, ""
+
+def format_currency(amount):
+    """Format amount in Naira with commas."""
+    try:
+        return "₦{:,.2f}".format(float(amount))
+    except (ValueError, TypeError):
+        return "₦0.00"
+
+# Add format_currency to Jinja globals
+app.jinja_env.globals.update(format_currency=format_currency)
 
 # ==========================
 # AUTH DECORATOR
@@ -329,6 +362,26 @@ def order_status(reference):
 # ADMIN ROUTES
 # ==========================
 
+# ---------------------------------------------------------
+# ONE-TIME SEED ROUTE — DELETE THIS AFTER FIRST USE
+# ---------------------------------------------------------
+@app.route("/admin/seed")
+def seed_admin():
+    email = "admin@ladeystoree.com"
+    password = "admin123"
+
+    if admins_collection.find_one({"email": email}):
+        return "⚠️ Admin already exists. No action taken.", 200
+
+    hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
+    admins_collection.insert_one({
+        "email": email,
+        "password": hashed,
+        "role": "admin",
+        "created_at": datetime.datetime.utcnow()
+    })
+    return f"✅ Admin created successfully! Email: {email} | Password: {password}<br><strong>DELETE THIS ROUTE NOW.</strong>", 201
+
 
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login_page():
@@ -444,11 +497,10 @@ def edit_product(current_admin, product_id):
         name = request.form.get("name", "").strip()
         price = request.form.get("price")
         category = request.form.get("category", "").strip()
-        length = request.form.get("length")
         stock = request.form.get("stock")
         description = request.form.get("description", "").strip()
 
-        is_valid, error_msg = validate_product_data(name, price, stock, length, category)
+        is_valid, error_msg = validate_product_data(name, price, stock, category)
         if not is_valid:
             flash(error_msg, "error")
             return redirect(url_for("edit_product", product_id=product_id))
@@ -457,7 +509,6 @@ def edit_product(current_admin, product_id):
             "name": name,
             "price": float(price),
             "category": category,
-            "length": int(length) if length else 0,
             "stock": int(stock),
             "description": description
         }
@@ -469,22 +520,13 @@ def edit_product(current_admin, product_id):
                 flash("Invalid file type. Allowed: png, jpg, jpeg, gif, webp.", "error")
                 return redirect(url_for("edit_product", product_id=product_id))
             
-            old_image = product.get("image", "")
-            if old_image and old_image.startswith('/static/uploads/'):
-                old_filename = old_image.split('/')[-1]
-                old_path = os.path.join(app.config['UPLOAD_FOLDER'], old_filename)
-                if os.path.exists(old_path):
-                    try:
-                        os.remove(old_path)
-                    except Exception as e:
-                        print(f"Error deleting old image: {e}")
-            
-            original_filename = secure_filename(file.filename)
-            unique_filename = f"{uuid.uuid4().hex}_{original_filename}"
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-            file.save(file_path)
-            image_url = url_for('static', filename='uploads/' + unique_filename)
-            update_data["image"] = image_url
+            # Upload new image to ImgBB
+            image_url = upload_image(file)
+            if image_url:
+                update_data["image"] = image_url
+            else:
+                flash("Failed to upload image.", "error")
+                return redirect(url_for("edit_product", product_id=product_id))
 
         products_collection.update_one(
             {"_id": obj_id},
@@ -505,9 +547,8 @@ def add_product(current_admin):
     description = request.form.get("description", "").strip()
     stock = request.form.get("stock")
     category = request.form.get("category", "").strip()
-    length = request.form.get("length")
 
-    is_valid, error_msg = validate_product_data(name, price, stock, length, category)
+    is_valid, error_msg = validate_product_data(name, price, stock, category)
     if not is_valid:
         flash(error_msg, "error")
         return redirect(url_for("admin_dashboard"))
@@ -525,11 +566,11 @@ def add_product(current_admin):
         flash("Invalid file type. Allowed: png, jpg, jpeg, gif, webp.", "error")
         return redirect(url_for("admin_dashboard"))
 
-    original_filename = secure_filename(file.filename)
-    unique_filename = f"{uuid.uuid4().hex}_{original_filename}"
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-    file.save(file_path)
-    image_url = url_for('static', filename='uploads/' + unique_filename)
+    # Upload to ImgBB
+    image_url = upload_image(file)
+    if not image_url:
+        flash("Failed to upload image.", "error")
+        return redirect(url_for("admin_dashboard"))
 
     product_data = {
         "name": name,
@@ -538,7 +579,6 @@ def add_product(current_admin):
         "description": description,
         "stock": int(stock),
         "category": category,
-        "length": int(length) if length else 0,
         "created_at": datetime.datetime.utcnow()
     }
     products_collection.insert_one(product_data)
@@ -577,13 +617,6 @@ def update_order(current_admin, reference):
     else:
         flash("Order status updated.", "success")
     return redirect(url_for("admin_dashboard"))
-
-# ==========================
-# SERVE UPLOADED FILES
-# ==========================
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 # ==========================
 # ERROR HANDLERS
