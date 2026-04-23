@@ -1225,7 +1225,7 @@
     <p style="text-align:center; padding:3rem; color:#999;">Your cart is empty</p>
   </div>
   <div class="cart-footer">
-    <div class="cart-total"><span>Subtotal</span> <strong id="cartTotal">$0</strong></div>
+    <div class="cart-total"><span>Subtotal</span> <strong id="cartTotal">₦0</strong></div>
     <button class="btn" id="checkoutBtn">CHECKOUT</button>
     <button class="btn btn-outline" id="clearCartBtn">Clear Cart</button>
   </div>
@@ -1260,7 +1260,7 @@
     <div class="marquee-inner" id="marqueeInner"></div>
   </div>
 
-  <!-- FEATURED PRODUCTS (Essential Selection) - NOW ABOVE CATEGORIES -->
+  <!-- FEATURED PRODUCTS (Essential Selection) -->
   <section class="container section-padding" style="padding-bottom: 2rem;">
     <div class="section-header fade-up">
       <div class="section-eyebrow">Handpicked For You</div>
@@ -1280,7 +1280,7 @@
             <div class="product-info">
               <div class="product-brand">LADEY STOREE</div>
               <div class="product-name">{{ product.name }}</div>
-              <div class="product-price">${{ "%.2f"|format(product.price) }}</div>
+              <div class="product-price">{{ format_currency(product.price) }}</div>
             </div>
           </a>
         </div>
@@ -1294,7 +1294,7 @@
     </div>
   </section>
 
-  <!-- CATEGORY SHOWCASE (Signature Edit) - NOW BELOW PRODUCTS -->
+  <!-- CATEGORY SHOWCASE (Signature Edit) -->
   <section class="container section-padding" style="padding-top: 2rem;">
     <div class="section-header fade-up">
       <div class="section-eyebrow">Curated Collections</div>
@@ -1455,7 +1455,7 @@
       
       if (!cart.length) {
         cartItemsDiv.innerHTML = '<p style="text-align:center; padding:3rem; color:#999;">Your cart is empty</p>';
-        cartTotalSpan.textContent = '$0';
+        cartTotalSpan.textContent = '₦0';
         return;
       }
       
@@ -1463,16 +1463,16 @@
       cart.forEach((item) => {
         total += item.price * item.quantity;
         html += `<div class="cart-item">
-          <div><strong>${item.name}</strong><br><small style="color:#999;">Qty: ${item.quantity} × $${item.price}</small></div>
+          <div><strong>${item.name}</strong><br><small style="color:#999;">Qty: ${item.quantity} × ₦${item.price.toLocaleString()}</small></div>
           <div style="display:flex; align-items:center; gap:12px;">
-            <span style="font-weight:600;">$${item.price * item.quantity}</span>
+            <span style="font-weight:600;">₦${(item.price * item.quantity).toLocaleString()}</span>
             <button class="remove-item" data-id="${item.id}" style="background:none;border:none;cursor:pointer;color:#999;font-size:1.5rem;">×</button>
           </div>
         </div>`;
       });
       
       cartItemsDiv.innerHTML = html;
-      cartTotalSpan.textContent = '$' + total;
+      cartTotalSpan.textContent = '₦' + total.toLocaleString();
       
       document.querySelectorAll('.remove-item').forEach(btn => {
         btn.addEventListener('click', () => {
@@ -1510,7 +1510,7 @@
       else alert('Your cart is empty!');
     });
 
-    const marqueeItems = ['NEW ARRIVALS', 'FREE SHIPPING OVER $150', 'ETHICALLY MADE', 'TIMELESS DESIGN', 'CONSCIOUS LUXURY', 'SLOW FASHION'];
+    const marqueeItems = ['NEW ARRIVALS', 'FREE SHIPPING OVER ₦150,000', 'ETHICALLY MADE', 'TIMELESS DESIGN', 'CONSCIOUS LUXURY', 'SLOW FASHION'];
     const marqueeInner = document.getElementById('marqueeInner');
     const marqueeContent = marqueeItems.map(t => `<span class="marquee-item"><span class="marquee-dot"></span>${t}</span>`).join('');
     marqueeInner.innerHTML = marqueeContent + marqueeContent + marqueeContent;
