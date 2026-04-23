@@ -107,6 +107,7 @@
       cursor: pointer;
       transition: all 0.25s var(--transition-smooth);
       border-radius: 0;
+      text-decoration: none;
     }
 
     .btn:hover {
@@ -418,7 +419,7 @@
     <div class="admin-actions">
       <a href="{{ url_for('admin_register') }}" class="btn btn-small"><i class="ri-user-add-line"></i> New Admin</a>
       <a href="{{ url_for('home') }}" class="btn btn-small"><i class="ri-store-line"></i> View Store</a>
-      <a href="#" class="logout-link" onclick="document.cookie='admin_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'; window.location.href='/'"><i class="ri-logout-box-r-line"></i> Logout</a>
+      <a href="{{ url_for('admin_logout') }}" class="logout-link"><i class="ri-logout-box-r-line"></i> Logout</a>
     </div>
   </div>
 
@@ -510,7 +511,7 @@
             </td>
             <td>{{ product.name }}</td>
             <td>{{ product.category }}</td>
-            <td>₦{{ "{:,.2f}".format(product.price) }}</td>
+            <td>{{ format_currency(product.price) }}</td>
             <td>{{ product.stock }}</td>
             <td>
               <div class="action-links">
@@ -561,7 +562,7 @@
               </code>
             </td>
             <td>{{ order.customerEmail or '—' }}</td>
-            <td>₦{{ "{:,.2f}".format(order.amount|default(0)) }}</td>
+            <td>{{ format_currency(order.amount|default(0)) }}</td>
             <td>
               <span class="status-badge {{ order.status|lower if order.status else '' }}">
                 {{ order.status or 'Pending' }}
