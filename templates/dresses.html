@@ -10,6 +10,7 @@
   
   <!-- Icons -->
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
     /* ---------- SOFT LUXURY RESET & VARIABLES ---------- */
@@ -185,8 +186,8 @@
     @media (min-width: 900px) {
       .desktop-nav {
         display: flex;
-        gap: 2.5rem;
-        font-size: 0.8rem;
+        gap: 2rem;
+        font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 2px;
         font-weight: 500;
@@ -826,18 +827,17 @@
     </ul>
   </nav>
   <div class="sidebar-categories">
-
-        <div class="sidebar-cat-label">Shop by Category</div>
+    <div class="sidebar-cat-label">Shop by Category</div>
     <div class="sidebar-cat-chips">
       <a href="/dresses" class="cat-chip">Dresses</a>
       <a href="/tops" class="cat-chip">Tops</a>
-      <a href="/jeans" class="cat-chip">Jeans/Deims</a>
+      <a href="/jeans" class="cat-chip">Jeans/Denims</a>
       <a href="/jumpsuit" class="cat-chip">Jumpsuit</a>
-      <a href="/momshort" class="cat-chip">Momshort</a>
-      <a href="/bumshort" class="cat-chip">Bumshort</a>
+      <a href="/mom-shorts" class="cat-chip">Mom Shorts</a>
+      <a href="/bum-shorts" class="cat-chip">Bum Shorts</a>
       <a href="/joggers" class="cat-chip">Joggers</a>
-      <a href="/joggersshort" class="cat-chip">Joggers Short</a>
-      <a href="/2pcs" class="cat-chip">2pcs</a>
+      <a href="/jogger-shorts" class="cat-chip">Jogger Shorts</a>
+      <a href="/2-piece-sets" class="cat-chip">2-Piece Sets</a>
       <a href="/combos" class="cat-chip">Combos</a>
       <a href="/bags" class="cat-chip">Bags</a>
       <a href="/others" class="cat-chip">Others</a>
@@ -845,10 +845,10 @@
   </div>
   <div class="sidebar-footer">
     <a href="mailto:hello@ladeystoree.com"><i class="ri-mail-line"></i> hello@ladeystoree.com</a>
+    <a href="tel:+2348033786290"><i class="ri-phone-line"></i> 08033786290</a>
     <div class="sidebar-social">
-      <a href="#" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
-      <a href="#" aria-label="Facebook"><i class="ri-facebook-line"></i></a>
-      <a href="#" aria-label="Pinterest"><i class="ri-pinterest-line"></i></a>
+      <a href="https://instagram.com/ladeystoreeee" target="_blank" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
+      <a href="#" aria-label="Snapchat"><i class="fa-brands fa-snapchat"></i></a>
     </div>
   </div>
 </aside>
@@ -860,12 +860,16 @@
     <a href="/" class="brand-script">Ladey Storee</a>
   </div>
   <nav class="desktop-nav">
-    <a href="/">HOME</a>
-    <a href="/new-arrivals">NEW ARRIVALS</a>
-    <a href="/dresses" class="active">DRESSES</a>
-    <a href="/tops">TOPS</a>
-    <a href="/collection">COLLECTION</a>
-    <a href="/about">ABOUT</a>
+    <a href="/">Home</a>
+    <a href="/new-arrivals">New</a>
+    <a href="/dresses" class="active">Dresses</a>
+    <a href="/tops">Tops</a>
+    <a href="/jeans">Jeans</a>
+    <a href="/jumpsuit">Jumpsuit</a>
+    <a href="/joggers">Joggers</a>
+    <a href="/2-piece-sets">2-Pc Sets</a>
+    <a href="/collection">Shop All</a>
+    <a href="/about">About</a>
   </nav>
   <div class="header-actions">
     <div class="cart-icon" id="cartIcon">
@@ -878,11 +882,20 @@
 <!-- MOBILE CATEGORY NAV -->
 <nav class="mobile-cat-nav">
   <div class="mobile-cat-nav-inner">
-    <a href="/new-arrivals" class="mobile-cat-link">NEW ARRIVALS</a>
+    <a href="/new-arrivals" class="mobile-cat-link">NEW</a>
     <a href="/dresses" class="mobile-cat-link active">DRESSES</a>
     <a href="/tops" class="mobile-cat-link">TOPS</a>
-    <a href="/collection" class="mobile-cat-link">COLLECTION</a>
-    <a href="/about" class="mobile-cat-link">ABOUT</a>
+    <a href="/jeans" class="mobile-cat-link">JEANS</a>
+    <a href="/jumpsuit" class="mobile-cat-link">JUMPSUIT</a>
+    <a href="/mom-shorts" class="mobile-cat-link">MOM SHORTS</a>
+    <a href="/bum-shorts" class="mobile-cat-link">BUM SHORTS</a>
+    <a href="/joggers" class="mobile-cat-link">JOGGERS</a>
+    <a href="/jogger-shorts" class="mobile-cat-link">JOGGER SHORTS</a>
+    <a href="/2-piece-sets" class="mobile-cat-link">2PC SETS</a>
+    <a href="/combos" class="mobile-cat-link">COMBOS</a>
+    <a href="/bags" class="mobile-cat-link">BAGS</a>
+    <a href="/others" class="mobile-cat-link">OTHERS</a>
+    <a href="/collection" class="mobile-cat-link">SHOP ALL</a>
   </div>
 </nav>
 
@@ -947,37 +960,40 @@
       <h4 class="brand-script" style="font-size: 1.4rem; letter-spacing: 1px; text-transform: none;">Ladey Storee</h4>
       <p>Timeless stories, worn beautifully. Modern elegance for the discerning woman.</p>
       <div class="social-links">
-        <a href="#" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
-        <a href="#" aria-label="Facebook"><i class="ri-facebook-line"></i></a>
-        <a href="#" aria-label="Pinterest"><i class="ri-pinterest-line"></i></a>
+        <a href="https://instagram.com/ladeystoreeee" target="_blank" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
+        <a href="#" aria-label="Snapchat"><i class="fa-brands fa-snapchat"></i></a>
       </div>
     </div>
     <div class="footer-col">
       <h4>Shop</h4>
       <ul>
-        <li><a href="/">Home</a></li>
         <li><a href="/new-arrivals">New Arrivals</a></li>
         <li><a href="/dresses">Dresses</a></li>
         <li><a href="/tops">Tops</a></li>
-        <li><a href="/collection">All Collection</a></li>
+        <li><a href="/jeans">Jeans/Denims</a></li>
+        <li><a href="/jumpsuit">Jumpsuit</a></li>
+        <li><a href="/joggers">Joggers</a></li>
       </ul>
     </div>
     <div class="footer-col">
-      <h4>About</h4>
+      <h4>More</h4>
       <ul>
-        <li><a href="/about">Our Story</a></li>
-        <li><a href="#">Sustainability</a></li>
-        <li><a href="#">Careers</a></li>
-        <li><a href="#">Journal</a></li>
+        <li><a href="/mom-shorts">Mom Shorts</a></li>
+        <li><a href="/bum-shorts">Bum Shorts</a></li>
+        <li><a href="/jogger-shorts">Jogger Shorts</a></li>
+        <li><a href="/2-piece-sets">2-Piece Sets</a></li>
+        <li><a href="/combos">Combos</a></li>
+        <li><a href="/bags">Bags</a></li>
+        <li><a href="/others">Others</a></li>
       </ul>
     </div>
     <div class="footer-col">
       <h4>Customer Care</h4>
       <ul>
         <li><a href="/contact">Contact Us</a></li>
-        <li><a href="#">Shipping Info</a></li>
-        <li><a href="#">Returns</a></li>
-        <li><a href="#">FAQ</a></li>
+        <li><a href="https://wa.me/2348033786290" target="_blank">WhatsApp</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/collection">All Collection</a></li>
       </ul>
     </div>
   </div>
@@ -1105,8 +1121,7 @@
     updateCartUI();
 
     document.getElementById('checkoutBtn').addEventListener('click', () => {
-      if(cart.length > 0) alert('Proceeding to checkout...');
-      else alert('Your cart is empty!');
+      window.location.href = '/checkout';
     });
 
     setTimeout(() => document.querySelectorAll('.product-card.fade-up').forEach(card => observer.observe(card)), 100);
