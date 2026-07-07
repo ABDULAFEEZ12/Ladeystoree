@@ -35,8 +35,6 @@ app.secret_key = os.getenv("JWT_SECRET")
 # ==========================
 MONGO_URI = os.getenv("MONGO_URI")
 JWT_SECRET = os.getenv("JWT_SECRET")
-PAYSTACK_SECRET = os.getenv("PAYSTACK_SECRET")
-PAYSTACK_PUBLIC_KEY = os.getenv("PAYSTACK_PUBLIC_KEY")
 IMGBB_API_KEY = os.getenv("IMGBB_API_KEY")
 
 # ==========================
@@ -280,76 +278,61 @@ def product_detail(product_id):
     return render_template("product.html", product=product, related_products=related_products)
 
 # ==========================
-# CHECKOUT & PAYMENT ROUTES
+# CHECKOUT ROUTE (WhatsApp Only - No Paystack)
 # ==========================
 @app.route("/checkout")
 def checkout():
-    return render_template("checkout.html", public_key=PAYSTACK_PUBLIC_KEY)
+    """
+    Simple checkout page.
+    All payment processing happens via WhatsApp.
+    No server-side payment processing needed.
+    """
+    return render_template("checkout.html")
 
-@app.route("/verify-payment", methods=["POST"])
-def verify_payment():
+# ==========================
+# ORDER SAVING (Optional - via WhatsApp confirmation)
+# ==========================
+@app.route("/save-order", methods=["POST"])
+def save_order():
+    """
+    Save order after customer confirms via WhatsApp.
+    This can be triggered manually or via a webhook.
+    """
     data = request.get_json()
     if not data:
         return jsonify({"message": "Invalid request"}), 400
 
-    reference = data.get("reference")
-    order_data = data.get("orderData", {})
+    reference = data.get("reference", f"LADEY_{uuid.uuid4().hex[:8].upper()}")
+    customer_name = data.get("customerName", "Unknown")
+    customer_phone = data.get("customerPhone", "")
+    customer_email = data.get("customerEmail", "")
+    delivery_address = data.get("deliveryAddress", "")
+    items = data.get("items", [])
+    total_amount = data.get("totalAmount", 0)
+    notes = data.get("notes", "")
 
-    if not reference or not order_data:
-        return jsonify({"message": "Missing reference or order data"}), 400
+    order_data = {
+        "paymentReference": reference,
+        "customerName": customer_name,
+        "customerPhone": customer_phone,
+        "customerEmail": customer_email,
+        "deliveryAddress": delivery_address,
+        "items": items,
+        "amount": float(total_amount),
+        "status": "Pending",
+        "notes": notes,
+        "createdAt": datetime.datetime.utcnow()
+    }
 
     try:
-        response = requests.get(
-            f"https://api.paystack.co/transaction/verify/{reference}",
-            headers={"Authorization": f"Bearer {PAYSTACK_SECRET}"}
-        )
-        result = response.json()
-    except Exception as e:
-        return jsonify({"message": "Paystack verification failed", "error": str(e)}), 500
-
-    if result.get("status") and result["data"]["status"] == "success":
-        items = order_data.get("items", [])
-        stock_errors = []
-        for item in items:
-            product_id = item.get("productId")
-            quantity = item.get("quantity", 1)
-            obj_id = safe_objectid(product_id)
-            if not obj_id:
-                stock_errors.append(f"Invalid product ID: {product_id}")
-                continue
-            product = products_collection.find_one({"_id": obj_id})
-            if not product:
-                stock_errors.append(f"Product not found: {product_id}")
-                continue
-            current_stock = product.get("stock", 0)
-            if current_stock < quantity:
-                stock_errors.append(
-                    f"Insufficient stock for {product.get('name', product_id)}. "
-                    f"Available: {current_stock}, requested: {quantity}"
-                )
-        if stock_errors:
-            return jsonify({"message": "Stock validation failed", "errors": stock_errors}), 400
-
-        for item in items:
-            product_id = item.get("productId")
-            quantity = item.get("quantity", 1)
-            obj_id = safe_objectid(product_id)
-            if obj_id:
-                products_collection.update_one(
-                    {"_id": obj_id},
-                    {"$inc": {"stock": -quantity}}
-                )
-
-        order_data["paymentReference"] = reference
-        order_data["status"] = "Paid"
-        order_data["createdAt"] = datetime.datetime.utcnow()
-        order_data["paidAt"] = datetime.datetime.utcnow()
         orders_collection.insert_one(order_data)
+        return jsonify({"message": "Order saved successfully", "reference": reference})
+    except Exception as e:
+        return jsonify({"message": "Failed to save order", "error": str(e)}), 500
 
-        return jsonify({"message": "Payment verified and order saved", "reference": reference})
-
-    return jsonify({"message": "Payment verification failed", "details": result}), 400
-
+# ==========================
+# ORDER STATUS PAGE
+# ==========================
 @app.route("/order/<reference>")
 def order_status(reference):
     order = orders_collection.find_one({"paymentReference": reference})
