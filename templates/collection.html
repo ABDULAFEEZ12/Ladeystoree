@@ -195,9 +195,9 @@
       }
       .desktop-nav ul {
         display: flex;
-        gap: 2.5rem;
+        gap: 2rem;
         list-style: none;
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         text-transform: uppercase;
         letter-spacing: 2px;
         font-weight: 500;
@@ -904,28 +904,6 @@
     .footer-col a:hover { color: white; }
     .footer-col a:hover::after { width: 100%; }
 
-    .newsletter-input {
-      display: flex;
-      border-bottom: 1px solid var(--ash);
-      padding: 6px 0;
-    }
-
-    .newsletter-input input {
-      background: transparent;
-      border: none;
-      color: white;
-      padding: 8px 0;
-      width: 100%;
-      outline: none;
-    }
-
-    .newsletter-input button {
-      background: none;
-      border: none;
-      color: var(--ash);
-      cursor: pointer;
-    }
-
     .social-links { display: flex; gap: 1rem; margin-top: 1rem; }
 
     .social-links a {
@@ -1003,8 +981,16 @@
     <div class="sidebar-cat-chips">
       <a href="/dresses" class="cat-chip">Dresses</a>
       <a href="/tops" class="cat-chip">Tops</a>
-      <a href="/collection?category=Knitwear" class="cat-chip">Knitwear</a>
-      <a href="/collection?category=Outerwear" class="cat-chip">Outerwear</a>
+      <a href="/jeans" class="cat-chip">Jeans/Denims</a>
+      <a href="/jumpsuit" class="cat-chip">Jumpsuit</a>
+      <a href="/mom-shorts" class="cat-chip">Mom Shorts</a>
+      <a href="/bum-shorts" class="cat-chip">Bum Shorts</a>
+      <a href="/joggers" class="cat-chip">Joggers</a>
+      <a href="/jogger-shorts" class="cat-chip">Jogger Shorts</a>
+      <a href="/2-piece-sets" class="cat-chip">2-Piece Sets</a>
+      <a href="/combos" class="cat-chip">Combos</a>
+      <a href="/bags" class="cat-chip">Bags</a>
+      <a href="/others" class="cat-chip">Others</a>
     </div>
   </div>
   <div class="sidebar-footer">
@@ -1027,7 +1013,9 @@
     <h5>Category</h5>
     <div class="filter-option"><input type="checkbox"> <label>Dresses</label></div>
     <div class="filter-option"><input type="checkbox"> <label>Tops</label></div>
-    <div class="filter-option"><input type="checkbox"> <label>Knitwear</label></div>
+    <div class="filter-option"><input type="checkbox"> <label>Jeans</label></div>
+    <div class="filter-option"><input type="checkbox"> <label>Jumpsuit</label></div>
+    <div class="filter-option"><input type="checkbox"> <label>Joggers</label></div>
   </div>
   <div class="filter-group">
     <h5>Price</h5>
@@ -1047,11 +1035,16 @@
   </div>
   <nav class="desktop-nav">
     <ul>
-      <li><a href="/new-arrivals">NEW ARRIVALS</a></li>
-      <li><a href="/dresses">DRESSES</a></li>
-      <li><a href="/tops">TOPS</a></li>
-      <li><a href="/collection" class="active">COLLECTION</a></li>
-      <li><a href="/about">ABOUT</a></li>
+      <li><a href="/">Home</a></li>
+      <li><a href="/new-arrivals">New</a></li>
+      <li><a href="/dresses">Dresses</a></li>
+      <li><a href="/tops">Tops</a></li>
+      <li><a href="/jeans">Jeans</a></li>
+      <li><a href="/jumpsuit">Jumpsuit</a></li>
+      <li><a href="/joggers">Joggers</a></li>
+      <li><a href="/2-piece-sets">2-Pc Sets</a></li>
+      <li><a href="/collection" class="active">Shop All</a></li>
+      <li><a href="/about">About</a></li>
     </ul>
   </nav>
   <div class="header-actions">
@@ -1065,11 +1058,20 @@
 <!-- MOBILE CATEGORY NAV -->
 <nav class="mobile-cat-nav">
   <div class="mobile-cat-nav-inner">
-    <a href="/new-arrivals" class="mobile-cat-link">NEW ARRIVALS</a>
+    <a href="/new-arrivals" class="mobile-cat-link">NEW</a>
     <a href="/dresses" class="mobile-cat-link">DRESSES</a>
     <a href="/tops" class="mobile-cat-link">TOPS</a>
-    <a href="/collection" class="mobile-cat-link active">COLLECTION</a>
-    <a href="/about" class="mobile-cat-link">ABOUT</a>
+    <a href="/jeans" class="mobile-cat-link">JEANS</a>
+    <a href="/jumpsuit" class="mobile-cat-link">JUMPSUIT</a>
+    <a href="/mom-shorts" class="mobile-cat-link">MOM SHORTS</a>
+    <a href="/bum-shorts" class="mobile-cat-link">BUM SHORTS</a>
+    <a href="/joggers" class="mobile-cat-link">JOGGERS</a>
+    <a href="/jogger-shorts" class="mobile-cat-link">JOGGER SHORTS</a>
+    <a href="/2-piece-sets" class="mobile-cat-link">2PC SETS</a>
+    <a href="/combos" class="mobile-cat-link">COMBOS</a>
+    <a href="/bags" class="mobile-cat-link">BAGS</a>
+    <a href="/others" class="mobile-cat-link">OTHERS</a>
+    <a href="/collection" class="mobile-cat-link active">SHOP ALL</a>
   </div>
 </nav>
 
@@ -1170,24 +1172,31 @@
         <li><a href="/new-arrivals">New Arrivals</a></li>
         <li><a href="/dresses">Dresses</a></li>
         <li><a href="/tops">Tops</a></li>
-        <li><a href="/collection">All Collection</a></li>
+        <li><a href="/jeans">Jeans/Denims</a></li>
+        <li><a href="/jumpsuit">Jumpsuit</a></li>
+        <li><a href="/joggers">Joggers</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>More</h4>
+      <ul>
+        <li><a href="/mom-shorts">Mom Shorts</a></li>
+        <li><a href="/bum-shorts">Bum Shorts</a></li>
+        <li><a href="/jogger-shorts">Jogger Shorts</a></li>
+        <li><a href="/2-piece-sets">2-Piece Sets</a></li>
+        <li><a href="/combos">Combos</a></li>
+        <li><a href="/bags">Bags</a></li>
+        <li><a href="/others">Others</a></li>
       </ul>
     </div>
     <div class="footer-col">
       <h4>Customer Care</h4>
       <ul>
-        <li><a href="/contact">Contact</a></li>
+        <li><a href="/contact">Contact Us</a></li>
         <li><a href="https://wa.me/2348033786290" target="_blank">WhatsApp</a></li>
-        <li><a href="#">Shipping</a></li>
-        <li><a href="#">Returns</a></li>
+        <li><a href="/about">About</a></li>
+        <li><a href="/collection">All Collection</a></li>
       </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Newsletter</h4>
-      <div class="newsletter-input">
-        <input type="email" placeholder="Your email">
-        <button><i class="ri-arrow-right-line"></i></button>
-      </div>
     </div>
   </div>
   <div class="footer-bottom">
@@ -1323,8 +1332,7 @@
     updateCartUI();
 
     document.getElementById('checkoutBtn').addEventListener('click', () => {
-      if(cart.length > 0) alert('Proceeding to checkout...');
-      else alert('Your cart is empty!');
+      window.location.href = '/checkout';
     });
 
     setTimeout(() => document.querySelectorAll('.product-card.fade-up').forEach(card => observer.observe(card)), 100);
