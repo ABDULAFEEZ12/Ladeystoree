@@ -2,102 +2,129 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover, shrink-to-fit=no">
 <title>Ladey Storee · Checkout</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;700&family=Montserrat:wght@300;400;600&display=swap" rel="stylesheet">
+<!-- Premium Fonts -->
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<!-- Icons -->
 <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <style>
+  /* ---------- SOFT LUXURY VARIABLES ---------- */
   :root {
-    --gold: #b38728;
-    --gold-gradient: linear-gradient(135deg, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
-    --bg-soft: #1e1814;
-    --white-off: #f4f4f4;
-    --font-heading: 'Playfair Display', serif;
-    --font-body: 'Montserrat', sans-serif;
+    --ash: #B8B8B8;
+    --ash-dark: #9E9E9E;
+    --ash-light: #D4D4D4;
+    --charcoal: #1A1A1A;
+    --charcoal-soft: #0D0D0D;
+    --charcoal-warm: #2A2420;
+    --white-pure: #FFFFFF;
+    --off-white: #FAFAFA;
+    --cream: #F5F5F5;
+    
+    --font-script: 'Dancing Script', cursive;
+    --font-serif: 'Cormorant Garamond', serif;
+    --font-sans: 'Inter', sans-serif;
+    
+    --transition-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --transition-smooth: cubic-bezier(0.23, 1, 0.32, 1);
+    --shadow-soft: 0 12px 30px -8px rgba(0,0,0,0.06);
+    --shadow-card: 0 20px 35px -15px rgba(0,0,0,0.08), 0 0 0 1px rgba(184,184,184,0.1);
   }
 
   * { margin: 0; padding: 0; box-sizing: border-box; }
 
   body {
-    font-family: var(--font-body);
-    background: linear-gradient(to bottom, #0c0c0c, #111);
-    color: var(--white-off);
+    font-family: var(--font-sans);
+    background: linear-gradient(135deg, var(--off-white) 0%, var(--white-pure) 100%);
+    color: var(--charcoal);
     min-height: 100vh;
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 16px;
+    padding: 20px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
   }
 
   .checkout-container {
-    max-width: 1000px;
+    max-width: 950px;
     width: 100%;
-    background: var(--bg-soft);
-    border: 1px solid rgba(179,135,40,0.3);
-    border-radius: 32px;
-    padding: 32px;
-    transition: all 0.2s ease;
+    background: var(--white-pure);
+    border: 1px solid rgba(184,184,184,0.2);
+    border-radius: 28px;
+    padding: 40px;
+    box-shadow: var(--shadow-card);
   }
 
   h1 {
-    font-family: var(--font-heading);
-    font-size: 2.2rem;
+    font-family: var(--font-script);
+    font-size: 2.8rem;
+    font-weight: 600;
     margin-bottom: 5px;
+    letter-spacing: 2px;
+    color: var(--charcoal);
   }
 
-  h1 span { color: var(--gold); }
-
   .subtitle {
-    color: #aaa;
-    margin-bottom: 25px;
-    border-bottom: 1px dashed #333;
-    padding-bottom: 15px;
-    font-size: 0.9rem;
+    color: #777;
+    margin-bottom: 30px;
+    border-bottom: 1px solid rgba(184,184,184,0.2);
+    padding-bottom: 18px;
+    font-size: 0.8rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
   }
 
   .checkout-grid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 40px;
+    gap: 45px;
   }
 
   .section-title {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-family: var(--font-heading);
-    font-size: 1.4rem;
-    color: var(--gold);
+    gap: 12px;
+    font-family: var(--font-serif);
+    font-size: 1.5rem;
+    color: var(--charcoal);
     margin-bottom: 20px;
+    font-weight: 400;
   }
 
-  .form-group { margin-bottom: 20px; }
+  .section-title i { color: var(--ash-dark); }
+
+  .form-group { margin-bottom: 18px; }
 
   label {
     display: block;
-    margin-bottom: 8px;
-    color: #ccc;
-    font-size: 0.85rem;
+    margin-bottom: 6px;
+    color: #555;
+    font-size: 0.75rem;
     font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
   }
 
   input, select, textarea {
     width: 100%;
     padding: 14px 18px;
-    background: #2a241f;
-    border: 1px solid #3a3a3a;
-    border-radius: 60px;
-    color: #fff;
-    font-family: var(--font-body);
-    font-size: 1rem;
+    background: #f9f9f9;
+    border: 1px solid #e0e0e0;
+    border-radius: 40px;
+    color: var(--charcoal);
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
     transition: border 0.2s, box-shadow 0.2s;
   }
 
   select {
     appearance: none;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%23b38728' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='%239E9E9E' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 18px center;
     cursor: pointer;
@@ -105,160 +132,147 @@
 
   input:focus, select:focus, textarea:focus {
     outline: none;
-    border-color: var(--gold);
-    box-shadow: 0 0 0 2px rgba(179,135,40,0.3);
+    border-color: var(--ash-dark);
+    box-shadow: 0 0 0 3px rgba(184,184,184,0.15);
+    background: #fff;
   }
 
   textarea {
     border-radius: 24px;
     resize: vertical;
-    min-height: 90px;
+    min-height: 85px;
   }
 
-  .row {
-    display: flex;
-    gap: 15px;
-  }
-
-  .row .form-group {
-    flex: 1;
-  }
+  .row { display: flex; gap: 15px; }
+  .row .form-group { flex: 1; }
 
   .cart-summary {
-    background: #2a241f;
-    border-radius: 28px;
+    background: #fafafa;
+    border-radius: 24px;
     padding: 24px;
+    border: 1px solid rgba(184,184,184,0.15);
   }
 
   .cart-item {
     display: flex;
     justify-content: space-between;
     padding: 12px 0;
-    border-bottom: 1px solid #3a3a3a;
-    font-size: 0.95rem;
+    border-bottom: 1px solid rgba(0,0,0,0.05);
+    font-size: 0.9rem;
+    color: #555;
   }
 
   .cart-total {
     display: flex;
     justify-content: space-between;
     margin-top: 18px;
-    font-weight: 700;
+    font-weight: 600;
     font-size: 1.1rem;
+    color: var(--charcoal);
   }
 
-  .total-amount { color: var(--gold); font-size: 1.4rem; }
+  .total-amount {
+    color: var(--charcoal);
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: var(--font-serif);
+  }
 
   .btn-pay {
     width: 100%;
     padding: 18px;
-    background: var(--gold-gradient);
+    background: var(--charcoal);
+    color: #fff;
     border: none;
     border-radius: 60px;
-    font-weight: 700;
-    font-size: 1rem;
-    margin-top: 28px;
+    font-weight: 500;
+    font-size: 0.85rem;
+    margin-top: 24px;
     cursor: pointer;
-    transition: transform 0.2s, opacity 0.2s;
-    color: #000;
-    letter-spacing: 0.5px;
+    transition: all 0.2s;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-family: var(--font-sans);
   }
 
+  .btn-pay:hover { background: #000; }
   .btn-pay:active { transform: scale(0.98); }
 
   .bank-box {
     margin-top: 28px;
-    padding: 24px;
-    border-radius: 28px;
-    background: #2a241f;
-    border: 1px dashed var(--gold);
+    padding: 28px;
+    border-radius: 24px;
+    background: #fafafa;
+    border: 1px solid rgba(184,184,184,0.25);
     display: none;
-    backdrop-filter: blur(4px);
   }
 
   .bank-box h3 {
-    color: var(--gold);
-    font-family: var(--font-heading);
+    color: var(--charcoal);
+    font-family: var(--font-serif);
     margin-bottom: 16px;
-    font-size: 1.2rem;
+    font-size: 1.3rem;
+    font-weight: 400;
   }
 
-  .bank-box p {
-    margin: 8px 0;
-    font-size: 0.9rem;
-    line-height: 1.5;
-    word-break: break-word;
-  }
-
-  .bank-box strong { color: #ddd; }
+  .bank-box p { margin: 10px 0; font-size: 0.9rem; color: #555; }
+  .bank-box strong { color: var(--charcoal); font-weight: 600; }
 
   .ref-code {
-    background: #1a1510;
-    border: 1px solid var(--gold);
+    background: #f0f0f0;
+    border: 1px solid #ddd;
     padding: 10px 20px;
     border-radius: 40px;
     display: inline-block;
     font-family: monospace;
     font-size: 1.1rem;
     letter-spacing: 2px;
-    color: var(--gold);
-    margin: 10px 0;
+    color: var(--charcoal);
+    margin: 8px 0;
+    font-weight: 600;
   }
 
   .whatsapp-btn {
     display: block;
     text-align: center;
     margin-top: 20px;
-    padding: 14px;
+    padding: 16px;
     border-radius: 60px;
     background: #25D366;
     color: #fff;
-    font-weight: 700;
+    font-weight: 600;
     text-decoration: none;
     transition: background 0.2s, transform 0.1s;
-    font-size: 1rem;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
   }
 
+  .whatsapp-btn:hover { background: #128C7E; }
   .whatsapp-btn:active { transform: scale(0.97); }
-  .whatsapp-btn:hover { background: #20b859; }
 
   @media (max-width: 768px) {
     body { padding: 12px; }
-    .checkout-container { padding: 24px; border-radius: 28px; }
-    h1 { font-size: 1.8rem; }
-    .subtitle { font-size: 0.8rem; margin-bottom: 20px; }
+    .checkout-container { padding: 28px; border-radius: 24px; }
+    h1 { font-size: 2.2rem; }
+    .subtitle { font-size: 0.7rem; margin-bottom: 22px; }
     .checkout-grid { grid-template-columns: 1fr; gap: 30px; }
-    .section-title { font-size: 1.25rem; margin-bottom: 16px; }
-    .form-group { margin-bottom: 18px; }
-    input, select, textarea { padding: 14px 16px; font-size: 0.95rem; }
-    .cart-summary { padding: 20px; }
-    .cart-item { padding: 10px 0; font-size: 0.9rem; }
-    .cart-total { font-size: 1rem; }
-    .total-amount { font-size: 1.3rem; }
-    .btn-pay { padding: 16px; font-size: 0.95rem; margin-top: 24px; }
-    .bank-box { padding: 20px; margin-top: 24px; }
-    .whatsapp-btn { padding: 14px; }
+    .section-title { font-size: 1.3rem; }
     .row { flex-direction: column; gap: 0; }
+    .btn-pay { padding: 16px; font-size: 0.8rem; }
+    .bank-box { padding: 22px; }
+    .whatsapp-btn { padding: 14px; }
   }
 
   @media (max-width: 480px) {
     body { padding: 10px; }
-    .checkout-container { padding: 18px; border-radius: 24px; }
-    h1 { font-size: 1.6rem; }
-    .subtitle { margin-bottom: 18px; padding-bottom: 12px; }
-    .section-title { font-size: 1.15rem; gap: 8px; }
-    .form-group { margin-bottom: 16px; }
-    label { font-size: 0.8rem; margin-bottom: 5px; }
-    input, select, textarea { padding: 12px 14px; border-radius: 50px; font-size: 0.9rem; }
-    textarea { border-radius: 20px; }
-    .cart-summary { padding: 16px; }
-    .cart-item { padding: 10px 0; font-size: 0.85rem; flex-wrap: wrap; gap: 6px; }
-    .cart-total { margin-top: 14px; }
-    .total-amount { font-size: 1.2rem; }
-    .btn-pay { padding: 14px; font-size: 0.9rem; border-radius: 50px; margin-top: 20px; }
-    .bank-box { padding: 16px; margin-top: 20px; border-radius: 24px; }
-    .bank-box h3 { font-size: 1.1rem; margin-bottom: 12px; }
-    .bank-box p { font-size: 0.8rem; margin: 6px 0; }
-    .whatsapp-btn { padding: 12px; font-size: 0.9rem; margin-top: 16px; }
+    .checkout-container { padding: 20px; border-radius: 20px; }
+    h1 { font-size: 1.8rem; }
+    .cart-summary { padding: 18px; }
+    .total-amount { font-size: 1.3rem; }
+    .bank-box { padding: 18px; }
+    .ref-code { font-size: 0.9rem; padding: 8px 16px; }
+    .whatsapp-btn { padding: 14px; font-size: 0.85rem; }
   }
 </style>
 </head>
@@ -267,26 +281,25 @@
 
 <div class="checkout-container">
 
-  <h1>ladey <span>storee</span></h1>
-  <div class="subtitle">bank transfer · pay before confirmation</div>
+  <h1>Ladey Storee</h1>
+  <div class="subtitle">checkout · bank transfer</div>
 
   <div class="checkout-grid">
 
     <!-- LEFT: CUSTOMER DETAILS -->
     <div>
-
       <div class="section-title">
         <i class="ri-user-line"></i>
-        <span>your details</span>
+        <span>Your Details</span>
       </div>
 
       <div class="form-group">
-        <label>Full name *</label>
+        <label>Full Name *</label>
         <input id="fullName" placeholder="Enter your full name" required>
       </div>
 
       <div class="form-group">
-        <label>Phone *</label>
+        <label>Phone Number *</label>
         <input id="phone" type="tel" placeholder="080xxxxxxxx" required>
       </div>
 
@@ -296,14 +309,13 @@
       </div>
 
       <div class="form-group">
-        <label>Delivery address *</label>
+        <label>Delivery Address *</label>
         <textarea id="address" rows="2" placeholder="Enter your full delivery address" required></textarea>
       </div>
 
-      <!-- PRODUCT OPTIONS -->
       <div class="section-title" style="margin-top: 25px;">
         <i class="ri-settings-line"></i>
-        <span>product options</span>
+        <span>Product Options</span>
       </div>
 
       <div class="row">
@@ -311,70 +323,53 @@
           <label>Size *</label>
           <select id="size" required>
             <option value="">Select Size</option>
-            <option>XS</option>
-            <option>S</option>
-            <option>M</option>
-            <option>L</option>
-            <option>XL</option>
-            <option>XXL</option>
-            <option>3XL</option>
+            <option>XS</option><option>S</option><option>M</option>
+            <option>L</option><option>XL</option><option>XXL</option><option>3XL</option>
           </select>
         </div>
         <div class="form-group">
           <label>Color</label>
           <select id="color">
             <option value="">Select Color</option>
-            <option>Black</option>
-            <option>White</option>
-            <option>Red</option>
-            <option>Blue</option>
-            <option>Green</option>
-            <option>Pink</option>
-            <option>Grey</option>
-            <option>Brown</option>
-            <option>Navy</option>
-            <option>Others</option>
+            <option>Black</option><option>White</option><option>Red</option>
+            <option>Blue</option><option>Green</option><option>Pink</option>
+            <option>Grey</option><option>Brown</option><option>Navy</option><option>Others</option>
           </select>
         </div>
       </div>
-
     </div>
 
     <!-- RIGHT: CART & PAYMENT -->
     <div>
-
       <div class="section-title">
         <i class="ri-shopping-bag-line"></i>
-        <span>your cart</span>
+        <span>Your Cart</span>
       </div>
 
       <div class="cart-summary" id="cartSummary"></div>
 
-      <button class="btn-pay" id="placeOrder">place order</button>
+      <button class="btn-pay" id="placeOrder">Place Order</button>
 
       <div class="bank-box" id="bankBox">
+        <h3>Complete Payment</h3>
 
-        <h3>💰 Complete Payment</h3>
-
-        <p>Send payment to:</p>
+        <p>Please transfer the total amount to:</p>
 
         <p><strong>Bank:</strong> Opay</p>
         <p><strong>Account Name:</strong> Tella Azeezat Olamide</p>
         <p><strong>Account Number:</strong> 8147014346</p>
 
-        <p style="margin-top:12px;"><strong>Your Order Reference:</strong></p>
+        <p style="margin-top:14px;"><strong>Your Order Reference:</strong></p>
         <div class="ref-code" id="orderRef"></div>
 
-        <p style="margin-top:12px;font-size:0.85rem;color:#aaa;">
-          ⚠️ After payment, click below to send your order details &amp; payment screenshot on WhatsApp.
+        <p style="margin-top:14px;font-size:0.8rem;color:#777;">
+          After making the transfer, tap below to send your payment details &amp; order confirmation via WhatsApp.
         </p>
 
         <a id="whatsappLink" class="whatsapp-btn" target="_blank">
-          <i class="ri-whatsapp-line"></i> Confirm Payment on WhatsApp
+          <i class="ri-whatsapp-line" style="margin-right: 8px;"></i> Confirm on WhatsApp
         </a>
-
       </div>
-
     </div>
 
   </div>
@@ -389,7 +384,6 @@
   function renderCart() {
     const cart = getCart();
     const summary = document.getElementById("cartSummary");
-
     let html = "";
     let total = 0;
 
@@ -401,22 +395,10 @@
     cart.forEach(item => {
       const subtotal = item.price * (item.quantity || 1);
       total += subtotal;
-
-      html += `
-        <div class="cart-item">
-          <span>${item.name} (×${item.quantity || 1})</span>
-          <span>₦${subtotal.toLocaleString()}</span>
-        </div>
-      `;
+      html += `<div class="cart-item"><span>${item.name} (×${item.quantity||1})</span><span>₦${subtotal.toLocaleString()}</span></div>`;
     });
 
-    html += `
-      <div class="cart-total">
-        <span>Total</span>
-        <span class="total-amount">₦${total.toLocaleString()}</span>
-      </div>
-    `;
-
+    html += `<div class="cart-total"><span>Total</span><span class="total-amount">₦${total.toLocaleString()}</span></div>`;
     summary.innerHTML = html;
     return total;
   }
@@ -441,26 +423,20 @@
       return;
     }
 
-    // Generate unique order reference
     const reference = "LADEY-" + Math.random().toString(36).substr(2, 6).toUpperCase();
-
-    // Show bank details
     document.getElementById("orderRef").innerText = reference;
     document.getElementById("bankBox").style.display = "block";
 
-    // Build WhatsApp message
     let itemsList = "";
     const cart = getCart();
-
     cart.forEach(item => {
-      itemsList += `• ${item.name} (×${item.quantity || 1}) — ₦${(item.price * (item.quantity || 1)).toLocaleString()}%0A`;
+      itemsList += `• ${item.name} (×${item.quantity||1}) — ₦${(item.price*(item.quantity||1)).toLocaleString()}%0A`;
     });
 
-    const message = `Hello Ladey Storee,%0A%0A📦 Order Ref: ${reference}%0A%0A🛍 Items:%0A${itemsList}%0A💰 Total: ₦${total.toLocaleString()}%0A%0A👤 Customer Details:%0A• Name: ${name}%0A• Phone: ${phone}%0A${email ? '• Email: ' + email + '%0A' : ''}• Address: ${address}%0A%0A📏 Size: ${size}%0A🎨 Color: ${color || 'Not specified'}%0A%0AI have made payment. Please confirm my order.`;
+    const message = `Hello Ladey Storee,%0A%0A📦 Order Ref: ${reference}%0A%0A🛍 Items:%0A${itemsList}%0A💰 Total: ₦${total.toLocaleString()}%0A%0A👤 Customer:%0A• Name: ${name}%0A• Phone: ${phone}%0A${email ? '• Email: '+email+'%0A' : ''}• Address: ${address}%0A%0A📏 Size: ${size}%0A🎨 Color: ${color||'Not specified'}%0A%0AI have made payment. Please confirm my order.`;
 
     document.getElementById("whatsappLink").href = "https://wa.me/2348033786290?text=" + message;
 
-    // Save order to database
     fetch('/save-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -476,11 +452,8 @@
         totalAmount: total,
         status: "Pending"
       })
-    }).then(res => res.json())
-      .then(data => console.log("Order saved:", data))
-      .catch(err => console.log("Order save error:", err));
+    }).catch(err => console.log("Order save error:", err));
 
-    // Scroll to bank details
     document.getElementById("bankBox").scrollIntoView({ behavior: 'smooth' });
   };
 </script>
