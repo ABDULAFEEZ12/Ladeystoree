@@ -206,6 +206,7 @@ def new_arrivals():
         products = []
     return render_template("new-arrivals.html", products=products, category_name="New Arrivals")
 
+# 1. Dresses
 @app.route("/dresses")
 def dresses():
     try:
@@ -215,6 +216,7 @@ def dresses():
         products = []
     return render_template("dresses.html", products=products, category_name="Dresses")
 
+# 2. Tops
 @app.route("/tops")
 def tops():
     try:
@@ -223,6 +225,106 @@ def tops():
         print(f"Database error: {e}")
         products = []
     return render_template("tops.html", products=products, category_name="Tops")
+
+# 3. Jeans/Denims
+@app.route("/jeans")
+def jeans():
+    try:
+        products = convert_cursor(products_collection.find({"category": "Jeans/Denims"}))
+    except Exception as e:
+        print(f"Database error: {e}")
+        products = []
+    return render_template("jeans.html", products=products, category_name="Jeans/Denims")
+
+# 4. Jumpsuit
+@app.route("/jumpsuit")
+def jumpsuit():
+    try:
+        products = convert_cursor(products_collection.find({"category": "Jumpsuit"}))
+    except Exception as e:
+        print(f"Database error: {e}")
+        products = []
+    return render_template("jumpsuit.html", products=products, category_name="Jumpsuit")
+
+# 5. Mom Shorts
+@app.route("/mom-shorts")
+def mom_shorts():
+    try:
+        products = convert_cursor(products_collection.find({"category": "Mom Shorts"}))
+    except Exception as e:
+        print(f"Database error: {e}")
+        products = []
+    return render_template("mom-shorts.html", products=products, category_name="Mom Shorts")
+
+# 6. Bum Shorts
+@app.route("/bum-shorts")
+def bum_shorts():
+    try:
+        products = convert_cursor(products_collection.find({"category": "Bum Shorts"}))
+    except Exception as e:
+        print(f"Database error: {e}")
+        products = []
+    return render_template("bum-shorts.html", products=products, category_name="Bum Shorts")
+
+# 7. Joggers
+@app.route("/joggers")
+def joggers():
+    try:
+        products = convert_cursor(products_collection.find({"category": "Joggers"}))
+    except Exception as e:
+        print(f"Database error: {e}")
+        products = []
+    return render_template("joggers.html", products=products, category_name="Joggers")
+
+# 8. Jogger Shorts
+@app.route("/jogger-shorts")
+def jogger_shorts():
+    try:
+        products = convert_cursor(products_collection.find({"category": "Jogger Shorts"}))
+    except Exception as e:
+        print(f"Database error: {e}")
+        products = []
+    return render_template("jogger-shorts.html", products=products, category_name="Jogger Shorts")
+
+# 9. 2-Piece Sets
+@app.route("/2-piece-sets")
+def two_piece_sets():
+    try:
+        products = convert_cursor(products_collection.find({"category": "2-Piece Sets"}))
+    except Exception as e:
+        print(f"Database error: {e}")
+        products = []
+    return render_template("2-piece-sets.html", products=products, category_name="2-Piece Sets")
+
+# 10. Combos
+@app.route("/combos")
+def combos():
+    try:
+        products = convert_cursor(products_collection.find({"category": "Combos"}))
+    except Exception as e:
+        print(f"Database error: {e}")
+        products = []
+    return render_template("combos.html", products=products, category_name="Combos")
+
+# 11. Bags
+@app.route("/bags")
+def bags():
+    try:
+        products = convert_cursor(products_collection.find({"category": "Bags"}))
+    except Exception as e:
+        print(f"Database error: {e}")
+        products = []
+    return render_template("bags.html", products=products, category_name="Bags")
+
+# 12. Others
+@app.route("/others")
+def others():
+    try:
+        products = convert_cursor(products_collection.find({"category": "Others"}))
+    except Exception as e:
+        print(f"Database error: {e}")
+        products = []
+    return render_template("others.html", products=products, category_name="Others")
 
 @app.route("/about")
 def about():
