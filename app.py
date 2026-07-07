@@ -392,44 +392,40 @@ def checkout():
     return render_template("checkout.html")
 
 # ==========================
-# ORDER SAVING (Optional - via WhatsApp confirmation)
+# ORDER SAVING (With Size & Color)
 # ==========================
 @app.route("/save-order", methods=["POST"])
 def save_order():
     """
-    Save order after customer confirms via WhatsApp.
-    This can be triggered manually or via a webhook.
+    Save order after customer places it.
+    Includes size, color, and all customer details.
     """
     data = request.get_json()
     if not data:
         return jsonify({"message": "Invalid request"}), 400
 
     reference = data.get("reference", f"LADEY_{uuid.uuid4().hex[:8].upper()}")
-    customer_name = data.get("customerName", "Unknown")
-    customer_phone = data.get("customerPhone", "")
-    customer_email = data.get("customerEmail", "")
-    delivery_address = data.get("deliveryAddress", "")
-    items = data.get("items", [])
-    total_amount = data.get("totalAmount", 0)
-    notes = data.get("notes", "")
-
+    
     order_data = {
         "paymentReference": reference,
-        "customerName": customer_name,
-        "customerPhone": customer_phone,
-        "customerEmail": customer_email,
-        "deliveryAddress": delivery_address,
-        "items": items,
-        "amount": float(total_amount),
+        "customerName": data.get("customerName", "Unknown"),
+        "customerPhone": data.get("customerPhone", ""),
+        "customerEmail": data.get("customerEmail", ""),
+        "deliveryAddress": data.get("deliveryAddress", ""),
+        "size": data.get("size", ""),
+        "color": data.get("color", ""),
+        "items": data.get("items", []),
+        "amount": float(data.get("totalAmount", 0)),
         "status": "Pending",
-        "notes": notes,
         "createdAt": datetime.datetime.utcnow()
     }
 
     try:
         orders_collection.insert_one(order_data)
+        print(f"✅ Order saved: {reference}")
         return jsonify({"message": "Order saved successfully", "reference": reference})
     except Exception as e:
+        print(f"❌ Failed to save order: {e}")
         return jsonify({"message": "Failed to save order", "error": str(e)}), 500
 
 # ==========================
