@@ -299,27 +299,36 @@
 
     .status-badge {
       display: inline-block;
-      padding: 4px 10px;
-      font-size: 0.6rem;
+      padding: 6px 14px;
+      font-size: 0.65rem;
       text-transform: uppercase;
       letter-spacing: 1px;
-      background: rgba(184, 184, 184, 0.15);
-      color: var(--ash);
+      border-radius: 20px;
+      font-weight: 600;
+    }
+
+    .status-badge.pending {
+      background: rgba(212, 175, 55, 0.2);
+      color: #D4AF37;
+      border: 1px solid rgba(212, 175, 55, 0.3);
+    }
+
+    .status-badge.paid {
+      background: rgba(76, 175, 80, 0.2);
+      color: #81C784;
+      border: 1px solid rgba(76, 175, 80, 0.3);
+    }
+
+    .status-badge.shipped {
+      background: rgba(33, 150, 243, 0.2);
+      color: #64B5F6;
+      border: 1px solid rgba(33, 150, 243, 0.3);
     }
 
     .status-badge.delivered {
       background: rgba(46, 125, 50, 0.2);
-      color: #81C784;
-    }
-
-    .status-badge.shipped {
-      background: rgba(25, 118, 210, 0.2);
-      color: #64B5F6;
-    }
-
-    .status-badge.paid {
-      background: rgba(184, 135, 40, 0.2);
-      color: #D4AF37;
+      color: #A5D6A7;
+      border: 1px solid rgba(46, 125, 50, 0.3);
     }
 
     .order-update-form {
@@ -396,6 +405,80 @@
 
     .logout-link:hover {
       color: var(--white-pure);
+    }
+
+    /* ---------- ORDER ROW HIGHLIGHTS ---------- */
+    .order-row-pending {
+      border-left: 3px solid #D4AF37;
+    }
+
+    .order-row-paid {
+      border-left: 3px solid #4CAF50;
+    }
+
+    .order-row-shipped {
+      border-left: 3px solid #2196F3;
+    }
+
+    .order-row-delivered {
+      border-left: 3px solid #81C784;
+    }
+
+    .order-detail-row {
+      background: rgba(0,0,0,0.1);
+    }
+
+    .order-detail-row td {
+      padding: 0.5rem 1rem;
+      font-size: 0.75rem;
+      color: var(--ash);
+    }
+
+    .order-detail-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+      margin-top: 0.8rem;
+    }
+
+    .order-detail-grid strong {
+      color: var(--ash);
+    }
+
+    .order-detail-grid ul {
+      list-style: none;
+      margin-top: 4px;
+    }
+
+    .order-detail-grid li {
+      padding: 2px 0;
+      color: var(--off-white);
+    }
+
+    .order-detail-grid p {
+      margin-top: 4px;
+      color: var(--off-white);
+    }
+
+    .new-orders-badge {
+      background: #D4AF37;
+      color: #000;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 0.7rem;
+      font-family: var(--font-sans);
+      margin-left: 10px;
+      letter-spacing: 1px;
+      font-weight: 600;
+    }
+
+    .view-details-summary {
+      cursor: pointer;
+      color: var(--ash-dark);
+    }
+
+    .view-details-summary:hover {
+      color: var(--ash);
     }
   </style>
 </head>
@@ -543,9 +626,15 @@
     </div>
   </div>
 
-  <!-- Orders Section -->
+  <!-- Orders Section (ENHANCED) -->
   <div class="section">
-    <h2><i class="ri-shopping-bag-line" style="margin-right: 10px;"></i> Orders</h2>
+    <h2>
+      <i class="ri-shopping-bag-line" style="margin-right: 10px;"></i> Orders
+      {% set pending_count = orders|selectattr('status', 'equalto', 'Pending')|list|length %}
+      {% if pending_count > 0 %}
+      <span class="new-orders-badge">{{ pending_count }} NEW</span>
+      {% endif %}
+    </h2>
     
     <div class="table-wrapper">
       <table>
@@ -553,6 +642,9 @@
           <tr>
             <th>Reference</th>
             <th>Customer</th>
+            <th>Phone</th>
+            <th>Size</th>
+            <th>Color</th>
             <th>Amount</th>
             <th>Status</th>
             <th>Date</th>
@@ -561,22 +653,36 @@
         </thead>
         <tbody>
           {% for order in orders %}
-          <tr>
+          {% set row_class = '' %}
+          {% if order.status == 'Pending' %}{% set row_class = 'order-row-pending' %}
+          {% elif order.status == 'Paid' %}{% set row_class = 'order-row-paid' %}
+          {% elif order.status == 'Shipped' %}{% set row_class = 'order-row-shipped' %}
+          {% elif order.status == 'Delivered' %}{% set row_class = 'order-row-delivered' %}
+          {% endif %}
+          <tr class="{{ row_class }}">
             <td>
               <code style="background: var(--charcoal); padding: 4px 8px; font-size: 0.7rem;">
-                {{ order.paymentReference[:12] if order.paymentReference else '—' }}...
+                {{ order.paymentReference or '—' }}
               </code>
             </td>
-            <td>{{ order.customerEmail or '—' }}</td>
-            <td>{{ format_currency(order.amount|default(0)) }}</td>
             <td>
-              <span class="status-badge {{ order.status|lower if order.status else '' }}">
+              <strong>{{ order.customerName or '—' }}</strong>
+              {% if order.customerEmail %}
+              <br><small style="color: var(--ash-dark);">{{ order.customerEmail }}</small>
+              {% endif %}
+            </td>
+            <td>{{ order.customerPhone or '—' }}</td>
+            <td>{{ order.size or '—' }}</td>
+            <td>{{ order.color or '—' }}</td>
+            <td><strong>{{ format_currency(order.amount|default(0)) }}</strong></td>
+            <td>
+              <span class="status-badge {{ order.status|lower if order.status else 'pending' }}">
                 {{ order.status or 'Pending' }}
               </span>
             </td>
             <td>
               {% if order.createdAt %}
-                {{ order.createdAt.strftime('%d/%m/%Y') }}
+                {{ order.createdAt.strftime('%d/%m/%y %H:%M') }}
               {% else %}
                 —
               {% endif %}
@@ -593,11 +699,41 @@
               </form>
             </td>
           </tr>
+          <!-- Expandable detail row -->
+          <tr class="order-detail-row">
+            <td colspan="9">
+              <details>
+                <summary class="view-details-summary">📋 View Order Details</summary>
+                <div class="order-detail-grid">
+                  <div>
+                    <strong>🛍 Items:</strong>
+                    {% if order.items %}
+                    <ul>
+                      {% for item in order.items %}
+                      <li>• {{ item.name }} (×{{ item.quantity|default(1) }}) — {{ format_currency(item.price * item.quantity|default(1)) }}</li>
+                      {% endfor %}
+                    </ul>
+                    {% else %}
+                    <p>No items listed</p>
+                    {% endif %}
+                  </div>
+                  <div>
+                    <strong>📍 Delivery Address:</strong>
+                    <p>{{ order.deliveryAddress or 'Not provided' }}</p>
+                    {% if order.notes %}
+                    <strong style="display: block; margin-top: 8px;">📝 Notes:</strong>
+                    <p>{{ order.notes }}</p>
+                    {% endif %}
+                  </div>
+                </div>
+              </details>
+            </td>
+          </tr>
           {% else %}
           <tr>
-            <td colspan="6" style="text-align: center; padding: 3rem; color: var(--ash-dark);">
+            <td colspan="9" style="text-align: center; padding: 3rem; color: var(--ash-dark);">
               <i class="ri-shopping-bag-line" style="font-size: 2rem; display: block; margin-bottom: 1rem;"></i>
-              No orders yet.
+              No orders yet. Orders will appear here when customers place them.
             </td>
           </tr>
           {% endfor %}
