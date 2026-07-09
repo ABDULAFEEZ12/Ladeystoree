@@ -5,10 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover, shrink-to-fit=no">
 <title>Ladey Storee · Checkout</title>
 
-<!-- Premium Fonts -->
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
-
-<!-- Icons -->
 <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -113,10 +110,8 @@
 
   <div class="checkout-grid">
 
-    <!-- LEFT: CUSTOMER DETAILS -->
     <div>
       <div class="section-title"><i class="ri-user-line"></i><span>Your Details</span></div>
-
       <div class="form-group"><label>Full Name *</label><input id="fullName" placeholder="Enter your full name" required></div>
       <div class="form-group"><label>Phone Number *</label><input id="phone" type="tel" placeholder="080xxxxxxxx" required></div>
       <div class="form-group"><label>Email</label><input id="email" type="email" placeholder="your@email.com"></div>
@@ -142,12 +137,10 @@
       </div>
     </div>
 
-    <!-- RIGHT: CART & PAYMENT -->
     <div>
       <div class="section-title"><i class="ri-shopping-bag-line"></i><span>Your Cart</span></div>
       <div class="cart-summary" id="cartSummary"></div>
 
-      <!-- PAY BUTTON -->
       <button class="btn-pay" id="payNow">
         <i class="ri-bank-card-line"></i> Pay Now
         <span class="payment-icons-row">
@@ -165,7 +158,6 @@
 </div>
 
 <script>
-  // ========== CART FUNCTIONS ==========
   function getCart() {
     return JSON.parse(localStorage.getItem("ladeyCart")) || [];
   }
@@ -194,7 +186,6 @@
 
   const total = renderCart();
 
-  // ========== PAY NOW ==========
   document.getElementById("payNow").onclick = function() {
     const name = document.getElementById("fullName").value.trim();
     const phone = document.getElementById("phone").value.trim();
@@ -203,20 +194,17 @@
     const size = document.getElementById("size").value;
     const color = document.getElementById("color").value;
 
-    // Validate
     if (!name || !phone || !address || !size) {
       alert("Please fill all required fields (Name, Phone, Address, Size)");
       return;
     }
     if (total === 0) {
-      alert("Your cart is empty. Please add items before checking out.");
+      alert("Your cart is empty.");
       return;
     }
 
-    // Generate reference
     const reference = "LADEY-" + Math.random().toString(36).substr(2, 6).toUpperCase();
 
-    // Save order to database
     fetch('/save-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -235,7 +223,7 @@
       })
     }).catch(err => console.log("Order save error:", err));
 
-    // Store for confirmation page
+    // ✅ Save to localStorage BEFORE redirect
     localStorage.setItem("ladeyLastOrder", JSON.stringify({
       reference: reference,
       name: name,
@@ -244,14 +232,11 @@
       address: address,
       size: size,
       color: color,
-      cart: getCart(),
       total: total
     }));
 
-    // Redirect to SquadCo
     window.location.href = "https://pay.squadco.com/ladeystoree";
   };
 </script>
-
 </body>
 </html>
