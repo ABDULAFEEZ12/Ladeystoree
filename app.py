@@ -53,11 +53,9 @@ def upload_image(file):
         return "https://via.placeholder.com/400x500/f0f0f0/9E9E9E?text=LADEY"
     
     try:
-        # Read and encode image to base64
         file_data = file.read()
         encoded_image = base64.b64encode(file_data).decode('utf-8')
         
-        # Upload to ImgBB
         url = "https://api.imgbb.com/1/upload"
         payload = {
             "key": IMGBB_API_KEY,
@@ -206,7 +204,6 @@ def new_arrivals():
         products = []
     return render_template("new-arrivals.html", products=products, category_name="New Arrivals")
 
-# 1. Dresses
 @app.route("/dresses")
 def dresses():
     try:
@@ -216,7 +213,6 @@ def dresses():
         products = []
     return render_template("dresses.html", products=products, category_name="Dresses")
 
-# 2. Tops
 @app.route("/tops")
 def tops():
     try:
@@ -226,7 +222,6 @@ def tops():
         products = []
     return render_template("tops.html", products=products, category_name="Tops")
 
-# 3. Jeans/Denims
 @app.route("/jeans")
 def jeans():
     try:
@@ -236,7 +231,6 @@ def jeans():
         products = []
     return render_template("jeans.html", products=products, category_name="Jeans/Denims")
 
-# 4. Jumpsuit
 @app.route("/jumpsuit")
 def jumpsuit():
     try:
@@ -246,7 +240,6 @@ def jumpsuit():
         products = []
     return render_template("jumpsuit.html", products=products, category_name="Jumpsuit")
 
-# 5. Mom Shorts
 @app.route("/mom-shorts")
 def mom_shorts():
     try:
@@ -256,7 +249,6 @@ def mom_shorts():
         products = []
     return render_template("mom-shorts.html", products=products, category_name="Mom Shorts")
 
-# 6. Bum Shorts
 @app.route("/bum-shorts")
 def bum_shorts():
     try:
@@ -266,7 +258,6 @@ def bum_shorts():
         products = []
     return render_template("bum-shorts.html", products=products, category_name="Bum Shorts")
 
-# 7. Joggers
 @app.route("/joggers")
 def joggers():
     try:
@@ -276,7 +267,6 @@ def joggers():
         products = []
     return render_template("joggers.html", products=products, category_name="Joggers")
 
-# 8. Jogger Shorts
 @app.route("/jogger-shorts")
 def jogger_shorts():
     try:
@@ -286,7 +276,6 @@ def jogger_shorts():
         products = []
     return render_template("jogger-shorts.html", products=products, category_name="Jogger Shorts")
 
-# 9. 2-Piece Sets
 @app.route("/2-piece-sets")
 def two_piece_sets():
     try:
@@ -296,7 +285,6 @@ def two_piece_sets():
         products = []
     return render_template("2-piece-sets.html", products=products, category_name="2-Piece Sets")
 
-# 10. Combos
 @app.route("/combos")
 def combos():
     try:
@@ -306,7 +294,6 @@ def combos():
         products = []
     return render_template("combos.html", products=products, category_name="Combos")
 
-# 11. Bags
 @app.route("/bags")
 def bags():
     try:
@@ -316,7 +303,6 @@ def bags():
         products = []
     return render_template("bags.html", products=products, category_name="Bags")
 
-# 12. Others
 @app.route("/others")
 def others():
     try:
@@ -384,11 +370,11 @@ def product_detail(product_id):
 # ==========================
 @app.route("/checkout")
 def checkout():
-    """Checkout page with SquadCo and Bank Transfer options."""
+    """Checkout page with SquadCo payment."""
     return render_template("checkout.html")
 
 # ==========================
-# ORDER CONFIRMED ROUTE (After SquadCo Payment)
+# ORDER CONFIRMED ROUTE
 # ==========================
 @app.route("/order-confirmed")
 def order_confirmed():
@@ -396,14 +382,11 @@ def order_confirmed():
     return render_template("order-confirmed.html")
 
 # ==========================
-# ORDER SAVING (With Size & Color)
+# ORDER SAVING
 # ==========================
 @app.route("/save-order", methods=["POST"])
 def save_order():
-    """
-    Save order after customer places it.
-    Includes size, color, and all customer details.
-    """
+    """Save order after customer places it."""
     data = request.get_json()
     if not data:
         return jsonify({"message": "Invalid request"}), 400
@@ -420,6 +403,7 @@ def save_order():
         "color": data.get("color", ""),
         "items": data.get("items", []),
         "amount": float(data.get("totalAmount", 0)),
+        "paymentMethod": data.get("paymentMethod", "SquadCo"),
         "status": "Pending",
         "createdAt": datetime.datetime.utcnow()
     }
@@ -447,9 +431,6 @@ def order_status(reference):
 # ADMIN ROUTES
 # ==========================
 
-# ---------------------------------------------------------
-# ONE-TIME SEED ROUTE — DELETE THIS AFTER FIRST USE
-# ---------------------------------------------------------
 @app.route("/admin/seed")
 def seed_admin():
     email = "admin@ladeystoree.com"
@@ -522,6 +503,30 @@ def admin_dashboard(current_admin):
         print(f"Database error: {e}")
         products = []
         orders = []
+    
+    # Ensure all orders have required fields to prevent template errors
+    for order in orders:
+        if 'customerName' not in order:
+            order['customerName'] = '—'
+        if 'customerPhone' not in order:
+            order['customerPhone'] = '—'
+        if 'customerEmail' not in order:
+            order['customerEmail'] = ''
+        if 'deliveryAddress' not in order:
+            order['deliveryAddress'] = '—'
+        if 'size' not in order:
+            order['size'] = '—'
+        if 'color' not in order:
+            order['color'] = '—'
+        if 'amount' not in order:
+            order['amount'] = 0
+        if 'status' not in order:
+            order['status'] = 'Pending'
+        if 'items' not in order:
+            order['items'] = []
+        if 'paymentReference' not in order:
+            order['paymentReference'] = '—'
+    
     return render_template("admin.html", products=products, orders=orders)
 
 @app.route("/admin/logout")
@@ -602,10 +607,9 @@ def edit_product(current_admin, product_id):
             file = request.files['image']
             
             if not allowed_file(file.filename):
-                flash("Invalid file type. Allowed: png, jpg, jpeg, gif, webp.", "error")
+                flash("Invalid file type.", "error")
                 return redirect(url_for("edit_product", product_id=product_id))
             
-            # Upload new image to ImgBB
             image_url = upload_image(file)
             if image_url:
                 update_data["image"] = image_url
@@ -648,10 +652,9 @@ def add_product(current_admin):
         return redirect(url_for("admin_dashboard"))
 
     if not allowed_file(file.filename):
-        flash("Invalid file type. Allowed: png, jpg, jpeg, gif, webp.", "error")
+        flash("Invalid file type.", "error")
         return redirect(url_for("admin_dashboard"))
 
-    # Upload to ImgBB
     image_url = upload_image(file)
     if not image_url:
         flash("Failed to upload image.", "error")
