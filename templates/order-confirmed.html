@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover">
+<title>Order Confirmed · Ladey Storee</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
+<style>
+  :root {
+    --ash: #B8B8B8; --ash-dark: #9E9E9E; --charcoal: #1A1A1A;
+    --white-pure: #FFFFFF; --off-white: #FAFAFA;
+    --font-script: 'Dancing Script', cursive; --font-serif: 'Cormorant Garamond', serif; --font-sans: 'Inter', sans-serif;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: var(--font-sans);
+    background: linear-gradient(135deg, var(--off-white) 0%, var(--white-pure) 100%);
+    color: var(--charcoal); min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 20px; text-align: center;
+  }
+  .confirmed-box {
+    background: var(--white-pure); border-radius: 28px; padding: 50px 40px;
+    max-width: 550px; width: 100%;
+    border: 1px solid rgba(184,184,184,0.2);
+    box-shadow: 0 20px 35px -15px rgba(0,0,0,0.08);
+  }
+  .check-icon {
+    font-size: 5rem; color: #4CAF50; margin-bottom: 1rem;
+    animation: bounceIn 0.6s;
+  }
+  @keyframes bounceIn {
+    0% { transform: scale(0); } 50% { transform: scale(1.2); } 100% { transform: scale(1); }
+  }
+  h1 { font-family: var(--font-script); font-size: 3rem; margin-bottom: 10px; color: var(--charcoal); }
+  h2 { font-family: var(--font-serif); font-size: 1.5rem; font-weight: 400; color: #555; margin-bottom: 30px; }
+  .ref-code {
+    background: #f0f0f0; border: 1px solid #ddd;
+    padding: 12px 24px; border-radius: 40px;
+    display: inline-block; font-family: monospace;
+    font-size: 1.2rem; letter-spacing: 2px;
+    color: var(--charcoal); margin: 15px 0; font-weight: 600;
+  }
+  .whatsapp-btn {
+    display: block; text-align: center; margin-top: 25px;
+    padding: 18px; border-radius: 60px;
+    background: #25D366; color: #fff;
+    font-weight: 600; text-decoration: none;
+    font-size: 1rem; letter-spacing: 1px; text-transform: uppercase;
+    transition: background 0.2s;
+  }
+  .whatsapp-btn:hover { background: #128C7E; }
+  .back-link { display: inline-block; margin-top: 20px; color: var(--ash-dark); font-size: 0.85rem; text-decoration: none; }
+  .back-link:hover { color: var(--charcoal); }
+  .order-details { text-align: left; margin: 20px 0; padding: 20px; background: #fafafa; border-radius: 16px; font-size: 0.9rem; color: #555; }
+  .order-details p { margin: 6px 0; }
+  .order-details strong { color: var(--charcoal); }
+</style>
+</head>
+<body>
+
+<div class="confirmed-box">
+  <div class="check-icon">✅</div>
+  <h1>Payment Successful!</h1>
+  <h2>Thank you for your order</h2>
+  
+  <p style="color: #555; margin-bottom: 5px;">Your Order Reference:</p>
+  <div class="ref-code" id="orderRef">Loading...</div>
+  
+  <div class="order-details" id="orderDetails" style="display:none;">
+    <p><strong>Name:</strong> <span id="detailName"></span></p>
+    <p><strong>Phone:</strong> <span id="detailPhone"></span></p>
+    <p><strong>Size:</strong> <span id="detailSize"></span></p>
+    <p><strong>Color:</strong> <span id="detailColor"></span></p>
+    <p><strong>Total:</strong> <span id="detailTotal"></span></p>
+  </div>
+  
+  <p style="margin-top: 20px; color: #777; font-size: 0.9rem;">
+    Click below to confirm your order on WhatsApp.
+  </p>
+  
+  <a id="whatsappLink" class="whatsapp-btn" target="_blank">
+    <i class="ri-whatsapp-line" style="margin-right: 8px;"></i> Confirm on WhatsApp
+  </a>
+  
+  <br>
+  <a href="/" class="back-link">← Continue Shopping</a>
+</div>
+
+<script>
+  // Get order data from localStorage
+  const orderData = JSON.parse(localStorage.getItem("ladeyLastOrder") || "{}");
+  
+  if (orderData.reference) {
+    document.getElementById("orderRef").innerText = orderData.reference;
+    
+    // Show order details
+    const details = document.getElementById("orderDetails");
+    details.style.display = "block";
+    document.getElementById("detailName").innerText = orderData.name || 'N/A';
+    document.getElementById("detailPhone").innerText = orderData.phone || 'N/A';
+    document.getElementById("detailSize").innerText = orderData.size || 'N/A';
+    document.getElementById("detailColor").innerText = orderData.color || 'Not specified';
+    document.getElementById("detailTotal").innerText = '₦' + (orderData.total || 0).toLocaleString();
+    
+    // Build WhatsApp message
+    let itemsList = "";
+    if (orderData.cart) {
+      orderData.cart.forEach(item => {
+        itemsList += `• ${item.name} (×${item.quantity||1}) — ₦${(item.price*(item.quantity||1)).toLocaleString()}%0A`;
+      });
+    }
+    
+    const message = `Hello Ladey Storee,%0A%0A✅ Payment Confirmed via SquadCo%0A%0A📦 Order Ref: ${orderData.reference}%0A%0A🛍 Items:%0A${itemsList}%0A💰 Total: ₦${(orderData.total||0).toLocaleString()}%0A%0A👤 Customer:%0A• Name: ${orderData.name||''}%0A• Phone: ${orderData.phone||''}%0A${orderData.email ? '• Email: '+orderData.email+'%0A' : ''}• Address: ${orderData.address||''}%0A%0A📏 Size: ${orderData.size||''}%0A🎨 Color: ${orderData.color||'Not specified'}%0A%0AThank you!`;
+    
+    document.getElementById("whatsappLink").href = "https://wa.me/2348033786290?text=" + message;
+    
+    // Clear cart after successful payment
+    localStorage.removeItem("ladeyCart");
+    localStorage.removeItem("ladeyLastOrder");
+  } else {
+    document.getElementById("orderRef").innerText = "Order data not found";
+    document.getElementById("whatsappLink").href = "https://wa.me/2348033786290";
+  }
+</script>
+</body>
+</html>
