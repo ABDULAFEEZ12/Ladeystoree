@@ -504,30 +504,32 @@ def admin_dashboard(current_admin):
         products = []
         orders = []
     
-    # Ensure all orders have required fields to prevent template errors
+    # Fix: Rename 'items' to 'orderItems' to avoid conflict with dict.items()
     for order in orders:
-        if 'customerName' not in order:
-            order['customerName'] = '—'
-        if 'customerPhone' not in order:
-            order['customerPhone'] = '—'
-        if 'customerEmail' not in order:
-            order['customerEmail'] = ''
-        if 'deliveryAddress' not in order:
-            order['deliveryAddress'] = '—'
-        if 'size' not in order:
-            order['size'] = '—'
-        if 'color' not in order:
-            order['color'] = '—'
-        if 'amount' not in order:
-            order['amount'] = 0
-        if 'status' not in order:
-            order['status'] = 'Pending'
-        if 'orderItems' not in order:
-            order['items'] = []
-        if 'paymentReference' not in order:
-            order['paymentReference'] = '—'
+        if 'items' in order and isinstance(order['items'], list):
+            order['orderItems'] = order.pop('items')
+        else:
+            order['orderItems'] = []
+        
+        order.setdefault('customerName', '—')
+        order.setdefault('customerPhone', '—')
+        order.setdefault('customerEmail', '')
+        order.setdefault('deliveryAddress', '—')
+        order.setdefault('size', '—')
+        order.setdefault('color', '—')
+        order.setdefault('amount', 0)
+        order.setdefault('status', 'Pending')
+        order.setdefault('paymentReference', '—')
     
     return render_template("admin.html", products=products, orders=orders)
+
+@app.route("/admin/clear-orders")
+@token_required
+def clear_orders(current_admin):
+    """DELETE ALL TEST ORDERS - REMOVE AFTER USE"""
+    result = orders_collection.delete_many({})
+    flash(f"Deleted {result.deleted_count} test orders. Dashboard cleared!", "success")
+    return redirect(url_for("admin_dashboard"))
 
 @app.route("/admin/logout")
 def admin_logout():
