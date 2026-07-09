@@ -380,16 +380,20 @@ def product_detail(product_id):
     return render_template("product.html", product=product, related_products=related_products)
 
 # ==========================
-# CHECKOUT ROUTE (WhatsApp Only - No Paystack)
+# CHECKOUT ROUTE
 # ==========================
 @app.route("/checkout")
 def checkout():
-    """
-    Simple checkout page.
-    All payment processing happens via WhatsApp.
-    No server-side payment processing needed.
-    """
+    """Checkout page with SquadCo and Bank Transfer options."""
     return render_template("checkout.html")
+
+# ==========================
+# ORDER CONFIRMED ROUTE (After SquadCo Payment)
+# ==========================
+@app.route("/order-confirmed")
+def order_confirmed():
+    """Page shown after successful SquadCo payment."""
+    return render_template("order-confirmed.html")
 
 # ==========================
 # ORDER SAVING (With Size & Color)
