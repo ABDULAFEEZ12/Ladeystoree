@@ -5,755 +5,142 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover, shrink-to-fit=no">
   <title>{{ product.name }} | Ladey Storee</title>
 
-  <!-- Premium Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600;700&family=Allura&family=Great+Vibes&display=swap" rel="stylesheet">
-
-  <!-- Icons -->
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    /* ---------- SOFT LUXURY RESET & VARIABLES (Ladey Storee) ---------- */
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    
     :root {
-      --ash: #B8B8B8;
-      --ash-dark: #9E9E9E;
-      --ash-light: #D4D4D4;
-      --charcoal: #1A1A1A;
-      --charcoal-soft: #0D0D0D;
-      --charcoal-warm: #2A2420;
-      --white-pure: #FFFFFF;
-      --off-white: #FAFAFA;
-      --cream: #F5F5F5;
-      
-      --font-script: 'Dancing Script', 'Great Vibes', 'Allura', cursive;
-      --font-serif: 'Cormorant Garamond', serif;
-      --font-sans: 'Inter', sans-serif;
-      
-      --transition-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
-      --transition-smooth: cubic-bezier(0.23, 1, 0.32, 1);
-      --transition-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      
+      --ash: #B8B8B8; --ash-dark: #9E9E9E; --ash-light: #D4D4D4;
+      --charcoal: #1A1A1A; --charcoal-soft: #0D0D0D; --charcoal-warm: #2A2420;
+      --white-pure: #FFFFFF; --off-white: #FAFAFA; --cream: #F5F5F5;
+      --font-script: 'Dancing Script', cursive; --font-serif: 'Cormorant Garamond', serif; --font-sans: 'Inter', sans-serif;
       --shadow-soft: 0 12px 30px -8px rgba(0,0,0,0.06);
       --shadow-lift: 0 25px 40px -15px rgba(0,0,0,0.1);
       --shadow-card: 0 20px 35px -15px rgba(0,0,0,0.08), 0 0 0 1px rgba(184,184,184,0.1);
-      
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     html { scroll-behavior: smooth; }
-    
     body {
       font-family: var(--font-sans);
       background: linear-gradient(135deg, var(--off-white) 0%, var(--white-pure) 100%);
-      color: var(--charcoal);
-      line-height: 1.7;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-      padding-bottom: calc(70px + var(--safe-bottom));
+      color: var(--charcoal); line-height: 1.7; overflow-x: hidden;
+      -webkit-font-smoothing: antialiased; padding-bottom: calc(70px + var(--safe-bottom));
       animation: fadeInPage 0.6s ease-out;
     }
-
-    @keyframes fadeInPage {
-      0% { opacity: 0; transform: translateY(15px); }
-      100% { opacity: 1; transform: translateY(0); }
-    }
-
-    h1, h2, h3, h4, .serif {
-      font-family: var(--font-serif);
-      font-weight: 400;
-      letter-spacing: -0.01em;
-    }
-
+    @keyframes fadeInPage { 0% { opacity: 0; transform: translateY(15px); } 100% { opacity: 1; transform: translateY(0); } }
+    h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 400; }
     a { text-decoration: none; color: inherit; }
     .container { max-width: 1200px; margin: 0 auto; padding: 0 5%; }
-
-    /* ---------- SCRIPT BRAND NAME STYLE ---------- */
-    .brand-script {
-      font-family: var(--font-script);
-      font-weight: 600;
-      font-size: 2.2rem;
-      letter-spacing: 2px;
-      color: var(--charcoal);
-      text-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      position: relative;
-    }
-
-    .brand-logo .brand-script {
-      font-size: 2rem;
-      transition: all 0.4s var(--transition-smooth);
-    }
-
-    .brand-logo .brand-script:hover {
-      color: var(--ash-dark);
-      transform: scale(1.02);
-    }
-
-    /* ---------- OVERLAY ---------- */
-    #overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      display: none;
-      z-index: 1001;
-      cursor: pointer;
-    }
+    .brand-script { font-family: var(--font-script); font-weight: 600; font-size: 2.2rem; letter-spacing: 2px; color: var(--charcoal); }
+    .brand-logo .brand-script { font-size: 2rem; transition: all 0.4s; }
+    #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); display: none; z-index: 1001; cursor: pointer; }
     #overlay.active { display: block; }
-
-    /* ---------- TOP BAR ---------- */
-    #top-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 70px;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(16px) saturate(180%);
-      -webkit-backdrop-filter: blur(16px) saturate(180%);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 5%;
-      z-index: 1002;
-      border-bottom: 1px solid rgba(184,184,184,0.15);
-      box-shadow: 0 2px 20px rgba(0,0,0,0.02);
-    }
-
-    #menu-toggle {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      color: var(--charcoal);
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s var(--transition-bounce);
-    }
-
-    #menu-toggle:active { background: rgba(184,184,184,0.15); }
-
-    .header-actions {
-      display: flex;
-      gap: 0.8rem;
-      align-items: center;
-    }
-
-    .cart-icon {
-      font-size: 1.6rem;
-      position: relative;
-      cursor: pointer;
-      color: var(--charcoal);
-      transition: transform 0.3s var(--transition-bounce);
-      width: 48px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .cart-icon:active { transform: scale(0.95); }
-
-    #cart-count {
-      position: absolute;
-      top: 4px;
-      right: 4px;
-      background: var(--charcoal);
-      color: white;
-      font-size: 0.7rem;
-      font-weight: 600;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    /* Desktop navigation */
+    #top-bar { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(255,255,255,0.92); backdrop-filter: blur(16px); display: flex; align-items: center; justify-content: space-between; padding: 0 5%; z-index: 1002; border-bottom: 1px solid rgba(184,184,184,0.15); }
+    #menu-toggle { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; background: transparent; border: none; cursor: pointer; }
+    .header-actions { display: flex; gap: 0.8rem; align-items: center; }
+    .cart-icon { font-size: 1.6rem; position: relative; cursor: pointer; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
+    #cart-count { position: absolute; top: 4px; right: 4px; background: var(--charcoal); color: white; font-size: 0.7rem; font-weight: 600; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
     .desktop-nav { display: none; }
-    
-    @media (min-width: 900px) {
-      .desktop-nav {
-        display: flex;
-        gap: 2.5rem;
-        font-size: 0.8rem;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        font-weight: 500;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-      }
-      .desktop-nav a {
-        color: var(--charcoal);
-        padding-bottom: 4px;
-        border-bottom: 1.5px solid transparent;
-        transition: border-color 0.3s;
-      }
-      .desktop-nav a:hover { border-bottom-color: var(--ash-dark); }
-      .brand-logo { margin: 0 auto; }
-      #top-bar { justify-content: space-between; }
-    }
-
-    /* ---------- LEFT SLIDE-IN MENU ---------- */
-    #side-menu {
-      position: fixed;
-      top: 0;
-      left: -340px;
-      width: min(320px, 85vw);
-      height: 100vh;
-      background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-right: 1px solid rgba(184,184,184,0.2);
-      transition: left 0.45s var(--transition-smooth);
-      z-index: 1003;
-      overflow-y: auto;
-      padding: 2rem 1.8rem;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 5px 0 30px rgba(0,0,0,0.05);
-    }
-
+    @media (min-width: 900px) { .desktop-nav { display: flex; gap: 2rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; position: absolute; left: 50%; transform: translateX(-50%); } .desktop-nav a { padding-bottom: 4px; border-bottom: 1.5px solid transparent; } .desktop-nav a:hover { border-bottom-color: var(--ash-dark); } }
+    #side-menu { position: fixed; top: 0; left: -340px; width: min(320px, 85vw); height: 100vh; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border-right: 1px solid rgba(184,184,184,0.2); transition: left 0.45s; z-index: 1003; overflow-y: auto; padding: 2rem 1.8rem; display: flex; flex-direction: column; }
     #side-menu.active { left: 0; }
-
-    .sidebar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2.5rem;
-      padding-bottom: 1.2rem;
-      border-bottom: 1px solid rgba(184,184,184,0.2);
-    }
-
-    .sidebar-header .brand-script { font-size: 1.8rem; }
-
-    .close-icon {
-      font-size: 2.2rem;
-      cursor: pointer;
-      color: var(--ash-dark);
-      transition: transform 0.3s var(--transition-bounce);
-      width: 48px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .close-icon:active { transform: rotate(90deg); }
-
+    .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .close-icon { font-size: 2.2rem; cursor: pointer; }
     .sidebar-nav ul { list-style: none; }
-    .sidebar-nav li { margin: 1.3rem 0; }
-    .sidebar-nav a {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      font-size: 1.2rem;
-      font-family: var(--font-serif);
-      color: var(--charcoal);
-      transition: all 0.25s;
-      padding: 10px 0;
-    }
+    .sidebar-nav li { margin: 1rem 0; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 12px; font-size: 1.1rem; font-family: var(--font-serif); padding: 8px 0; }
+    .sidebar-footer { margin-top: auto; padding-top: 1.5rem; border-top: 1px solid rgba(184,184,184,0.15); }
+    .sidebar-footer a { font-size: 0.85rem; display: flex; align-items: center; gap: 10px; color: var(--ash-dark); padding: 6px 0; }
+    .sidebar-social { display: flex; gap: 1.2rem; justify-content: center; padding: 1rem 0; }
+    .sidebar-social a { font-size: 1.4rem; color: var(--ash-dark); }
 
-    .sidebar-nav a i { color: var(--ash-dark); font-size: 1.4rem; width: 28px; }
-    .sidebar-nav a:active { transform: translateX(8px); }
+    .product-detail { padding: 120px 20px 60px; }
+    .product-detail-container { display: flex; flex-wrap: wrap; gap: 50px; background: var(--white-pure); border-radius: 28px; padding: 40px; border: 1px solid rgba(184,184,184,0.2); box-shadow: var(--shadow-card); }
+    .product-gallery { flex: 1; min-width: 280px; }
+    .main-image-container { width: 100%; overflow: hidden; border-radius: 20px; border: 1px solid rgba(184,184,184,0.25); background: #f9f9f9; cursor: crosshair; }
+    .main-image { width: 100%; display: block; transition: transform 0.3s; filter: grayscale(8%); }
+    .main-image-container:hover .main-image { transform: scale(1.15); filter: grayscale(0%); }
+    .thumbnail-list { display: flex; gap: 12px; margin-top: 20px; flex-wrap: wrap; justify-content: center; }
+    .thumbnail { width: 75px; height: 75px; object-fit: cover; border-radius: 12px; border: 1px solid rgba(184,184,184,0.3); cursor: pointer; opacity: 0.7; transition: all 0.2s; }
+    .thumbnail:hover, .thumbnail.active-thumb { border-color: var(--charcoal); opacity: 1; transform: scale(1.05); }
+    .product-info { flex: 1; min-width: 280px; }
+    .product-category { font-size: 0.8rem; text-transform: uppercase; color: var(--ash-dark); letter-spacing: 3px; margin-bottom: 12px; }
+    .product-title { font-size: 2.4rem; font-family: var(--font-serif); margin-bottom: 16px; color: var(--charcoal); display: flex; align-items: center; flex-wrap: wrap; gap: 15px; }
+    .product-badge { background: var(--charcoal); color: #fff; font-size: 0.7rem; font-weight: 600; padding: 6px 14px; border-radius: 40px; letter-spacing: 1px; text-transform: uppercase; }
+    .product-price { font-size: 2rem; font-weight: 600; color: var(--charcoal); margin: 20px 0; border-top: 1px solid rgba(184,184,184,0.3); border-bottom: 1px solid rgba(184,184,184,0.3); padding: 15px 0; width: 100%; }
+    .product-description { margin: 25px 0; color: #555; line-height: 1.8; }
+    .product-description h3 { color: var(--charcoal); margin-bottom: 12px; font-size: 1.4rem; font-family: var(--font-serif); }
+    .quantity-selector { display: flex; align-items: center; gap: 20px; margin: 30px 0; }
+    .quantity-selector label { font-weight: 500; text-transform: uppercase; letter-spacing: 1px; font-size: 0.8rem; }
+    .quantity-input { display: flex; align-items: center; gap: 10px; background: #f5f5f5; border-radius: 60px; padding: 5px 15px; border: 1px solid #e0e0e0; }
+    .qty-btn { background: transparent; border: none; color: var(--charcoal); font-size: 1.5rem; cursor: pointer; width: 32px; text-align: center; }
+    .qty-num { font-size: 1.1rem; min-width: 40px; text-align: center; color: var(--charcoal); font-weight: 500; }
+    .add-to-cart-btn-main {
+      background: var(--charcoal); color: #fff; border: none;
+      padding: 15px 32px; border-radius: 60px;
+      font-weight: 500; font-size: 0.9rem; cursor: pointer;
+      transition: 0.2s; display: inline-flex; align-items: center; gap: 10px;
+      margin-top: 10px; text-transform: uppercase; letter-spacing: 2px;
+    }
+    .add-to-cart-btn-main:hover { background: #000; transform: scale(1.02); box-shadow: var(--shadow-lift); }
+    .trust-section { margin: 30px 0 20px; background: #f9f9f9; padding: 20px 25px; border-radius: 24px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; }
+    .trust-item { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #555; }
+    .trust-item i { color: var(--charcoal); font-size: 1.2rem; }
+    .back-link { display: inline-block; margin-top: 25px; color: var(--charcoal); border-bottom: 1px solid var(--charcoal); padding-bottom: 4px; font-weight: 500; }
+    .back-link:hover { color: #000; }
 
-    .sidebar-footer {
-      margin-top: auto;
-      padding-top: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      border-top: 1px solid rgba(184,184,184,0.15);
-    }
+    .related-section { margin-top: 60px; padding: 40px 20px; background: rgba(250,250,250,0.8); border-radius: 28px; border: 1px solid rgba(184,184,184,0.1); }
+    .related-header { text-align: center; margin-bottom: 2.5rem; }
+    .related-header h2 { font-family: var(--font-serif); font-size: 2rem; color: var(--charcoal); margin-bottom: 10px; }
+    .related-header .gold-line { width: 50px; height: 2px; background: var(--ash-dark); margin: 0 auto; }
+    .related-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 25px; }
+    .related-card { background: white; border-radius: 16px; overflow: hidden; border: 1px solid #eee; transition: all 0.3s; cursor: pointer; }
+    .related-card:hover { transform: translateY(-5px); border-color: var(--ash); box-shadow: var(--shadow-lift); }
+    .related-img { width: 100%; height: 220px; object-fit: cover; }
+    .related-info { padding: 1rem; }
+    .related-category { font-size: 0.7rem; text-transform: uppercase; color: var(--ash-dark); letter-spacing: 2px; }
+    .related-name { font-family: var(--font-serif); font-size: 1rem; margin: 8px 0; }
+    .related-price { font-weight: 600; color: var(--charcoal); font-size: 1rem; }
 
-    .sidebar-footer a {
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--ash-dark);
-      padding: 8px 0;
-    }
-
-    .sidebar-social {
-      display: flex;
-      gap: 1.5rem;
-      justify-content: center;
-      padding: 1.5rem 0 0.5rem;
-    }
-
-    .sidebar-social a {
-      font-size: 1.6rem;
-      color: var(--ash-dark);
-      transition: all 0.3s var(--transition-bounce);
-      padding: 8px;
-    }
-
-    /* ---------- PRODUCT DETAIL SECTION ---------- */
-    .product-detail {
-      padding: 120px 20px 60px;
-    }
-    .product-detail-container {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 50px;
-      background: var(--white-pure);
-      border-radius: 28px;
-      padding: 40px;
-      border: 1px solid rgba(184,184,184,0.2);
-      box-shadow: var(--shadow-card);
-    }
-    .product-gallery {
-      flex: 1;
-      min-width: 280px;
-    }
-    .main-image-container {
-      width: 100%;
-      overflow: hidden;
-      border-radius: 20px;
-      border: 1px solid rgba(184,184,184,0.25);
-      background: #f9f9f9;
-      cursor: crosshair;
-    }
-    .main-image {
-      width: 100%;
-      display: block;
-      transition: transform 0.3s ease;
-      filter: grayscale(8%);
-    }
-    .main-image-container:hover .main-image {
-      transform: scale(1.15);
-      filter: grayscale(0%);
-    }
-    .thumbnail-list {
-      display: flex;
-      gap: 12px;
-      margin-top: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-    .thumbnail {
-      width: 75px;
-      height: 75px;
-      object-fit: cover;
-      border-radius: 12px;
-      border: 1px solid rgba(184,184,184,0.3);
-      cursor: pointer;
-      transition: all 0.2s;
-      opacity: 0.7;
-    }
-    .thumbnail:hover, .thumbnail.active-thumb {
-      border-color: var(--charcoal);
-      opacity: 1;
-      transform: scale(1.05);
-    }
-    .product-info {
-      flex: 1;
-      min-width: 280px;
-    }
-    .product-category {
-      font-size: 0.8rem;
-      text-transform: uppercase;
-      color: var(--ash-dark);
-      letter-spacing: 3px;
-      margin-bottom: 12px;
-      font-weight: 500;
-    }
-    .product-title {
-      font-size: 2.4rem;
-      font-family: var(--font-serif);
-      margin-bottom: 16px;
-      color: var(--charcoal);
-      display: flex;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 15px;
-      font-weight: 400;
-    }
-    .product-badge {
-      display: inline-block;
-      background: var(--charcoal);
-      color: #fff;
-      font-size: 0.7rem;
-      font-weight: 600;
-      padding: 6px 14px;
-      border-radius: 40px;
-      letter-spacing: 1px;
-      text-transform: uppercase;
-      font-family: var(--font-sans);
-    }
-    .product-length {
-      font-size: 1.6rem;
-      font-weight: 500;
-      color: var(--ash-dark);
-      margin-bottom: 12px;
-      font-family: var(--font-serif);
-    }
-    .product-price {
-      font-size: 2rem;
-      font-weight: 600;
-      color: var(--charcoal);
-      margin: 20px 0;
-      border-top: 1px solid rgba(184,184,184,0.3);
-      border-bottom: 1px solid rgba(184,184,184,0.3);
-      padding: 15px 0;
-      display: inline-block;
-      width: 100%;
-      letter-spacing: 0.5px;
-    }
-    .product-description {
-      margin: 25px 0;
-      color: #555;
-      line-height: 1.8;
-    }
-    .product-description h3 {
-      color: var(--charcoal);
-      margin-bottom: 12px;
-      font-size: 1.4rem;
-      font-family: var(--font-serif);
-    }
-    .quantity-selector {
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      margin: 30px 0;
-    }
-    .quantity-selector label {
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      font-size: 0.8rem;
-    }
-    .quantity-input {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: #f5f5f5;
-      border-radius: 60px;
-      padding: 5px 15px;
-      border: 1px solid #e0e0e0;
-    }
-    .qty-btn {
-      background: transparent;
-      border: none;
-      color: var(--charcoal);
-      font-size: 1.5rem;
-      cursor: pointer;
-      width: 32px;
-      text-align: center;
-      font-weight: 500;
-      transition: 0.2s;
-    }
-    .qty-btn:hover { color: #000; transform: scale(1.1); }
-    .qty-num {
-      font-size: 1.1rem;
-      min-width: 40px;
-      text-align: center;
-      color: var(--charcoal);
-      font-weight: 500;
-    }
-    .add-to-cart-btn-main, .whatsapp-btn {
-      background: var(--charcoal);
-      color: #fff;
-      border: none;
-      padding: 15px 32px;
-      border-radius: 60px;
-      font-weight: 500;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 10px;
-      margin-right: 12px;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-    }
-    .add-to-cart-btn-main:hover, .whatsapp-btn:hover {
-      background: #000;
-      transform: scale(1.02);
-      box-shadow: var(--shadow-lift);
-    }
-    .whatsapp-btn {
-      background: #25D366;
-      color: #fff;
-      letter-spacing: 1px;
-    }
-    .whatsapp-btn:hover {
-      background: #128C7E;
-    }
-    .trust-section {
-      margin: 30px 0 20px;
-      background: #f9f9f9;
-      padding: 20px 25px;
-      border-radius: 24px;
-      display: flex;
-      flex-wrap: wrap;
-      gap: 20px;
-      justify-content: space-between;
-    }
-    .trust-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 0.85rem;
-      color: #555;
-    }
-    .trust-item i {
-      color: var(--charcoal);
-      font-size: 1.2rem;
-    }
-    .back-link {
-      display: inline-block;
-      margin-top: 25px;
-      color: var(--charcoal);
-      border-bottom: 1px solid var(--charcoal);
-      padding-bottom: 4px;
-      transition: 0.2s;
-      font-weight: 500;
-    }
-    .back-link:hover {
-      color: #000;
-      border-color: #000;
-    }
-
-    /* ----- RELATED PRODUCTS SECTION ----- */
-    .related-section {
-      margin-top: 60px;
-      padding: 40px 20px;
-      background: rgba(250,250,250,0.8);
-      border-radius: 28px;
-      border: 1px solid rgba(184,184,184,0.1);
-    }
-    .related-header {
-      text-align: center;
-      margin-bottom: 2.5rem;
-    }
-    .related-header h2 {
-      font-family: var(--font-serif);
-      font-size: 2rem;
-      color: var(--charcoal);
-      margin-bottom: 10px;
-      font-weight: 400;
-    }
-    .related-header .gold-line {
-      width: 50px;
-      height: 2px;
-      background: var(--ash-dark);
-      margin: 0 auto;
-    }
-    .related-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 25px;
-    }
-    .related-card {
-      background: white;
-      border-radius: 16px;
-      overflow: hidden;
-      border: 1px solid #eee;
-      transition: all 0.3s;
-      cursor: pointer;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-    }
-    .related-card:hover {
-      transform: translateY(-5px);
-      border-color: var(--ash);
-      box-shadow: var(--shadow-lift);
-    }
-    .related-img {
-      width: 100%;
-      height: 220px;
-      object-fit: cover;
-      filter: grayscale(10%);
-    }
-    .related-info {
-      padding: 1rem;
-    }
-    .related-category {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      color: var(--ash-dark);
-      letter-spacing: 2px;
-    }
-    .related-name {
-      font-family: var(--font-serif);
-      font-size: 1rem;
-      margin: 8px 0;
-      font-weight: 500;
-    }
-    .related-price {
-      font-weight: 600;
-      color: var(--charcoal);
-      font-size: 1rem;
-    }
-    @media (max-width: 600px) {
-      .related-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-      }
-      .related-img {
-        height: 160px;
-      }
-      .related-name {
-        font-size: 0.85rem;
-      }
-    }
-
-    /* modal */
-    .modal-overlay {
-      position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5);
-      display: flex; align-items: center; justify-content: center; z-index: 9999;
-      opacity: 0; pointer-events: none; transition: opacity 0.3s;
-      backdrop-filter: blur(4px);
-    }
+    .modal-overlay { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999; opacity: 0; pointer-events: none; transition: opacity 0.3s; backdrop-filter: blur(4px); }
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
-    .modal-content { background: white; border-radius: 28px; padding: 35px; max-width: 420px; width: 90%; border: 1px solid #eee; transform: scale(0.9); transition: transform 0.3s; box-shadow: 0 30px 50px rgba(0,0,0,0.1); }
+    .modal-content { background: white; border-radius: 28px; padding: 35px; max-width: 420px; width: 90%; transform: scale(0.9); transition: transform 0.3s; }
     .modal-overlay.active .modal-content { transform: scale(1); }
     .modal-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; }
     .modal-header i { font-size: 32px; color: var(--charcoal); }
     .modal-header h3 { color: var(--charcoal); font-family: var(--font-serif); }
     .modal-footer { display: flex; gap: 15px; justify-content: flex-end; margin-top: 25px; }
-    .modal-btn { padding: 12px 28px; border: none; border-radius: 50px; font-weight: 500; cursor: pointer; transition: 0.2s; letter-spacing: 1px; text-transform: uppercase; font-size: 0.8rem; }
+    .modal-btn { padding: 12px 28px; border: none; border-radius: 50px; font-weight: 500; cursor: pointer; text-transform: uppercase; font-size: 0.8rem; }
     .modal-btn-primary { background: var(--charcoal); color: #fff; }
     .modal-btn-secondary { background: #f0f0f0; color: #333; }
 
-    /* ---------- FOOTER ---------- */
-    footer {
-      background: var(--charcoal-soft);
-      color: var(--ash);
-      padding: 4rem 5% 2rem;
-      margin-top: 60px;
-    }
-
-    .footer-grid {
-      display: grid;
-      grid-template-columns: 2fr 1fr 1fr 1.5fr;
-      gap: 3rem;
-      margin-bottom: 3rem;
-      max-width: 1200px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    .footer-col h4 {
-      color: white;
-      font-size: 0.9rem;
-      letter-spacing: 3px;
-      margin-bottom: 1.5rem;
-      text-transform: uppercase;
-      font-weight: 500;
-    }
-
-    .footer-col p { line-height: 1.8; font-size: 0.85rem; color: var(--ash); }
-
+    footer { background: var(--charcoal-soft); color: var(--ash); padding: 4rem 5% 2rem; margin-top: 60px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 3rem; margin-bottom: 3rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
+    .footer-col h4 { color: white; font-size: 0.9rem; letter-spacing: 3px; margin-bottom: 1.5rem; text-transform: uppercase; }
+    .footer-col p { line-height: 1.8; font-size: 0.85rem; }
     .footer-col ul { list-style: none; }
     .footer-col li { margin-bottom: 0.8rem; }
-    .footer-col a {
-      color: var(--ash);
-      font-size: 0.85rem;
-      transition: all 0.3s;
-    }
+    .footer-col a { color: var(--ash); font-size: 0.85rem; transition: 0.3s; }
     .footer-col a:hover { color: white; }
+    .footer-bottom { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; font-size: 0.75rem; max-width: 1200px; margin-left: auto; margin-right: auto; }
 
-    .footer-bottom {
-      margin-top: 3rem;
-      padding-top: 2rem;
-      border-top: 1px solid rgba(255,255,255,0.08);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      font-size: 0.75rem;
-      max-width: 1200px;
-      margin-left: auto;
-      margin-right: auto;
-    }
-
-    @media (max-width: 900px) {
-      .footer-grid { grid-template-columns: repeat(2, 1fr); }
-    }
-    @media (max-width: 550px) {
-      .footer-grid { grid-template-columns: 1fr; }
-      .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; }
-    }
-
-    /* ---------- BOTTOM NAVIGATION ---------- */
-    .bottom-nav {
-      display: flex;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: calc(70px + var(--safe-bottom));
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(184,184,184,0.2);
-      z-index: 1000;
-      padding-bottom: var(--safe-bottom);
-    }
-    
-    .bottom-nav-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: var(--ash-dark);
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: color 0.2s;
-      cursor: pointer;
-    }
-    
+    .bottom-nav { display: flex; position: fixed; bottom: 0; left: 0; right: 0; height: calc(70px + var(--safe-bottom)); background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(184,184,184,0.2); z-index: 1000; padding-bottom: var(--safe-bottom); }
+    .bottom-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--ash-dark); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; }
     .bottom-nav-item i { font-size: 1.6rem; margin-bottom: 4px; }
-    .bottom-nav-item.active { color: var(--charcoal); font-weight: 500; }
-    
-    @media (min-width: 900px) {
-      .bottom-nav { display: none; }
-      body { padding-bottom: 0; }
-    }
-
-    @media (max-width: 768px) {
-      .product-detail-container { padding: 20px; flex-direction: column; }
-      .product-title { font-size: 1.8rem; }
-      .product-price { font-size: 1.5rem; }
-      .add-to-cart-btn-main, .whatsapp-btn {
-        width: 100%;
-        justify-content: center;
-        margin-right: 0;
-        margin-bottom: 10px;
-      }
-      .quantity-selector { justify-content: space-between; flex-wrap: wrap; }
-      .trust-section { flex-direction: column; gap: 15px; }
-      .thumbnail-list { justify-content: center; }
-      .product-detail { padding: 100px 15px 40px; }
-    }
+    @media (min-width: 900px) { .bottom-nav { display: none; } body { padding-bottom: 0; } }
+    @media (max-width: 900px) { .footer-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 768px) { .product-detail-container { padding: 20px; flex-direction: column; } .product-title { font-size: 1.8rem; } .product-price { font-size: 1.5rem; } .add-to-cart-btn-main { width: 100%; justify-content: center; } .trust-section { flex-direction: column; gap: 15px; } .product-detail { padding: 100px 15px 40px; } }
+    @media (max-width: 550px) { .footer-grid { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; } }
   </style>
 </head>
 <body>
 
 <div id="overlay"></div>
 
-<!-- LEFT SLIDE-IN MENU -->
 <aside id="side-menu">
-  <div class="sidebar-header">
-    <div class="brand-logo"><a href="/" class="brand-script">Ladey Storee</a></div>
-    <i class="ri-close-line close-icon" id="closeSidebar"></i>
-  </div>
+  <div class="sidebar-header"><a href="/" class="brand-script">Ladey Storee</a><i class="ri-close-line close-icon" id="closeSidebar"></i></div>
   <nav class="sidebar-nav">
     <ul>
       <li><a href="/"><i class="ri-home-4-line"></i> Home</a></li>
@@ -765,75 +152,42 @@
   </nav>
   <div class="sidebar-footer">
     <a href="mailto:hello@ladeystoree.com"><i class="ri-mail-line"></i> hello@ladeystoree.com</a>
-    <a href="tel:+2348135188720"><i class="ri-phone-line"></i> 08135188720</a>
+    <a href="tel:+2348033786290"><i class="ri-phone-line"></i> 08033786290</a>
     <div class="sidebar-social">
-      <a href="#" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
-      <a href="#" aria-label="Snapchat"><i class="fa-brands fa-snapchat"></i></a>
+      <a href="https://instagram.com/ladeystoreeee" target="_blank"><i class="ri-instagram-line"></i></a>
+      <a href="#"><i class="fa-brands fa-snapchat"></i></a>
     </div>
   </div>
 </aside>
 
-<!-- TOP BAR -->
 <header id="top-bar">
-  <button id="menu-toggle" aria-label="Menu">☰</button>
-  <div class="brand-logo">
-    <a href="/" class="brand-script">Ladey Storee</a>
-  </div>
+  <button id="menu-toggle">☰</button>
+  <a href="/" class="brand-script">Ladey Storee</a>
   <nav class="desktop-nav">
-    <a href="/">Home</a>
-    <a href="/collection">Shop</a>
-    <a href="/about">About</a>
-    <a href="/contact">Contact</a>
+    <a href="/">Home</a><a href="/collection">Shop</a><a href="/about">About</a><a href="/contact">Contact</a>
   </nav>
   <div class="header-actions">
-    <div class="cart-icon" id="cartIcon">
-      <i class="ri-shopping-bag-line"></i>
-      <span id="cart-count">0</span>
-    </div>
+    <div class="cart-icon" id="cartIcon"><i class="ri-shopping-bag-line"></i><span id="cart-count">0</span></div>
   </div>
 </header>
 
-<!-- PRODUCT DETAIL SECTION -->
 <section class="product-detail">
   <div class="container">
     <div class="product-detail-container">
-      <!-- Image Gallery with thumbnails -->
       <div class="product-gallery">
-        <div class="main-image-container">
-          <img class="main-image" id="mainProductImage" src="{{ product.image }}" alt="{{ product.name }}">
-        </div>
+        <div class="main-image-container"><img class="main-image" id="mainProductImage" src="{{ product.image }}" alt="{{ product.name }}"></div>
         <div class="thumbnail-list" id="thumbnailList">
           {% if product.images and product.images|length > 0 %}
-            {% for img in product.images %}
-              <img class="thumbnail" src="{{ img }}" alt="Thumbnail {{ loop.index }}" data-full="{{ img }}">
-            {% endfor %}
-          {% else %}
-            <img class="thumbnail active-thumb" src="{{ product.image }}" alt="Thumbnail" data-full="{{ product.image }}">
-          {% endif %}
+            {% for img in product.images %}<img class="thumbnail" src="{{ img }}" alt="Thumbnail" data-full="{{ img }}">{% endfor %}
+          {% else %}<img class="thumbnail active-thumb" src="{{ product.image }}" alt="Thumbnail" data-full="{{ product.image }}">{% endif %}
         </div>
       </div>
-      <!-- Product Info -->
       <div class="product-info">
-        {% if product.category %}
-        <div class="product-category">{{ product.category }}</div>
-        {% endif %}
-        <div class="product-title">
-          {{ product.name }}
-          {% if product.badge and product.badge|string|trim %}
-          <span class="product-badge">{{ product.badge }}</span>
-          {% endif %}
-        </div>
-        {% if product.length %}
-        <div class="product-length">{{ product.length }}" Length</div>
-        {% endif %}
+        {% if product.category %}<div class="product-category">{{ product.category }}</div>{% endif %}
+        <div class="product-title">{{ product.name }}{% if product.badge %}<span class="product-badge">{{ product.badge }}</span>{% endif %}</div>
         <div class="product-price">₦{{ "{:,.0f}".format(product.price) }}</div>
+        <div class="product-description"><h3>Description</h3><p>{{ product.description or "Timeless elegance crafted with care." }}</p></div>
         
-        <div class="product-description">
-          <h3>Description</h3>
-          <p>{{ product.description or "Timeless elegance crafted with care. Designed for the modern woman who values quality, comfort, and sophisticated style. This piece is made to become a cherished staple in your wardrobe." }}</p>
-        </div>
-        
-        <!-- Quantity & Add to Cart -->
         <div class="quantity-selector">
           <label>Quantity:</label>
           <div class="quantity-input">
@@ -842,44 +196,29 @@
             <button class="qty-btn" id="qtyPlus">+</button>
           </div>
         </div>
-        <button class="add-to-cart-btn-main" id="mainAddToCart">
-          <i class="ri-shopping-bag-line"></i> Add to Cart
-        </button>
-        <button class="whatsapp-btn" id="whatsappOrderBtn">
-          <i class="ri-whatsapp-line"></i> Order via WhatsApp
-        </button>
+        <button class="add-to-cart-btn-main" id="mainAddToCart"><i class="ri-shopping-bag-line"></i> Add to Cart</button>
         
-        <!-- Trust Section -->
         <div class="trust-section">
           <div class="trust-item"><i class="ri-checkbox-circle-fill"></i> Premium Quality</div>
           <div class="trust-item"><i class="ri-checkbox-circle-fill"></i> Ethically Made</div>
           <div class="trust-item"><i class="ri-checkbox-circle-fill"></i> Timeless Design</div>
-          <div class="trust-item"><i class="ri-checkbox-circle-fill"></i> Fast Nationwide Delivery</div>
+          <div class="trust-item"><i class="ri-checkbox-circle-fill"></i> Fast Delivery</div>
         </div>
-        
-        <a href="{{ url_for('shop') }}" class="back-link"><i class="ri-arrow-left-line"></i> Back to shop</a>
+        <a href="/collection" class="back-link"><i class="ri-arrow-left-line"></i> Back to shop</a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- RELATED PRODUCTS SECTION (You May Also Like) -->
 {% if related_products and related_products|length > 0 %}
 <div class="container">
   <div class="related-section">
-    <div class="related-header">
-      <h2>You May Also Like</h2>
-      <div class="gold-line"></div>
-    </div>
+    <div class="related-header"><h2>You May Also Like</h2><div class="gold-line"></div></div>
     <div class="related-grid">
       {% for rel in related_products %}
-      <a href="{{ url_for('product_detail', product_id=rel._id) }}" class="related-card">
+      <a href="/product/{{ rel._id }}" class="related-card">
         <img class="related-img" src="{{ rel.image }}" alt="{{ rel.name }}">
-        <div class="related-info">
-          <div class="related-category">{{ rel.category if rel.category else 'Ladey Storee' }}</div>
-          <div class="related-name">{{ rel.name }}</div>
-          <div class="related-price">₦{{ "{:,.0f}".format(rel.price) }}</div>
-        </div>
+        <div class="related-info"><div class="related-category">{{ rel.category or 'Ladey Storee' }}</div><div class="related-name">{{ rel.name }}</div><div class="related-price">₦{{ "{:,.0f}".format(rel.price) }}</div></div>
       </a>
       {% endfor %}
     </div>
@@ -887,54 +226,18 @@
 </div>
 {% endif %}
 
-<!-- modal container -->
 <div id="modalContainer"></div>
 
-<!-- FOOTER -->
 <footer>
   <div class="footer-grid">
-    <div class="footer-col">
-      <h4 class="brand-script" style="font-size: 1.4rem; letter-spacing: 1px; text-transform: none; color: white;">Ladey Storee</h4>
-      <p>Timeless stories, worn beautifully. Modern elegance for the discerning woman.</p>
-    </div>
-    <div class="footer-col">
-      <h4>Quick Links</h4>
-      <ul>
-        <li><a href="/">Home</a></li>
-        <li><a href="/collection">Collection</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/contact">Contact</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Connect</h4>
-      <ul>
-        <li><a href="tel:+2348135188720"><i class="ri-phone-line"></i> 08033786290</a></li>
-        <li><a href="https://wa.me/2348135188720" target="_blank"><i class="ri-whatsapp-line"></i> WhatsApp</a></li>
-        <li><a href="#"><i class="fa-brands fa-snapchat"></i> rhodes_ladey</a></li>
-        <li><a href="#"><i class="ri-instagram-line"></i> @ladeystoree</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Customer Care</h4>
-      <ul>
-        <li><a href="/contact">Contact Us</a></li>
-        <li><a href="#">Shipping Info</a></li>
-        <li><a href="#">Returns</a></li>
-        <li><a href="#">FAQ</a></li>
-      </ul>
-    </div>
+    <div class="footer-col"><h4 class="brand-script" style="font-size:1.4rem;text-transform:none;color:white;">Ladey Storee</h4><p>Timeless stories, worn beautifully.</p></div>
+    <div class="footer-col"><h4>Quick Links</h4><ul><li><a href="/">Home</a></li><li><a href="/collection">Collection</a></li><li><a href="/about">About</a></li><li><a href="/contact">Contact</a></li></ul></div>
+    <div class="footer-col"><h4>Connect</h4><ul><li><a href="tel:+2348033786290"><i class="ri-phone-line"></i> 08033786290</a></li><li><a href="https://instagram.com/ladeystoreeee" target="_blank"><i class="ri-instagram-line"></i> @ladeystoreeee</a></li><li><a href="#"><i class="fa-brands fa-snapchat"></i> rhodes_ladey</a></li></ul></div>
+    <div class="footer-col"><h4>Customer Care</h4><ul><li><a href="/contact">Contact Us</a></li><li><a href="#">Shipping Info</a></li><li><a href="#">Returns</a></li><li><a href="#">FAQ</a></li></ul></div>
   </div>
-  <div class="footer-bottom">
-    <span>© 2026 Ladey Storee — timeless elegance, crafted with intention.</span>
-    <div class="payment-icons">
-      <i class="ri-visa-line"></i>
-      <i class="ri-mastercard-line"></i>
-    </div>
-  </div>
+  <div class="footer-bottom"><span>© 2026 Ladey Storee</span><div><i class="ri-visa-line"></i> <i class="ri-mastercard-line"></i></div></div>
 </footer>
 
-<!-- BOTTOM NAVIGATION -->
 <nav class="bottom-nav">
   <a href="/" class="bottom-nav-item"><i class="ri-home-4-line"></i><span>Home</span></a>
   <a href="/collection" class="bottom-nav-item"><i class="ri-store-line"></i><span>Shop</span></a>
@@ -944,7 +247,6 @@
 
 <script>
   (function() {
-    // SIDE MENU TOGGLE
     const menuToggle = document.getElementById('menu-toggle');
     const sideMenu = document.getElementById('side-menu');
     const overlay = document.getElementById('overlay');
@@ -960,12 +262,12 @@
     if(bottomMenuToggle) bottomMenuToggle.addEventListener('click', openMenu);
     document.querySelectorAll('.sidebar-nav a').forEach(link => link.addEventListener('click', closeMenu));
     
-    // CART LOGIC (localStorage key: ladeyCart)
+    // ========== CART LOGIC ==========
     let cart = JSON.parse(localStorage.getItem('ladeyCart')) || [];
     
     function updateCartCount() {
       const countEl = document.getElementById('cart-count');
-      if (countEl) countEl.innerText = cart.reduce((sum, item) => sum + item.quantity, 0);
+      if (countEl) countEl.innerText = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
     }
     
     function addToCart(productId, productName, productPrice, quantity) {
@@ -977,10 +279,10 @@
       }
       localStorage.setItem('ladeyCart', JSON.stringify(cart));
       updateCartCount();
-      showModal('success', '✨ Added to Bag', `${quantity} × ${productName} added to your cart.`, null);
+      showModal('success', 'Added to Bag', `${quantity} × ${productName} added to your cart.`);
     }
     
-    function showModal(type, title, msg, cb) {
+    function showModal(type, title, msg) {
       const cont = document.getElementById('modalContainer');
       if (!cont) return;
       const icons = {success:'ri-checkbox-circle-fill', error:'ri-error-warning-fill'};
@@ -989,23 +291,18 @@
           <div class="modal-content">
             <div class="modal-header"><i class="${icons[type]||'ri-information-fill'}"></i><h3>${title}</h3></div>
             <div class="modal-body">${msg}</div>
-            <div class="modal-footer"><button class="modal-btn modal-btn-primary" onclick="closeModal()">OK</button></div>
+            <div class="modal-footer">
+              <button class="modal-btn modal-btn-primary" onclick="document.getElementById('modalContainer').innerHTML='';">OK</button>
+            </div>
           </div>
         </div>
       `;
     }
-    window.closeModal = function() {
-      const cont = document.getElementById('modalContainer');
-      if (cont) cont.innerHTML = '';
-    };
     
-    const product = {
-      id: {{ product.id|tojson }},
-      name: {{ product.name|tojson }},
-      price: {{ product.price|tojson }},
-      image: {{ product.image|tojson }},
-      badge: {{ product.badge|tojson if product.badge else ''|tojson }}
-    };
+    // Product data
+    const productId = "{{ product._id }}";
+    const productName = "{{ product.name }}";
+    const productPrice = {{ product.price }};
     
     let qty = 1;
     const qtyValueSpan = document.getElementById('qtyValue');
@@ -1014,61 +311,47 @@
     const addToCartBtn = document.getElementById('mainAddToCart');
     
     if (qtyMinus && qtyPlus && qtyValueSpan) {
-      qtyMinus.addEventListener('click', () => {
-        if (qty > 1) { qty--; qtyValueSpan.innerText = qty; }
-      });
-      qtyPlus.addEventListener('click', () => {
-        qty++; qtyValueSpan.innerText = qty;
-      });
+      qtyMinus.addEventListener('click', () => { if (qty > 1) { qty--; qtyValueSpan.innerText = qty; } });
+      qtyPlus.addEventListener('click', () => { qty++; qtyValueSpan.innerText = qty; });
     }
     
     if (addToCartBtn) {
       addToCartBtn.addEventListener('click', () => {
-        addToCart(product.id, product.name, product.price, qty);
-      });
-    }
-    
-    const whatsappBtn = document.getElementById('whatsappOrderBtn');
-    if (whatsappBtn) {
-      whatsappBtn.addEventListener('click', () => {
-        const message = `Hello Ladey Storee, I want to order ${product.name}%0APrice: ₦${product.price.toLocaleString()}`;
-        const url = `https://wa.me/2348135188720?text=${message}`;
-        window.open(url, '_blank');
+        addToCart(productId, productName, productPrice, qty);
       });
     }
     
     updateCartCount();
     
-    // IMAGE GALLERY
+    // Image Gallery
     const mainImage = document.getElementById('mainProductImage');
     const thumbnails = document.querySelectorAll('.thumbnail');
-    function updateMainImage(src) {
-      if (mainImage) mainImage.src = src;
-      thumbnails.forEach(thumb => {
-        if (thumb.getAttribute('data-full') === src || thumb.src === src) {
-          thumb.classList.add('active-thumb');
-        } else {
-          thumb.classList.remove('active-thumb');
-        }
-      });
-    }
     thumbnails.forEach(thumb => {
-      thumb.addEventListener('click', function(e) {
+      thumb.addEventListener('click', function() {
         const fullSrc = this.getAttribute('data-full') || this.src;
-        if (fullSrc) updateMainImage(fullSrc);
+        if (mainImage && fullSrc) mainImage.src = fullSrc;
+        thumbnails.forEach(t => t.classList.remove('active-thumb'));
+        this.classList.add('active-thumb');
       });
     });
     if (thumbnails.length === 1) thumbnails[0].classList.add('active-thumb');
 
-    // Bottom cart toggle
+    // Bottom cart toggle - redirect to checkout
     const bottomCartToggle = document.getElementById('bottomCartToggle');
     if(bottomCartToggle) {
       bottomCartToggle.addEventListener('click', () => {
-        alert('Cart feature available on shop page.');
+        window.location.href = '/checkout';
+      });
+    }
+
+    // Top cart icon - redirect to checkout
+    const cartIcon = document.getElementById('cartIcon');
+    if(cartIcon) {
+      cartIcon.addEventListener('click', () => {
+        window.location.href = '/checkout';
       });
     }
   })();
 </script>
-
 </body>
 </html>
