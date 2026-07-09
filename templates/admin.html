@@ -34,6 +34,8 @@
     .btn-primary { background: var(--ash); color: var(--charcoal); border-color: var(--ash); }
     .btn-primary:hover { background: var(--white-pure); border-color: var(--white-pure); }
     .btn-small { padding: 6px 14px; font-size: 0.65rem; }
+    .btn-danger-sm { padding: 6px 10px; font-size: 0.6rem; background: transparent; border: 1px solid #E8A0A0; color: #E8A0A0; cursor: pointer; transition: all 0.2s; }
+    .btn-danger-sm:hover { background: #8B4E4E; color: #fff; border-color: #8B4E4E; }
     .section { background: var(--charcoal-light); border: 1px solid var(--border-light); padding: 2rem; margin-bottom: 2rem; }
     .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
     .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
@@ -63,7 +65,7 @@
     .status-badge.paid { background: rgba(76, 175, 80, 0.2); color: #81C784; border: 1px solid rgba(76, 175, 80, 0.3); }
     .status-badge.shipped { background: rgba(33, 150, 243, 0.2); color: #64B5F6; border: 1px solid rgba(33, 150, 243, 0.3); }
     .status-badge.delivered { background: rgba(46, 125, 50, 0.2); color: #A5D6A7; border: 1px solid rgba(46, 125, 50, 0.3); }
-    .order-update-form { display: flex; gap: 8px; align-items: center; }
+    .order-update-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
     .order-update-form select { width: auto; padding: 8px 12px; font-size: 0.7rem; }
     .flash-messages { margin-bottom: 1.5rem; }
     .flash { padding: 14px 20px; margin-bottom: 0.5rem; background: var(--charcoal-light); border-left: 3px solid var(--ash); color: var(--off-white); font-size: 0.8rem; }
@@ -163,12 +165,12 @@
     </div>
   </div>
 
-  <!-- Orders Section (FIXED) -->
+  <!-- Orders Section -->
   <div class="section">
     <h2><i class="ri-shopping-bag-line" style="margin-right: 10px;"></i> Orders</h2>
     <div class="table-wrapper">
       <table>
-        <thead><tr><th>Reference</th><th>Customer</th><th>Phone</th><th>Size</th><th>Amount</th><th>Status</th><th>Date</th><th>Update</th></tr></thead>
+        <thead><tr><th>Reference</th><th>Customer</th><th>Phone</th><th>Size</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
         <tbody>
           {% for order in orders %}
           <tr style="{% if order.status == 'Pending' %}border-left:3px solid #D4AF37;{% elif order.status == 'Paid' %}border-left:3px solid #4CAF50;{% elif order.status == 'Shipped' %}border-left:3px solid #2196F3;{% elif order.status == 'Delivered' %}border-left:3px solid #81C784;{% endif %}">
@@ -180,15 +182,20 @@
             <td><span class="status-badge {{ order.status|lower if order.status else 'pending' }}">{{ order.status or 'Pending' }}</span></td>
             <td>{% if order.createdAt %}{{ order.createdAt.strftime('%d/%m/%y %H:%M') }}{% else %}—{% endif %}</td>
             <td>
-              <form method="POST" action="{{ url_for('update_order', reference=order.paymentReference) }}" style="display:flex;gap:8px;align-items:center;">
-                <select name="status" style="width:auto;padding:8px 12px;font-size:0.7rem;">
-                  <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
-                  <option value="Paid" {% if order.status == 'Paid' %}selected{% endif %}>Paid</option>
-                  <option value="Shipped" {% if order.status == 'Shipped' %}selected{% endif %}>Shipped</option>
-                  <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
-                </select>
-                <button type="submit" class="btn btn-small">Update</button>
-              </form>
+              <div class="order-update-form">
+                <form method="POST" action="{{ url_for('update_order', reference=order.paymentReference) }}" style="display:flex;gap:6px;align-items:center;">
+                  <select name="status" style="width:auto;padding:8px 12px;font-size:0.7rem;">
+                    <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
+                    <option value="Paid" {% if order.status == 'Paid' %}selected{% endif %}>Paid</option>
+                    <option value="Shipped" {% if order.status == 'Shipped' %}selected{% endif %}>Shipped</option>
+                    <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+                  </select>
+                  <button type="submit" class="btn btn-small">Update</button>
+                </form>
+                <a href="#" class="btn-danger-sm" onclick="if(confirm('Delete this order permanently?')){window.location.href='{{ url_for('delete_order', reference=order.paymentReference) }}';}return false;" title="Delete Order">
+                  <i class="ri-delete-bin-line"></i>
+                </a>
+              </div>
             </td>
           </tr>
           <tr style="background:rgba(0,0,0,0.1);">
