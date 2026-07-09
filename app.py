@@ -708,6 +708,17 @@ def update_order(current_admin, reference):
         flash("Order status updated.", "success")
     return redirect(url_for("admin_dashboard"))
 
+@app.route("/admin/delete-order/<reference>")
+@token_required
+def delete_order(current_admin, reference):
+    """Delete a single order by reference."""
+    result = orders_collection.delete_one({"paymentReference": reference})
+    if result.deleted_count == 0:
+        flash("Order not found.", "error")
+    else:
+        flash("Order deleted successfully.", "success")
+    return redirect(url_for("admin_dashboard"))
+
 # ==========================
 # ERROR HANDLERS
 # ==========================
