@@ -205,25 +205,8 @@
 
     const reference = "LADEY-" + Math.random().toString(36).substr(2, 6).toUpperCase();
 
-    fetch('/save-order', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        reference: reference,
-        customerName: name,
-        customerPhone: phone,
-        customerEmail: email,
-        deliveryAddress: address,
-        size: size,
-        color: color,
-        items: getCart(),
-        totalAmount: total,
-        paymentMethod: "SquadCo",
-        status: "Pending"
-      })
-    }).catch(err => console.log("Order save error:", err));
-
-    // ✅ Save to localStorage BEFORE redirect
+    // ✅ Save to localStorage ONLY - NOT to database yet
+    // Database save happens on order-confirmed page AFTER payment
     localStorage.setItem("ladeyLastOrder", JSON.stringify({
       reference: reference,
       name: name,
@@ -232,6 +215,7 @@
       address: address,
       size: size,
       color: color,
+      cart: getCart(),
       total: total
     }));
 
