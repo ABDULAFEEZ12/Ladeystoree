@@ -522,7 +522,7 @@ def admin_dashboard(current_admin):
             order['amount'] = 0
         if 'status' not in order:
             order['status'] = 'Pending'
-        if 'items' not in order:
+        if 'orderItems' not in order:
             order['items'] = []
         if 'paymentReference' not in order:
             order['paymentReference'] = '—'
