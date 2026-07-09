@@ -196,7 +196,7 @@
               <details>
                 <summary style="cursor:pointer;color:var(--ash-dark);">📋 View Order Details</summary>
                 <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:0.8rem;">
-                  <div><strong>🛍 Items:</strong>{% if order.items %}<ul style="list-style:none;margin-top:4px;">{% for item in order.items %}<li style="padding:2px 0;">• {{ item.name }} (×{{ item.quantity|default(1) }})</li>{% endfor %}</ul>{% else %}<p>No items listed</p>{% endif %}</div>
+                  <div><strong>🛍 Items:</strong>{% if order.orderItems %}<ul style="list-style:none;margin-top:4px;">{% for item in order.orderItems %}<li style="padding:2px 0;">• {{ item.name }} (×{{ item.quantity|default(1) }})</li>{% endfor %}</ul>{% else %}<p>No items listed</p>{% endif %}</div>
                   <div><strong>📍 Address:</strong><p style="margin-top:4px;">{{ order.deliveryAddress or 'Not provided' }}</p><strong>🎨 Color:</strong><p>{{ order.color or 'Not specified' }}</p></div>
                 </div>
               </details>
