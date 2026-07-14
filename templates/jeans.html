@@ -7,7 +7,239 @@
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover, shrink-to-fit=no">
+  <title>Jeans/Denims · Ladey Storee</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --ash: #B8B8B8; --ash-dark: #9E9E9E; --charcoal: #1A1A1A; --charcoal-soft: #0D0D0D;
+      --white-pure: #FFFFFF; --off-white: #FAFAFA; --cream: #F5F5F5;
+      --font-script: 'Dancing Script', cursive; --font-serif: 'Cormorant Garamond', serif; --font-sans: 'Inter', sans-serif;
+      --safe-bottom: env(safe-area-inset-bottom, 0px);
+    }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-sans); background: linear-gradient(135deg, var(--off-white) 0%, var(--white-pure) 100%); color: var(--charcoal); line-height: 1.7; overflow-x: hidden; -webkit-font-smoothing: antialiased; padding-bottom: calc(70px + var(--safe-bottom)); }
+    h1, h2, h3 { font-family: var(--font-serif); font-weight: 400; }
+    a { text-decoration: none; color: inherit; }
+    .container { max-width: 1400px; margin: 0 auto; padding: 0 5%; }
+    .brand-script { font-family: var(--font-script); font-weight: 600; font-size: 2rem; letter-spacing: 2px; color: var(--charcoal); }
+    #top-bar { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(255,255,255,0.92); backdrop-filter: blur(16px); display: flex; align-items: center; justify-content: space-between; padding: 0 5%; z-index: 1002; border-bottom: 1px solid rgba(184,184,184,0.15); }
+    #menu-toggle { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; background: transparent; border: none; cursor: pointer; }
+    .header-actions { display: flex; gap: 0.8rem; align-items: center; }
+    .cart-icon { font-size: 1.6rem; position: relative; cursor: pointer; }
+    #cart-count { position: absolute; top: 4px; right: 4px; background: var(--charcoal); color: white; font-size: 0.7rem; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
+    .desktop-nav { display: none; }
+    @media (min-width: 900px) { .desktop-nav { display: flex; gap: 2rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; position: absolute; left: 50%; transform: translateX(-50%); } .desktop-nav a { padding-bottom: 4px; border-bottom: 1.5px solid transparent; } .desktop-nav a:hover { border-bottom-color: var(--ash-dark); } .desktop-nav a.active { border-bottom-color: var(--charcoal); } }
+    .mobile-cat-nav { display: flex; position: fixed; top: 70px; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); z-index: 999; padding: 10px 0; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
+    .mobile-cat-nav::-webkit-scrollbar { display: none; }
+    .mobile-cat-nav-inner { display: inline-flex; gap: 0.5rem; padding: 0 5%; }
+    .mobile-cat-link { display: inline-block; padding: 8px 18px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 500; border-bottom: 2px solid transparent; white-space: nowrap; }
+    .mobile-cat-link.active { border-bottom-color: var(--charcoal); }
+    @media (min-width: 900px) { .mobile-cat-nav { display: none; } }
+    .bottom-nav { display: flex; position: fixed; bottom: 0; left: 0; right: 0; height: calc(70px + var(--safe-bottom)); background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(184,184,184,0.2); z-index: 1000; padding-bottom: var(--safe-bottom); }
+    .bottom-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--ash-dark); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; }
+    .bottom-nav-item i { font-size: 1.6rem; margin-bottom: 4px; }
+    .bottom-nav-item.active { color: var(--charcoal); font-weight: 500; }
+    @media (min-width: 900px) { .bottom-nav { display: none; } body { padding-bottom: 0; } }
+    #side-menu { position: fixed; top: 0; left: -340px; width: min(320px, 85vw); height: 100vh; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border-right: 1px solid rgba(184,184,184,0.2); transition: left 0.45s; z-index: 1003; overflow-y: auto; padding: 2rem 1.8rem; display: flex; flex-direction: column; }
+    #side-menu.active { left: 0; }
+    .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
+    .close-icon { font-size: 2.2rem; cursor: pointer; color: var(--ash-dark); }
+    .sidebar-nav ul { list-style: none; }
+    .sidebar-nav li { margin: 1rem 0; }
+    .sidebar-nav a { display: flex; align-items: center; gap: 12px; font-size: 1.1rem; font-family: var(--font-serif); padding: 8px 0; }
+    .sidebar-categories { margin: 1.5rem 0; padding-top: 1rem; border-top: 1px solid rgba(184,184,184,0.15); }
+    .sidebar-cat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; color: var(--ash-dark); margin-bottom: 1rem; }
+    .sidebar-cat-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+    .cat-chip { background: rgba(184,184,184,0.08); border: 1px solid rgba(184,184,184,0.25); padding: 8px 16px; border-radius: 40px; font-size: 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; display: inline-block; }
+    .sidebar-footer { margin-top: auto; padding-top: 1.5rem; border-top: 1px solid rgba(184,184,184,0.15); }
+    .sidebar-footer a { font-size: 0.85rem; display: flex; align-items: center; gap: 10px; color: var(--ash-dark); padding: 6px 0; }
+    .sidebar-social { display: flex; gap: 1.2rem; justify-content: center; padding: 1rem 0; }
+    .sidebar-social a { font-size: 1.4rem; color: var(--ash-dark); }
+    #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); display: none; z-index: 1001; cursor: pointer; }
+    #overlay.active { display: block; }
+    .cart-sidebar { position: fixed; top: 0; right: -100%; width: min(420px, 92vw); height: 100vh; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); box-shadow: -10px 0 40px rgba(0,0,0,0.08); z-index: 3000; transition: right 0.5s; display: flex; flex-direction: column; border-left: 1px solid rgba(184,184,184,0.15); }
+    .cart-sidebar.open { right: 0; }
+    .cart-header { padding: 1.5rem; border-bottom: 1px solid rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; }
+    #close-cart { background: none; border: none; font-size: 2rem; cursor: pointer; }
+    .cart-items { flex: 1; overflow-y: auto; padding: 1rem; }
+    .cart-footer { padding: 1.5rem; border-top: 1px solid rgba(0,0,0,0.04); background: var(--cream); }
+    .cart-total { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 1rem; font-size: 1.1rem; }
+    .btn { display: block; width: 100%; padding: 14px; text-align: center; background: var(--charcoal); color: white; border: none; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; font-size: 0.85rem; cursor: pointer; margin-bottom: 8px; }
+    .btn-outline { background: transparent; border: 1.5px solid var(--charcoal); color: var(--charcoal); }
+    .page-header { padding-top: 120px; padding-bottom: 2rem; text-align: center; }
+    @media (max-width: 899px) { .page-header { padding-top: 170px; } }
+    .page-header h1 { font-family: var(--font-script); font-size: clamp(3rem, 8vw, 5rem); font-weight: 600; letter-spacing: 4px; }
+    .breadcrumb { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; color: var(--ash-dark); margin-bottom: 0.8rem; }
+    .product-count { font-size: 0.8rem; color: var(--ash-dark); margin-top: 0.8rem; }
+    .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.8rem; padding: 2rem 0 5rem; }
+    .product-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.02); transition: transform 0.2s; cursor: pointer; }
+    .product-card:active { transform: scale(0.98); }
+    .product-img-wrap { position: relative; aspect-ratio: 3/4; overflow: hidden; background: #f5f5f5; }
+    .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
+    .quick-add { position: absolute; bottom: 12px; right: 12px; width: 44px; height: 44px; border-radius: 50%; background: white; border: 1px solid var(--ash); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; cursor: pointer; }
+    .product-info { padding: 1rem 0.8rem; }
+    .product-brand { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; color: var(--ash-dark); }
+    .product-name { font-family: var(--font-serif); font-size: 1.1rem; margin: 6px 0; }
+    .product-price { font-weight: 500; }
+    .empty-state { text-align: center; padding: 5rem; color: var(--ash-dark); grid-column: 1 / -1; }
+    footer { background: var(--charcoal-soft); color: var(--ash); padding: 4rem 5% 2rem; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 2.5rem; margin-bottom: 3rem; }
+    .footer-col h4 { color: white; font-size: 0.9rem; letter-spacing: 3px; margin-bottom: 1.5rem; text-transform: uppercase; }
+    .footer-col ul { list-style: none; }
+    .footer-col li { margin-bottom: 0.8rem; }
+    .footer-col a { color: var(--ash); font-size: 0.85rem; transition: 0.3s; }
+    .footer-col a:hover { color: white; }
+    .social-links { display: flex; gap: 1rem; margin-top: 1rem; }
+    .social-links a { width: 38px; height: 38px; border: 1px solid var(--ash); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: 0.3s; }
+    .social-links a:hover { background: white; color: var(--charcoal); border-color: white; transform: translateY(-4px); }
+    .footer-bottom { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; font-size: 0.75rem; }
+    @media (max-width: 1000px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
+    @media (max-width: 750px) { .product-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; } }
+    @media (max-width: 900px) { .footer-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 550px) { .footer-grid { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; gap: 1rem; text-align: center; } }
+  </style>
+</head>
+<body>
+
+<div id="overlay"></div>
+
+<aside id="side-menu">
+  <div class="sidebar-header"><a href="/" class="brand-script">Ladey Storee</a><i class="ri-close-line close-icon" id="closeSidebar"></i></div>
+  <nav class="sidebar-nav">
+    <ul>
+      <li><a href="/"><i class="ri-home-4-line"></i> Home</a></li>
+      <li><a href="/new-arrivals"><i class="ri-sparkling-line"></i> New Arrivals</a></li>
+      <li><a href="/collection"><i class="ri-store-line"></i> Shop All</a></li>
+      <li><a href="/about"><i class="ri-information-line"></i> About</a></li>
+      <li><a href="/contact"><i class="ri-mail-line"></i> Contact</a></li>
+    </ul>
+  </nav>
+  <div class="sidebar-categories">
+    <div class="sidebar-cat-label">Shop by Category</div>
+    <div class="sidebar-cat-chips">
+      <a href="/bundledeals" class="cat-chip">Bundle Deals</a><a href="/tops" class="cat-chip">Tops</a>
+      <a href="/jeans" class="cat-chip">Jeans/Denims</a><a href="/jumpsuit" class="cat-chip">Jumpsuit</a>
+      <a href="/mom-shorts" class="cat-chip">Mom Shorts</a><a href="/bum-shorts" class="cat-chip">Bum Shorts</a>
+      <a href="/joggers" class="cat-chip">Joggers</a><a href="/jogger-shorts" class="cat-chip">Jogger Shorts</a>
+      <a href="/2-piece-sets" class="cat-chip">2-Piece Sets</a><a href="/combos" class="cat-chip">Combos</a>
+      <a href="/bags" class="cat-chip">Bags</a><a href="/others" class="cat-chip">Others</a>
+    </div>
+  </div>
+  <div class="sidebar-footer">
+    <a href="mailto:hello@ladeystoree.com"><i class="ri-mail-line"></i> hello@ladeystoree.com</a>
+    <a href="tel:+2348033786290"><i class="ri-phone-line"></i> 08033786290</a>
+    <div class="sidebar-social">
+      <a href="https://instagram.com/ladeystoreeee" target="_blank"><i class="ri-instagram-line"></i></a>
+      <a href="#"><i class="fa-brands fa-snapchat"></i></a>
+    </div>
+  </div>
+</aside>
+
+<header id="top-bar">
+  <button id="menu-toggle">☰</button>
+  <a href="/" class="brand-script">Ladey Storee</a>
+  <nav class="desktop-nav">
+    <a href="/">Home</a><a href="/new-arrivals">New</a><a href="/bundledeals">Bundle Deals</a>
+    <a href="/tops">Tops</a><a href="/jeans" class="active">Jeans</a>
+    <a href="/jumpsuit">Jumpsuit</a><a href="/joggers">Joggers</a>
+    <a href="/2-piece-sets">2-Pc Sets</a><a href="/collection">Shop All</a><a href="/about">About</a>
+  </nav>
+  <div class="header-actions"><div class="cart-icon" id="cartIcon"><i class="ri-shopping-bag-line"></i><span id="cart-count">0</span></div></div>
+</header>
+
+<nav class="mobile-cat-nav">
+  <div class="mobile-cat-nav-inner">
+    <a href="/new-arrivals" class="mobile-cat-link">NEW</a>
+    <a href="/bundledeals" class="mobile-cat-link">BUNDLE DEALS</a>
+    <a href="/tops" class="mobile-cat-link">TOPS</a>
+    <a href="/jeans" class="mobile-cat-link active">JEANS</a>
+    <a href="/jumpsuit" class="mobile-cat-link">JUMPSUIT</a>
+    <a href="/collection" class="mobile-cat-link">SHOP ALL</a>
+  </div>
+</nav>
+
+<div class="cart-sidebar" id="cartSidebar">
+  <div class="cart-header"><h3>Your Bag</h3><button id="close-cart"><i class="ri-close-line"></i></button></div>
+  <div class="cart-items" id="cartItemsContainer"><p style="text-align:center;padding:2rem;color:#999;">Your cart is empty</p></div>
+  <div class="cart-footer"><div class="cart-total"><span>Subtotal</span><strong id="cartTotal">₦0</strong></div><button class="btn" id="checkoutBtn">CHECKOUT</button><button class="btn btn-outline" id="clearCartBtn">Clear Cart</button></div>
+</div>
+
+<main>
+  <div class="page-header container"><div class="breadcrumb"><a href="/">Home</a> / Jeans/Denims</div><h1>Jeans/Denims</h1><div class="product-count">{{ products|length }} products</div></div>
+  <div class="container">
+    {% if products %}
+    <div class="product-grid">
+      {% for product in products %}
+      <div class="product-card">
+        <a href="/product/{{ product._id }}">
+          <div class="product-img-wrap"><img src="{{ product.image or 'https://via.placeholder.com/400x500/f0f0f0/9E9E9E?text=LADEY' }}" alt="{{ product.name }}" loading="lazy"><button class="quick-add" data-id="{{ product._id }}" data-name="{{ product.name }}" data-price="{{ product.price }}"><i class="ri-add-line"></i></button></div>
+          <div class="product-info"><div class="product-brand">LADEY STOREE</div><div class="product-name">{{ product.name }}</div><div class="product-price">{{ format_currency(product.price) }}</div></div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+    {% else %}
+    <div class="empty-state"><i class="ri-inbox-line" style="font-size:3rem;display:block;margin-bottom:1rem;"></i><p>No products found.</p></div>
+    {% endif %}
+  </div>
+</main>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-col"><h4 class="brand-script" style="font-size:1.4rem;text-transform:none;color:white;">Ladey Storee</h4><p>Timeless stories, worn beautifully.</p><div class="social-links"><a href="https://instagram.com/ladeystoreeee" target="_blank"><i class="ri-instagram-line"></i></a><a href="#"><i class="fa-brands fa-snapchat"></i></a></div></div>
+    <div class="footer-col"><h4>Shop</h4><ul><li><a href="/new-arrivals">New Arrivals</a></li><li><a href="/bundledeals">Bundle Deals</a></li><li><a href="/tops">Tops</a></li><li><a href="/jeans">Jeans/Denims</a></li><li><a href="/jumpsuit">Jumpsuit</a></li><li><a href="/joggers">Joggers</a></li></ul></div>
+    <div class="footer-col"><h4>More</h4><ul><li><a href="/mom-shorts">Mom Shorts</a></li><li><a href="/bum-shorts">Bum Shorts</a></li><li><a href="/jogger-shorts">Jogger Shorts</a></li><li><a href="/2-piece-sets">2-Piece Sets</a></li><li><a href="/combos">Combos</a></li><li><a href="/bags">Bags</a></li><li><a href="/others">Others</a></li></ul></div>
+    <div class="footer-col"><h4>Customer Care</h4><ul><li><a href="/contact">Contact Us</a></li><li><a href="https://wa.me/2348033786290" target="_blank">WhatsApp</a></li><li><a href="/about">About</a></li><li><a href="/collection">All Collection</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>© 2026 Ladey Storee</span><div><i class="ri-visa-line"></i> <i class="ri-mastercard-line"></i></div></div>
+</footer>
+
+<nav class="bottom-nav">
+  <a href="/" class="bottom-nav-item"><i class="ri-home-4-line"></i><span>Home</span></a>
+  <a href="/collection" class="bottom-nav-item"><i class="ri-store-line"></i><span>Shop</span></a>
+  <div class="bottom-nav-item" id="bottomCartToggle"><i class="ri-shopping-bag-line"></i><span>Cart</span></div>
+  <div class="bottom-nav-item" id="bottomMenuToggle"><i class="ri-menu-line"></i><span>Menu</span></div>
+</nav>
+
+<script>
+(function(){
+let cart=JSON.parse(localStorage.getItem('ladeyCart'))||[];
+const menuToggle=document.getElementById('menu-toggle'),sideMenu=document.getElementById('side-menu'),overlay=document.getElementById('overlay'),closeSidebar=document.getElementById('closeSidebar');
+const cartIcon=document.getElementById('cartIcon'),cartSidebar=document.getElementById('cartSidebar'),closeCart=document.getElementById('close-cart'),cartCountSpan=document.getElementById('cart-count'),cartItemsDiv=document.getElementById('cartItemsContainer'),cartTotalSpan=document.getElementById('cartTotal');
+const bottomCartToggle=document.getElementById('bottomCartToggle'),bottomMenuToggle=document.getElementById('bottomMenuToggle');
+function openMenu(){sideMenu.classList.add('active');overlay.classList.add('active');}
+function closeMenu(){sideMenu.classList.remove('active');overlay.classList.remove('active');}
+menuToggle.addEventListener('click',openMenu);closeSidebar.addEventListener('click',closeMenu);overlay.addEventListener('click',closeMenu);
+document.querySelectorAll('.sidebar-nav a,.cat-chip').forEach(l=>l.addEventListener('click',closeMenu));
+if(bottomMenuToggle)bottomMenuToggle.addEventListener('click',openMenu);
+if(bottomCartToggle)bottomCartToggle.addEventListener('click',()=>cartSidebar.classList.add('open'));
+function saveCart(){localStorage.setItem('ladeyCart',JSON.stringify(cart));updateCartUI();}
+function updateCartUI(){
+const totalItems=cart.reduce((s,i)=>s+i.quantity,0);cartCountSpan.textContent=totalItems;
+if(!cart.length){cartItemsDiv.innerHTML='<p style="text-align:center;padding:2rem;color:#999;">Your cart is empty</p>';cartTotalSpan.textContent='₦0';return;}
+let total=0,html='';
+cart.forEach(item=>{total+=item.price*item.quantity;html+=`<div class="cart-item"><div><strong>${item.name}</strong><br><small>Qty:${item.quantity}×₦${item.price.toLocaleString()}</small></div><div style="display:flex;align-items:center;gap:12px;"><span>₦${(item.price*item.quantity).toLocaleString()}</span><button class="remove-item" data-id="${item.id}" style="background:none;border:none;cursor:pointer;color:#999;font-size:1.5rem;">×</button></div></div>`;});
+cartItemsDiv.innerHTML=html;cartTotalSpan.textContent='₦'+total.toLocaleString();
+document.querySelectorAll('.remove-item').forEach(b=>b.addEventListener('click',()=>{cart=cart.filter(i=>i.id!==b.dataset.id);saveCart();}));
+}
+document.getElementById('clearCartBtn').addEventListener('click',()=>{cart=[];saveCart();});
+cartIcon.addEventListener('click',()=>cartSidebar.classList.add('open'));
+closeCart.addEventListener('click',()=>cartSidebar.classList.remove('open'));
+document.querySelectorAll('.quick-add').forEach(btn=>{btn.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();const existing=cart.find(i=>i.id===btn.dataset.id);if(existing)existing.quantity++;else cart.push({id:btn.dataset.id,name:btn.dataset.name,price:parseFloat(btn.dataset.price),quantity:1});saveCart();cartSidebar.classList.add('open');});});
+updateCartUI();
+document.getElementById('checkoutBtn').addEventListener('click',()=>{window.location.href='/checkout';});
+})();
+</script>
+</body>
+</html>
     * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
       --ash: #B8B8B8; --ash-dark: #9E9E9E; --charcoal: #1A1A1A; --charcoal-soft: #0D0D0D;
