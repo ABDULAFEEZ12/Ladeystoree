@@ -170,6 +170,7 @@
     <div class="hero-right"><img class="hero-img" src="{{ url_for('static', filename='Ladey.jpeg') }}" alt="Ladey Storee Editorial" loading="eager" onerror="this.src='https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800&auto=format'"><div class="hero-badge"><span>New Collection</span><br><small style="color:var(--ash-dark);">Spring 2026</small></div></div>
   </section>
 
+  <!-- ✅ UPDATED MARQUEE - Removed FREE SHIPPING -->
   <div class="marquee-strip"><div class="marquee-inner" id="marqueeInner"></div></div>
 
   <section class="container section-padding" style="padding-bottom:2rem;">
@@ -190,6 +191,7 @@
 
   <section class="brand-story"><div class="brand-story-grid"><div class="story-content fade-up"><h2>Our Story</h2><p>Ladey Storee was born from a simple belief: that true elegance is timeless, not seasonal.</p><p>Every garment tells a story of craftsmanship, ethical production, and conscious design.</p><a href="/about" class="hero-cta" style="margin-top:2rem;color:white;border-color:var(--ash);">Discover More <i class="ri-arrow-right-line"></i></a></div><div class="story-image fade-up"><img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format" alt="Atelier"></div></div></section>
 
+  <!-- ✅ UPDATED VALUES - Removed Free Returns -->
   <div class="values-strip"><div class="container values-container">
     <div class="value-item fade-up"><i class="ri-leaf-line"></i><h4>Ethically Made</h4><p>Conscious sourcing</p></div>
     <div class="value-item fade-up"><i class="ri-time-line"></i><h4>Timeless Design</h4><p>Beyond seasons</p></div>
@@ -215,7 +217,8 @@ menuToggle.addEventListener('click',om);closeSidebar.addEventListener('click',cm
 function sc(){localStorage.setItem('ladeyCart',JSON.stringify(cart));uc();}
 function uc(){const ti=cart.reduce((s,i)=>s+i.quantity,0);cartCountSpan.textContent=ti;if(!cart.length){cartItemsDiv.innerHTML='<p style="text-align:center;padding:3rem;color:#999;">Your cart is empty</p>';cartTotalSpan.textContent='₦0';return;}let t=0,h='';cart.forEach(i=>{t+=i.price*i.quantity;h+=`<div class="cart-item"><div><strong>${i.name}</strong><br><small>Qty:${i.quantity}×₦${i.price.toLocaleString()}</small></div><div style="display:flex;align-items:center;gap:12px;"><span>₦${(i.price*i.quantity).toLocaleString()}</span><button class="remove-item" data-id="${i.id}" style="background:none;border:none;cursor:pointer;color:#999;font-size:1.5rem;">×</button></div></div>`;});cartItemsDiv.innerHTML=h;cartTotalSpan.textContent='₦'+t.toLocaleString();document.querySelectorAll('.remove-item').forEach(b=>b.addEventListener('click',()=>{cart=cart.filter(i=>i.id!==b.dataset.id);sc();}));}
 document.getElementById('clearCartBtn').addEventListener('click',()=>{cart=[];sc();});cartIcon.addEventListener('click',()=>cartSidebar.classList.add('open'));closeCart.addEventListener('click',()=>cartSidebar.classList.remove('open'));document.querySelectorAll('.quick-add').forEach(btn=>{btn.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();const ex=cart.find(i=>i.id===btn.dataset.id);if(ex)ex.quantity++;else cart.push({id:btn.dataset.id,name:btn.dataset.name,price:parseFloat(btn.dataset.price),quantity:1});sc();cartSidebar.classList.add('open');});});uc();document.getElementById('checkoutBtn').addEventListener('click',()=>{window.location.href='/checkout';});
-const mi=['NEW ARRIVALS','FREE SHIPPING OVER ₦150,000','ETHICALLY MADE','TIMELESS DESIGN','CONSCIOUS LUXURY','SLOW FASHION'],marqueeInner=document.getElementById('marqueeInner'),mc=mi.map(t=>`<span class="marquee-item"><span class="marquee-dot"></span>${t}</span>`).join('');marqueeInner.innerHTML=mc+mc+mc;setTimeout(()=>document.querySelectorAll('.product-card.fade-up').forEach(c=>ob.observe(c)),100);
+// ✅ UPDATED MARQUEE ITEMS - Removed FREE SHIPPING
+const mi=['NEW ARRIVALS','ETHICALLY MADE','TIMELESS DESIGN','CONSCIOUS LUXURY','SLOW FASHION'],marqueeInner=document.getElementById('marqueeInner'),mc=mi.map(t=>`<span class="marquee-item"><span class="marquee-dot"></span>${t}</span>`).join('');marqueeInner.innerHTML=mc+mc+mc;setTimeout(()=>document.querySelectorAll('.product-card.fade-up').forEach(c=>ob.observe(c)),100);
 })();
 </script>
 </body>
