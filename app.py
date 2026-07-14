@@ -111,9 +111,29 @@ def token_required(f):
 
 @app.route("/")
 def home():
-    try: products = convert_cursor(products_collection.find().limit(8))
-    except: products = []
-    return render_template("home.html", products=products)
+    try:
+        products = convert_cursor(products_collection.find().limit(8))
+        
+        # Get first image from each category for Signature Edit
+        new_arrival = products_collection.find_one({"category": "New Arrivals"})
+        bundle_deal = products_collection.find_one({"category": "Bundle Deals"})
+        top = products_collection.find_one({"category": "Tops"})
+        
+        new_arrivals_image = new_arrival.get("image") if new_arrival else None
+        bundle_deals_image = bundle_deal.get("image") if bundle_deal else None
+        tops_image = top.get("image") if top else None
+        
+    except:
+        products = []
+        new_arrivals_image = None
+        bundle_deals_image = None
+        tops_image = None
+    
+    return render_template("home.html", 
+                          products=products,
+                          new_arrivals_image=new_arrivals_image,
+                          bundle_deals_image=bundle_deals_image,
+                          tops_image=tops_image)
 
 @app.route("/new-arrivals")
 def new_arrivals():
