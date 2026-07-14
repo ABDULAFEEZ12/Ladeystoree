@@ -109,12 +109,14 @@ def token_required(f):
         return f(current_admin, *args, **kwargs)
     return decorated
 
+# ==========================
+# PUBLIC ROUTES
+# ==========================
 @app.route("/")
 def home():
     try:
         products = convert_cursor(products_collection.find().limit(8))
         
-        # Get first image from each category for Signature Edit
         new_arrival = products_collection.find_one({"category": "New Arrivals"})
         bundle_deal = products_collection.find_one({"category": "Bundle Deals"})
         top = products_collection.find_one({"category": "Tops"})
@@ -143,11 +145,17 @@ def new_arrivals():
     except: products = []
     return render_template("new-arrivals.html", products=products, category_name="New Arrivals")
 
-@app.route("/dresses")
-def dresses():
+# ✅ NEW: Bundle Deals route
+@app.route("/bundledeals")
+def bundledeals():
     try: products = convert_cursor(products_collection.find({"category": "Bundle Deals"}))
     except: products = []
     return render_template("bundledeals.html", products=products, category_name="Bundle Deals")
+
+# Old dresses route redirects to bundledeals
+@app.route("/dresses")
+def dresses():
+    return redirect(url_for("bundledeals"))
 
 @app.route("/tops")
 def tops():
@@ -305,6 +313,9 @@ def order_status(reference):
     if not order: abort(404)
     return render_template("order_status.html", order=convert_doc(order))
 
+# ==========================
+# ADMIN ROUTES
+# ==========================
 @app.route("/admin/seed")
 def seed_admin():
     if admins_collection.find_one({"email": "admin@ladeystoree.com"}):
