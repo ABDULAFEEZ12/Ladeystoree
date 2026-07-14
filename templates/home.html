@@ -5,1043 +5,218 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover, shrink-to-fit=no">
   <title>Ladey Storee · Timeless Elegance</title>
 
-  <!-- Premium Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600;700&family=Allura&family=Great+Vibes&display=swap" rel="stylesheet">
-
-  <!-- Icons -->
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
   <style>
-    /* ---------- SOFT LUXURY RESET & VARIABLES ---------- */
     * { margin: 0; padding: 0; box-sizing: border-box; }
-    
     :root {
-      --ash: #B8B8B8;
-      --ash-dark: #9E9E9E;
-      --ash-light: #D4D4D4;
-      --charcoal: #1A1A1A;
-      --charcoal-soft: #0D0D0D;
-      --charcoal-warm: #2A2420;
-      --white-pure: #FFFFFF;
-      --off-white: #FAFAFA;
-      --cream: #F5F5F5;
-      
+      --ash: #B8B8B8; --ash-dark: #9E9E9E; --ash-light: #D4D4D4;
+      --charcoal: #1A1A1A; --charcoal-soft: #0D0D0D; --charcoal-warm: #2A2420;
+      --white-pure: #FFFFFF; --off-white: #FAFAFA; --cream: #F5F5F5;
       --font-script: 'Dancing Script', 'Great Vibes', 'Allura', cursive;
-      --font-serif: 'Cormorant Garamond', serif;
-      --font-sans: 'Inter', sans-serif;
-      
+      --font-serif: 'Cormorant Garamond', serif; --font-sans: 'Inter', sans-serif;
       --transition-soft: cubic-bezier(0.25, 0.46, 0.45, 0.94);
       --transition-smooth: cubic-bezier(0.23, 1, 0.32, 1);
       --transition-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      
       --shadow-soft: 0 12px 30px -8px rgba(0,0,0,0.06);
       --shadow-lift: 0 25px 40px -15px rgba(0,0,0,0.1);
       --shadow-card: 0 20px 35px -15px rgba(0,0,0,0.08), 0 0 0 1px rgba(184,184,184,0.1);
-      
       --safe-bottom: env(safe-area-inset-bottom, 0px);
     }
-
     html { scroll-behavior: smooth; }
-    
-    body {
-      font-family: var(--font-sans);
-      background: linear-gradient(135deg, var(--off-white) 0%, var(--white-pure) 100%);
-      color: var(--charcoal);
-      line-height: 1.7;
-      overflow-x: hidden;
-      -webkit-font-smoothing: antialiased;
-      padding-bottom: calc(70px + var(--safe-bottom));
-    }
-
-    h1, h2, h3, h4, .serif {
-      font-family: var(--font-serif);
-      font-weight: 400;
-      letter-spacing: -0.01em;
-    }
-
+    body { font-family: var(--font-sans); background: linear-gradient(135deg, var(--off-white) 0%, var(--white-pure) 100%); color: var(--charcoal); line-height: 1.7; overflow-x: hidden; -webkit-font-smoothing: antialiased; padding-bottom: calc(70px + var(--safe-bottom)); }
+    h1, h2, h3, h4 { font-family: var(--font-serif); font-weight: 400; }
     a { text-decoration: none; color: inherit; }
     .container { max-width: 1400px; margin: 0 auto; padding: 0 5%; }
-
-    .brand-script {
-      font-family: var(--font-script);
-      font-weight: 600;
-      font-size: 2.2rem;
-      letter-spacing: 2px;
-      color: var(--charcoal);
-      text-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      position: relative;
-    }
-
-    .brand-logo .brand-script {
-      font-size: 2rem;
-      transition: all 0.4s var(--transition-smooth);
-    }
-
-    .brand-logo .brand-script:hover {
-      color: var(--ash-dark);
-      transform: scale(1.02);
-    }
-
-    #scroll-progress {
-      position: fixed;
-      top: 70px;
-      left: 0;
-      height: 3px;
-      background: linear-gradient(90deg, var(--ash-dark), var(--charcoal), var(--ash));
-      z-index: 1002;
-      width: 0%;
-      transition: width 0.1s ease;
-      box-shadow: 0 0 10px rgba(184,184,184,0.5);
-    }
-
-    #overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.4);
-      backdrop-filter: blur(4px);
-      -webkit-backdrop-filter: blur(4px);
-      display: none;
-      z-index: 1001;
-      cursor: pointer;
-    }
+    .brand-script { font-family: var(--font-script); font-weight: 600; font-size: 2.2rem; letter-spacing: 2px; color: var(--charcoal); }
+    .brand-logo .brand-script { font-size: 2rem; transition: all 0.4s; }
+    #scroll-progress { position: fixed; top: 70px; left: 0; height: 3px; background: linear-gradient(90deg, var(--ash-dark), var(--charcoal), var(--ash)); z-index: 1002; width: 0%; transition: width 0.1s ease; }
+    #overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.4); backdrop-filter: blur(4px); display: none; z-index: 1001; cursor: pointer; }
     #overlay.active { display: block; }
-
-    #top-bar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 70px;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(16px) saturate(180%);
-      -webkit-backdrop-filter: blur(16px) saturate(180%);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 5%;
-      z-index: 1002;
-      border-bottom: 1px solid rgba(184,184,184,0.15);
-      box-shadow: 0 2px 20px rgba(0,0,0,0.02);
-    }
-
-    #menu-toggle {
-      width: 48px;
-      height: 48px;
-      border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 2rem;
-      color: var(--charcoal);
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      transition: all 0.3s var(--transition-bounce);
-    }
-
-    #menu-toggle:active { background: rgba(184,184,184,0.15); }
-
-    .header-actions {
-      display: flex;
-      gap: 0.8rem;
-      align-items: center;
-    }
-
-    .cart-icon {
-      font-size: 1.6rem;
-      position: relative;
-      cursor: pointer;
-      color: var(--charcoal);
-      transition: transform 0.3s var(--transition-bounce);
-      width: 48px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .cart-icon:active { transform: scale(0.95); }
-
-    #cart-count {
-      position: absolute;
-      top: 4px;
-      right: 4px;
-      background: var(--charcoal);
-      color: white;
-      font-size: 0.7rem;
-      font-weight: 600;
-      border-radius: 50%;
-      width: 20px;
-      height: 20px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
+    #top-bar { position: fixed; top: 0; left: 0; right: 0; height: 70px; background: rgba(255,255,255,0.92); backdrop-filter: blur(16px); display: flex; align-items: center; justify-content: space-between; padding: 0 5%; z-index: 1002; border-bottom: 1px solid rgba(184,184,184,0.15); }
+    #menu-toggle { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem; background: transparent; border: none; cursor: pointer; }
+    .header-actions { display: flex; gap: 0.8rem; align-items: center; }
+    .cart-icon { font-size: 1.6rem; position: relative; cursor: pointer; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; }
+    #cart-count { position: absolute; top: 4px; right: 4px; background: var(--charcoal); color: white; font-size: 0.7rem; font-weight: 600; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; }
     .desktop-nav { display: none; }
-    
-    @media (min-width: 900px) {
-      .desktop-nav {
-        display: flex;
-        gap: 2rem;
-        font-size: 0.75rem;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        font-weight: 500;
-        position: absolute;
-        left: 50%;
-        transform: translateX(-50%);
-      }
-      .desktop-nav a {
-        color: var(--charcoal);
-        padding-bottom: 4px;
-        border-bottom: 1.5px solid transparent;
-        transition: border-color 0.3s;
-      }
-      .desktop-nav a:hover { border-bottom-color: var(--ash-dark); }
-      .brand-logo { margin: 0 auto; }
-      #top-bar { justify-content: space-between; }
-    }
-
-    .mobile-cat-nav {
-      display: flex;
-      position: fixed;
-      top: 70px;
-      left: 0;
-      right: 0;
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(12px);
-      -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(184,184,184,0.15);
-      z-index: 999;
-      padding: 10px 0;
-      overflow-x: auto;
-      white-space: nowrap;
-      -webkit-overflow-scrolling: touch;
-      scrollbar-width: none;
-    }
-    
+    @media (min-width: 900px) { .desktop-nav { display: flex; gap: 2rem; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 500; position: absolute; left: 50%; transform: translateX(-50%); } .desktop-nav a { color: var(--charcoal); padding-bottom: 4px; border-bottom: 1.5px solid transparent; transition: border-color 0.3s; } .desktop-nav a:hover { border-bottom-color: var(--ash-dark); } }
+    .mobile-cat-nav { display: flex; position: fixed; top: 70px; left: 0; right: 0; background: rgba(255,255,255,0.95); backdrop-filter: blur(12px); z-index: 999; padding: 10px 0; overflow-x: auto; white-space: nowrap; scrollbar-width: none; }
     .mobile-cat-nav::-webkit-scrollbar { display: none; }
-    
-    .mobile-cat-nav-inner {
-      display: inline-flex;
-      gap: 0.5rem;
-      padding: 0 5%;
-    }
-    
-    .mobile-cat-link {
-      display: inline-block;
-      padding: 8px 18px;
-      font-size: 0.75rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      font-weight: 500;
-      color: var(--charcoal);
-      border-bottom: 2px solid transparent;
-      transition: all 0.2s;
-      white-space: nowrap;
-    }
-    
-    .mobile-cat-link.active {
-      border-bottom-color: var(--charcoal);
-    }
-    
-    .mobile-cat-link:active {
-      background: rgba(184,184,184,0.1);
-      border-radius: 4px;
-    }
-    
-    @media (min-width: 900px) {
-      .mobile-cat-nav { display: none; }
-    }
-
-    .bottom-nav {
-      display: flex;
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      height: calc(70px + var(--safe-bottom));
-      background: rgba(255, 255, 255, 0.95);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-top: 1px solid rgba(184,184,184,0.2);
-      z-index: 1000;
-      padding-bottom: var(--safe-bottom);
-    }
-    
-    .bottom-nav-item {
-      flex: 1;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      color: var(--ash-dark);
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      transition: color 0.2s;
-      cursor: pointer;
-      -webkit-tap-highlight-color: transparent;
-    }
-    
+    .mobile-cat-nav-inner { display: inline-flex; gap: 0.5rem; padding: 0 5%; }
+    .mobile-cat-link { display: inline-block; padding: 8px 18px; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 2px; font-weight: 500; color: var(--charcoal); border-bottom: 2px solid transparent; transition: all 0.2s; white-space: nowrap; }
+    @media (min-width: 900px) { .mobile-cat-nav { display: none; } }
+    .bottom-nav { display: flex; position: fixed; bottom: 0; left: 0; right: 0; height: calc(70px + var(--safe-bottom)); background: rgba(255,255,255,0.95); backdrop-filter: blur(20px); border-top: 1px solid rgba(184,184,184,0.2); z-index: 1000; padding-bottom: var(--safe-bottom); }
+    .bottom-nav-item { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--ash-dark); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; }
     .bottom-nav-item i { font-size: 1.6rem; margin-bottom: 4px; }
-    .bottom-nav-item.active { color: var(--charcoal); font-weight: 500; }
-    .bottom-nav-item:active { background: rgba(184,184,184,0.1); }
-    
     @media (min-width: 900px) { .bottom-nav { display: none; } body { padding-bottom: 0; } }
-
-    #side-menu {
-      position: fixed;
-      top: 0;
-      left: -340px;
-      width: min(320px, 85vw);
-      height: 100vh;
-      background: rgba(255, 255, 255, 0.98);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-right: 1px solid rgba(184,184,184,0.2);
-      transition: left 0.45s var(--transition-smooth);
-      z-index: 1003;
-      overflow-y: auto;
-      padding: 2rem 1.8rem;
-      display: flex;
-      flex-direction: column;
-      box-shadow: 5px 0 30px rgba(0,0,0,0.05);
-    }
-
+    #side-menu { position: fixed; top: 0; left: -340px; width: min(320px, 85vw); height: 100vh; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border-right: 1px solid rgba(184,184,184,0.2); transition: left 0.45s; z-index: 1003; overflow-y: auto; padding: 2rem 1.8rem; display: flex; flex-direction: column; }
     #side-menu.active { left: 0; }
-
-    .sidebar-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2.5rem;
-      padding-bottom: 1.2rem;
-      border-bottom: 1px solid rgba(184,184,184,0.2);
-    }
-
+    .sidebar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; }
     .sidebar-header .brand-script { font-size: 1.8rem; }
-
-    .close-icon {
-      font-size: 2.2rem;
-      cursor: pointer;
-      color: var(--ash-dark);
-      transition: transform 0.3s var(--transition-bounce);
-      width: 48px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .close-icon:active { transform: rotate(90deg); }
-
+    .close-icon { font-size: 2.2rem; cursor: pointer; }
     .sidebar-nav ul { list-style: none; }
     .sidebar-nav li { margin: 1.3rem 0; }
-    .sidebar-nav a {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      font-size: 1.2rem;
-      font-family: var(--font-serif);
-      color: var(--charcoal);
-      transition: all 0.25s;
-      padding: 10px 0;
-    }
-
-    .sidebar-nav a i { color: var(--ash-dark); font-size: 1.4rem; width: 28px; }
-    .sidebar-nav a:active { transform: translateX(8px); }
-
-    .sidebar-categories {
-      margin: 2rem 0;
-      padding-top: 1rem;
-      border-top: 1px solid rgba(184,184,184,0.15);
-    }
-
-    .sidebar-cat-label {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 3px;
-      color: var(--ash-dark);
-      margin-bottom: 1.2rem;
-      font-weight: 600;
-    }
-
+    .sidebar-nav a { display: flex; align-items: center; gap: 15px; font-size: 1.2rem; font-family: var(--font-serif); padding: 10px 0; }
+    .sidebar-categories { margin: 2rem 0; padding-top: 1rem; border-top: 1px solid rgba(184,184,184,0.15); }
+    .sidebar-cat-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 3px; color: var(--ash-dark); margin-bottom: 1.2rem; }
     .sidebar-cat-chips { display: flex; flex-wrap: wrap; gap: 10px; }
-
-    .cat-chip {
-      background: rgba(184,184,184,0.08);
-      border: 1px solid rgba(184,184,184,0.25);
-      padding: 10px 20px;
-      border-radius: 40px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      transition: all 0.25s;
-      color: var(--charcoal);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      display: inline-block;
-    }
-
-    .cat-chip:active { background: var(--charcoal); color: white; }
-
-    .sidebar-footer {
-      margin-top: auto;
-      padding-top: 2rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-      border-top: 1px solid rgba(184,184,184,0.15);
-    }
-
-    .sidebar-footer a {
-      font-size: 0.9rem;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      color: var(--ash-dark);
-      padding: 8px 0;
-    }
-
+    .cat-chip { background: rgba(184,184,184,0.08); border: 1px solid rgba(184,184,184,0.25); padding: 10px 20px; border-radius: 40px; font-size: 0.8rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1px; display: inline-block; }
+    .sidebar-footer { margin-top: auto; padding-top: 2rem; border-top: 1px solid rgba(184,184,184,0.15); }
+    .sidebar-footer a { font-size: 0.9rem; display: flex; align-items: center; gap: 12px; color: var(--ash-dark); padding: 8px 0; }
     .sidebar-social { display: flex; gap: 1.5rem; justify-content: center; padding: 1.5rem 0 0.5rem; }
-    .sidebar-social a { font-size: 1.6rem; color: var(--ash-dark); transition: all 0.3s var(--transition-bounce); padding: 8px; }
-
-    .cart-sidebar {
-      position: fixed;
-      top: 0;
-      right: -100%;
-      width: min(420px, 92vw);
-      height: 100vh;
-      background: rgba(255,255,255,0.98);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      box-shadow: -10px 0 40px rgba(0,0,0,0.08);
-      z-index: 3000;
-      transition: right 0.5s var(--transition-smooth);
-      display: flex;
-      flex-direction: column;
-      border-left: 1px solid rgba(184,184,184,0.15);
-    }
-
+    .sidebar-social a { font-size: 1.6rem; color: var(--ash-dark); }
+    .cart-sidebar { position: fixed; top: 0; right: -100%; width: min(420px, 92vw); height: 100vh; background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); box-shadow: -10px 0 40px rgba(0,0,0,0.08); z-index: 3000; transition: right 0.5s; display: flex; flex-direction: column; border-left: 1px solid rgba(184,184,184,0.15); }
     .cart-sidebar.open { right: 0; }
-
-    .cart-header {
-      padding: 1.8rem 1.8rem 1.2rem;
-      border-bottom: 1px solid rgba(0,0,0,0.04);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
+    .cart-header { padding: 1.8rem; border-bottom: 1px solid rgba(0,0,0,0.04); display: flex; justify-content: space-between; align-items: center; }
     .cart-header h3 { font-size: 1.6rem; font-weight: 400; letter-spacing: 3px; }
-
-    #close-cart {
-      background: none;
-      border: none;
-      font-size: 2rem;
-      cursor: pointer;
-      transition: transform 0.3s var(--transition-bounce);
-      color: var(--charcoal);
-      width: 48px;
-      height: 48px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
+    #close-cart { background: none; border: none; font-size: 2rem; cursor: pointer; }
     .cart-items { flex: 1; overflow-y: auto; padding: 1.5rem; }
-
     .cart-item { display: flex; justify-content: space-between; padding: 1.2rem 0; border-bottom: 1px solid rgba(0,0,0,0.04); }
-
     .cart-footer { padding: 1.8rem; border-top: 1px solid rgba(0,0,0,0.04); background: var(--cream); }
-
     .cart-total { display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 1.5rem; font-size: 1.2rem; }
-
-    .btn {
-      display: block;
-      width: 100%;
-      padding: 16px;
-      text-align: center;
-      background: var(--charcoal);
-      color: white;
-      border: none;
-      font-weight: 500;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.4s var(--transition-smooth);
-      margin-bottom: 10px;
-      border-radius: 4px;
-    }
-
+    .btn { display: block; width: 100%; padding: 16px; text-align: center; background: var(--charcoal); color: white; border: none; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; font-size: 0.9rem; cursor: pointer; margin-bottom: 10px; border-radius: 4px; }
     .btn-outline { background: transparent; border: 1.5px solid var(--charcoal); color: var(--charcoal); }
-    .btn:active { transform: scale(0.98); }
-
-    .hero-split {
-      margin-top: 70px;
-      display: grid;
-      grid-template-columns: 1.1fr 0.9fr;
-      min-height: calc(100vh - 70px);
-      background: var(--off-white);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .hero-split::before {
-      content: '';
-      position: absolute;
-      top: -50%;
-      right: -20%;
-      width: 80%;
-      height: 200%;
-      background: radial-gradient(circle, rgba(184,184,184,0.08) 0%, transparent 70%);
-      animation: rotateSlow 30s linear infinite;
-    }
-
-    @keyframes rotateSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-
-    .hero-left {
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      padding: 2rem 8% 2rem 12%;
-      background: linear-gradient(135deg, var(--white-pure) 0%, rgba(250,250,250,0.95) 100%);
-      position: relative;
-      z-index: 2;
-    }
-
-    .hero-left h1 {
-      font-family: var(--font-script);
-      font-size: clamp(4rem, 10vw, 7.5rem);
-      font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: 4px;
-      color: var(--charcoal);
-      margin-bottom: 1rem;
-      animation: fadeUpSoft 1s var(--transition-soft);
-      text-shadow: 0 4px 12px rgba(0,0,0,0.06);
-    }
-
-    @keyframes fadeUpSoft { from { opacity: 0; transform: translateY(40px); filter: blur(4px); } to { opacity: 1; transform: translateY(0); filter: blur(0); } }
-
-    .hero-tagline { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 300; font-style: italic; color: var(--ash-dark); margin-bottom: 2rem; animation: fadeUpSoft 1s 0.15s var(--transition-soft) backwards; }
-    .hero-description { font-size: 1rem; line-height: 1.8; color: #555; max-width: 480px; margin-bottom: 2.5rem; animation: fadeUpSoft 1s 0.3s var(--transition-soft) backwards; }
-
-    .hero-cta {
-      display: inline-flex;
-      align-items: center;
-      gap: 12px;
-      border: 2px solid var(--charcoal);
-      background: transparent;
-      padding: 16px 42px;
-      font-size: 0.9rem;
-      font-weight: 600;
-      letter-spacing: 4px;
-      text-transform: uppercase;
-      color: var(--charcoal);
-      width: fit-content;
-      transition: all 0.5s;
-      margin-top: 1rem;
-      animation: fadeUpSoft 1s 0.45s var(--transition-soft) backwards;
-    }
-
+    .hero-split { margin-top: 70px; display: grid; grid-template-columns: 1.1fr 0.9fr; min-height: calc(100vh - 70px); background: var(--off-white); position: relative; overflow: hidden; }
+    .hero-left { display: flex; flex-direction: column; justify-content: center; padding: 2rem 8% 2rem 12%; background: linear-gradient(135deg, var(--white-pure) 0%, rgba(250,250,250,0.95) 100%); position: relative; z-index: 2; }
+    .hero-left h1 { font-family: var(--font-script); font-size: clamp(4rem, 10vw, 7.5rem); font-weight: 700; line-height: 1.1; letter-spacing: 4px; color: var(--charcoal); margin-bottom: 1rem; animation: fadeUpSoft 1s; }
+    @keyframes fadeUpSoft { from { opacity: 0; transform: translateY(40px); } to { opacity: 1; transform: translateY(0); } }
+    .hero-tagline { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 300; font-style: italic; color: var(--ash-dark); margin-bottom: 2rem; }
+    .hero-description { font-size: 1rem; line-height: 1.8; color: #555; max-width: 480px; margin-bottom: 2.5rem; }
+    .hero-cta { display: inline-flex; align-items: center; gap: 12px; border: 2px solid var(--charcoal); background: transparent; padding: 16px 42px; font-size: 0.9rem; font-weight: 600; letter-spacing: 4px; text-transform: uppercase; color: var(--charcoal); width: fit-content; transition: all 0.5s; margin-top: 1rem; }
     .hero-cta:hover { color: white; transform: translateY(-5px); box-shadow: var(--shadow-lift); background: var(--charcoal); }
-
     .hero-right { position: relative; overflow: hidden; background: #e8e8e8; }
-    .hero-img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.5s; filter: grayscale(15%); animation: scaleInSoft 1.2s; }
-    @keyframes scaleInSoft { from { opacity: 0; transform: scale(1.1); } to { opacity: 1; transform: scale(1); } }
-    .hero-right:hover .hero-img { transform: scale(1.04); filter: grayscale(0%); }
-
-    .hero-badge { position: absolute; bottom: 3rem; right: 2rem; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 1rem 2rem; border-left: 3px solid var(--ash-dark); box-shadow: var(--shadow-soft); animation: floatSoft 4s ease-in-out infinite; }
-    @keyframes floatSoft { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-    .hero-badge span { font-family: var(--font-serif); font-size: 1.1rem; color: var(--charcoal); }
-
-    .marquee-strip { background: var(--charcoal-warm); color: var(--ash-light); padding: 16px 0; overflow: hidden; white-space: nowrap; font-weight: 400; letter-spacing: 3px; font-size: 0.8rem; border-top: 1px solid rgba(184,184,184,0.1); border-bottom: 1px solid rgba(184,184,184,0.1); }
+    .hero-img { width: 100%; height: 100%; object-fit: cover; transition: transform 1.5s; filter: grayscale(15%); }
+    .hero-badge { position: absolute; bottom: 3rem; right: 2rem; background: rgba(255,255,255,0.95); backdrop-filter: blur(10px); padding: 1rem 2rem; border-left: 3px solid var(--ash-dark); box-shadow: var(--shadow-soft); }
+    .hero-badge span { font-family: var(--font-serif); font-size: 1.1rem; }
+    .marquee-strip { background: var(--charcoal-warm); color: var(--ash-light); padding: 16px 0; overflow: hidden; white-space: nowrap; font-weight: 400; letter-spacing: 3px; font-size: 0.8rem; }
     .marquee-inner { display: inline-flex; animation: marqueeSoft 40s linear infinite; }
-    .marquee-item { display: inline-flex; align-items: center; gap: 15px; margin-right: 3.5rem; text-transform: uppercase; }
-    .marquee-dot { width: 4px; height: 4px; background: var(--ash); border-radius: 50%; animation: blinkSoft 2s infinite; }
-    @keyframes blinkSoft { 0%, 100% { opacity: 0.3; } 50% { opacity: 1; } }
-    @keyframes marqueeSoft { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-
     .section-header { text-align: center; margin-bottom: 3.5rem; position: relative; }
-    .section-eyebrow { font-size: 0.75rem; letter-spacing: 5px; text-transform: uppercase; color: var(--ash-dark); margin-bottom: 1rem; font-weight: 500; }
-    .section-header h2 { font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 300; letter-spacing: 3px; color: var(--charcoal); position: relative; display: inline-block; }
-    .section-header h2::after { content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%); width: 60px; height: 2px; background: var(--ash-dark); }
-
+    .section-eyebrow { font-size: 0.75rem; letter-spacing: 5px; text-transform: uppercase; color: var(--ash-dark); margin-bottom: 1rem; }
+    .section-header h2 { font-size: clamp(2.2rem, 5vw, 3.5rem); font-weight: 300; letter-spacing: 3px; color: var(--charcoal); }
     .product-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 1.8rem; }
     .product-card { background: white; border-radius: 6px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.02); transition: transform 0.2s; cursor: pointer; }
-    .product-card:active { transform: scale(0.98); }
     .product-img-wrap { position: relative; aspect-ratio: 3/4; overflow: hidden; background: #f5f5f5; }
-    .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; filter: grayscale(8%); }
-    .product-card:active .product-img-wrap img { transform: scale(1.03); filter: grayscale(0%); }
-    .quick-add { position: absolute; bottom: 12px; right: 12px; width: 44px; height: 44px; border-radius: 50%; background: white; border: 1px solid var(--ash); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; box-shadow: 0 4px 10px rgba(0,0,0,0.05); cursor: pointer; color: var(--charcoal); transition: all 0.2s; opacity: 0.9; }
-    .quick-add:active { background: var(--charcoal); color: white; transform: scale(0.9); }
+    .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s; }
+    .quick-add { position: absolute; bottom: 12px; right: 12px; width: 44px; height: 44px; border-radius: 50%; background: white; border: 1px solid var(--ash); display: flex; align-items: center; justify-content: center; font-size: 1.4rem; cursor: pointer; }
     .product-info { padding: 1rem 0.8rem; }
-    .product-brand { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; color: var(--ash-dark); margin-bottom: 4px; }
-    .product-name { font-family: var(--font-serif); font-size: 1.1rem; margin: 6px 0; color: var(--charcoal); line-height: 1.3; }
-    .product-price { font-weight: 500; color: var(--charcoal); font-size: 1rem; }
-    .empty-state { text-align: center; padding: 5rem; color: var(--ash-dark); grid-column: 1 / -1; }
-    .empty-state i { font-size: 3.5rem; margin-bottom: 1.5rem; display: block; opacity: 0.5; }
-
+    .product-brand { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; color: var(--ash-dark); }
+    .product-name { font-family: var(--font-serif); font-size: 1.1rem; margin: 6px 0; }
+    .product-price { font-weight: 500; font-size: 1rem; }
     .category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
-    .category-card { position: relative; overflow: hidden; aspect-ratio: 4 / 5; cursor: pointer; box-shadow: var(--shadow-soft); border-radius: 6px; }
-    .category-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s; filter: grayscale(25%); }
-    .category-card:active img { transform: scale(1.05); filter: grayscale(0%); }
+    .category-card { position: relative; overflow: hidden; aspect-ratio: 4/5; cursor: pointer; box-shadow: var(--shadow-soft); border-radius: 6px; }
+    .category-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s; }
     .category-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(26,26,26,0.6), transparent 50%); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 2.5rem; opacity: 0; transition: opacity 0.4s; }
-    .category-card:active .category-overlay { opacity: 1; }
-    .category-overlay span { background: rgba(255,255,255,0.95); padding: 12px 36px; font-family: var(--font-serif); font-size: 1.4rem; letter-spacing: 4px; color: var(--charcoal); border-radius: 4px; }
-
-    .brand-story { background: linear-gradient(135deg, var(--charcoal-warm) 0%, var(--charcoal) 100%); color: var(--off-white); padding: 6rem 5%; position: relative; overflow: hidden; }
+    .category-overlay span { background: rgba(255,255,255,0.95); padding: 12px 36px; font-family: var(--font-serif); font-size: 1.4rem; letter-spacing: 4px; border-radius: 4px; }
+    .brand-story { background: linear-gradient(135deg, var(--charcoal-warm) 0%, var(--charcoal) 100%); color: var(--off-white); padding: 6rem 5%; }
     .brand-story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; max-width: 1200px; margin: 0 auto; }
-    .story-content h2 { font-size: 2.5rem; margin-bottom: 1.5rem; color: white; letter-spacing: 3px; }
+    .story-content h2 { font-size: 2.5rem; margin-bottom: 1.5rem; color: white; }
     .story-content p { font-size: 1rem; line-height: 1.9; color: var(--ash); margin-bottom: 1.5rem; }
-    .story-image { position: relative; aspect-ratio: 3/4; overflow: hidden; border-radius: 4px; box-shadow: 0 30px 50px -20px rgba(0,0,0,0.4); }
-    .story-image img { width: 100%; height: 100%; object-fit: cover; filter: grayscale(30%); transition: all 0.8s; }
-    .story-image:hover img { filter: grayscale(0%); transform: scale(1.03); }
-
+    .story-image { position: relative; aspect-ratio: 3/4; overflow: hidden; border-radius: 4px; }
+    .story-image img { width: 100%; height: 100%; object-fit: cover; }
     .values-strip { background: linear-gradient(135deg, var(--ash), var(--ash-light)); padding: 4rem 0; color: var(--charcoal); }
-    .values-container { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2rem; text-align: center; }
-    .value-item i { font-size: 2.5rem; margin-bottom: 1.2rem; color: var(--charcoal); transition: transform 0.3s var(--transition-bounce); }
-    .value-item:hover i { transform: scale(1.1) translateY(-5px); }
+    .values-container { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; text-align: center; }
+    .value-item i { font-size: 2.5rem; margin-bottom: 1.2rem; color: var(--charcoal); }
     .value-item h4 { font-size: 1.1rem; letter-spacing: 2px; margin-bottom: 0.5rem; }
     .value-item p { color: rgba(26,26,26,0.7); font-size: 0.85rem; }
-
     footer { background: var(--charcoal-soft); color: var(--ash); padding: 4rem 5% 2rem; }
     .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 3rem; margin-bottom: 3rem; }
-    .footer-col h4 { color: white; font-size: 0.9rem; letter-spacing: 3px; margin-bottom: 1.5rem; text-transform: uppercase; font-weight: 500; }
-    .footer-col p { line-height: 1.8; font-size: 0.85rem; color: var(--ash); }
+    .footer-col h4 { color: white; font-size: 0.9rem; letter-spacing: 3px; margin-bottom: 1.5rem; text-transform: uppercase; }
     .footer-col ul { list-style: none; }
     .footer-col li { margin-bottom: 0.8rem; }
-    .footer-col a { color: var(--ash); font-size: 0.85rem; transition: all 0.3s; position: relative; }
-    .footer-col a::after { content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 1px; background: white; transition: width 0.3s; }
+    .footer-col a { color: var(--ash); font-size: 0.85rem; transition: 0.3s; }
     .footer-col a:hover { color: white; }
-    .footer-col a:hover::after { width: 100%; }
     .social-links { display: flex; gap: 1rem; margin-top: 1.2rem; }
-    .social-links a { width: 38px; height: 38px; border: 1px solid var(--ash); border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s var(--transition-bounce); font-size: 1rem; }
-    .social-links a:hover { background: white; color: var(--charcoal); border-color: white; transform: translateY(-4px); }
-    .footer-bottom { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; }
-    .payment-icons { display: flex; gap: 1rem; font-size: 1.5rem; color: var(--ash); }
-
+    .social-links a { width: 38px; height: 38px; border: 1px solid var(--ash); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; transition: 0.3s; }
+    .footer-bottom { margin-top: 3rem; padding-top: 2rem; border-top: 1px solid rgba(255,255,255,0.08); display: flex; justify-content: space-between; font-size: 0.75rem; }
     .fade-up { opacity: 0; transform: translateY(35px); transition: opacity 0.9s var(--transition-soft), transform 0.9s var(--transition-soft); }
     .fade-up.visible { opacity: 1; transform: translateY(0); }
     .section-padding { padding: 5rem 0; }
-
     @media (max-width: 1000px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
-    @media (max-width: 860px) { .hero-split { grid-template-columns: 1fr; min-height: auto; } .hero-left { order: 2; padding: 4rem 6%; text-align: center; align-items: center; } .hero-right { order: 1; height: 65vh; } .hero-cta { margin: 1.5rem auto 0; } .hero-description { max-width: 100%; } .hero-badge { bottom: 1.5rem; right: 1.5rem; padding: 0.8rem 1.5rem; } .hero-left h1 { font-size: clamp(3rem, 12vw, 5rem); } .brand-story-grid { grid-template-columns: 1fr; gap: 3rem; } .story-image { order: -1; max-width: 450px; margin: 0 auto; } }
-    @media (max-width: 750px) { .product-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; } .product-info { padding: 0.8rem 0.5rem; } .product-name { font-size: 1rem; } .quick-add { width: 40px; height: 40px; } }
-    @media (max-width: 700px) { .category-grid { grid-template-columns: 1fr; gap: 2rem; } .values-container { grid-template-columns: repeat(2, 1fr); gap: 2rem; } }
-    @media (max-width: 600px) { .section-padding { padding: 4rem 0; } }
+    @media (max-width: 860px) { .hero-split { grid-template-columns: 1fr; min-height: auto; } .hero-left { order: 2; padding: 4rem 6%; text-align: center; } .hero-right { order: 1; height: 65vh; } .brand-story-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 750px) { .product-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; } }
+    @media (max-width: 700px) { .category-grid { grid-template-columns: 1fr; } .values-container { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 550px) { .footer-grid { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; gap: 1.2rem; text-align: center; } }
-    @media (max-width: 480px) { .hero-right { height: 50vh; } .hero-left h1 { font-size: 2.8rem; letter-spacing: 2px; } .hero-tagline { font-size: 1.1rem; } }
     @media (max-width: 400px) { .values-container { grid-template-columns: 1fr; } }
-    @media (max-width: 900px) { .footer-grid { grid-template-columns: repeat(2, 1fr); gap: 2.5rem; } }
   </style>
-
 </head>
 <body>
 
 <div id="overlay"></div>
 <div id="scroll-progress"></div>
 
-<!-- LEFT SLIDE-IN MENU -->
 <aside id="side-menu">
-  <div class="sidebar-header">
-    <div class="brand-logo"><a href="/" class="brand-script">Ladey Storee</a></div>
-    <i class="ri-close-line close-icon" id="closeSidebar"></i>
-  </div>
-  <nav class="sidebar-nav">
-    <ul>
-      <li><a href="/"><i class="ri-home-4-line"></i> Home</a></li>
-      <li><a href="/new-arrivals"><i class="ri-sparkling-line"></i> New Arrivals</a></li>
-      <li><a href="/collection"><i class="ri-store-line"></i> Shop All</a></li>
-      <li><a href="/about"><i class="ri-information-line"></i> About</a></li>
-      <li><a href="/contact"><i class="ri-mail-line"></i> Contact</a></li>
-    </ul>
-  </nav>
-  <div class="sidebar-categories">
-    <div class="sidebar-cat-label">Shop by Category</div>
-    <div class="sidebar-cat-chips">
-      <a href="/bundledeals" class="cat-chip">Bundle Deals</a>
-      <a href="/tops" class="cat-chip">Tops</a>
-      <a href="/jeans" class="cat-chip">Jeans/Denims</a>
-      <a href="/jumpsuit" class="cat-chip">Jumpsuit</a>
-      <a href="/mom-shorts" class="cat-chip">Mom Shorts</a>
-      <a href="/bum-shorts" class="cat-chip">Bum Shorts</a>
-      <a href="/joggers" class="cat-chip">Joggers</a>
-      <a href="/jogger-shorts" class="cat-chip">Jogger Shorts</a>
-      <a href="/2-piece-sets" class="cat-chip">2-Piece Sets</a>
-      <a href="/combos" class="cat-chip">Combos</a>
-      <a href="/bags" class="cat-chip">Bags</a>
-      <a href="/others" class="cat-chip">Others</a>
-    </div>
-  </div>
-  <div class="sidebar-footer">
-    <a href="mailto:hello@ladeystoree.com"><i class="ri-mail-line"></i> hello@ladeystoree.com</a>
-    <a href="tel:+2348033786290"><i class="ri-phone-line"></i> 08033786290</a>
-    <div class="sidebar-social">
-      <a href="https://instagram.com/ladeystoreeee" target="_blank" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
-      <a href="#" aria-label="Snapchat"><i class="fa-brands fa-snapchat"></i></a>
-    </div>
-  </div>
+  <div class="sidebar-header"><div class="brand-logo"><a href="/" class="brand-script">Ladey Storee</a></div><i class="ri-close-line close-icon" id="closeSidebar"></i></div>
+  <nav class="sidebar-nav"><ul><li><a href="/"><i class="ri-home-4-line"></i> Home</a></li><li><a href="/new-arrivals"><i class="ri-sparkling-line"></i> New Arrivals</a></li><li><a href="/collection"><i class="ri-store-line"></i> Shop All</a></li><li><a href="/about"><i class="ri-information-line"></i> About</a></li><li><a href="/contact"><i class="ri-mail-line"></i> Contact</a></li></ul></nav>
+  <div class="sidebar-categories"><div class="sidebar-cat-label">Shop by Category</div><div class="sidebar-cat-chips"><a href="/bundledeals" class="cat-chip">Bundle Deals</a><a href="/tops" class="cat-chip">Tops</a><a href="/jeans" class="cat-chip">Jeans/Denims</a><a href="/jumpsuit" class="cat-chip">Jumpsuit</a><a href="/mom-shorts" class="cat-chip">Mom Shorts</a><a href="/bum-shorts" class="cat-chip">Bum Shorts</a><a href="/joggers" class="cat-chip">Joggers</a><a href="/jogger-shorts" class="cat-chip">Jogger Shorts</a><a href="/2-piece-sets" class="cat-chip">2-Piece Sets</a><a href="/combos" class="cat-chip">Combos</a><a href="/bags" class="cat-chip">Bags</a><a href="/others" class="cat-chip">Others</a></div></div>
+  <div class="sidebar-footer"><a href="mailto:ladeystoree@gmail.com"><i class="ri-mail-line"></i> ladeystoree@gmail.com</a><a href="tel:+2348033786290"><i class="ri-phone-line"></i> 08033786290</a><div class="sidebar-social"><a href="https://instagram.com/ladeystoreeee" target="_blank"><i class="ri-instagram-line"></i></a><a href="#"><i class="fa-brands fa-snapchat"></i></a></div></div>
 </aside>
 
-<!-- TOP BAR -->
 <header id="top-bar">
-  <button id="menu-toggle" aria-label="Menu">☰</button>
-  <div class="brand-logo">
-    <a href="/" class="brand-script">Ladey Storee</a>
-  </div>
-  <nav class="desktop-nav">
-    <a href="/">Home</a>
-    <a href="/new-arrivals">New</a>
-    <a href="/bundledeals">Bundle Deals</a>
-    <a href="/tops">Tops</a>
-    <a href="/jeans">Jeans</a>
-    <a href="/jumpsuit">Jumpsuit</a>
-    <a href="/joggers">Joggers</a>
-    <a href="/2-piece-sets">2-Pc Sets</a>
-    <a href="/collection">Shop All</a>
-    <a href="/about">About</a>
-  </nav>
-  <div class="header-actions">
-    <div class="cart-icon" id="cartIcon">
-      <i class="ri-shopping-bag-line"></i>
-      <span id="cart-count">0</span>
-    </div>
-  </div>
+  <button id="menu-toggle">☰</button>
+  <div class="brand-logo"><a href="/" class="brand-script">Ladey Storee</a></div>
+  <nav class="desktop-nav"><a href="/">Home</a><a href="/new-arrivals">New</a><a href="/bundledeals">Bundle Deals</a><a href="/tops">Tops</a><a href="/jeans">Jeans</a><a href="/jumpsuit">Jumpsuit</a><a href="/joggers">Joggers</a><a href="/2-piece-sets">2-Pc Sets</a><a href="/collection">Shop All</a><a href="/about">About</a></nav>
+  <div class="header-actions"><div class="cart-icon" id="cartIcon"><i class="ri-shopping-bag-line"></i><span id="cart-count">0</span></div></div>
 </header>
 
-<!-- MOBILE CATEGORY NAV -->
-<nav class="mobile-cat-nav">
-  <div class="mobile-cat-nav-inner">
-    <a href="/new-arrivals" class="mobile-cat-link">NEW</a>
-    <a href="/bundledeals" class="mobile-cat-link">BUNDLE DEALS</a>
-    <a href="/tops" class="mobile-cat-link">TOPS</a>
-    <a href="/jeans" class="mobile-cat-link">JEANS</a>
-    <a href="/jumpsuit" class="mobile-cat-link">JUMPSUIT</a>
-    <a href="/mom-shorts" class="mobile-cat-link">MOM SHORTS</a>
-    <a href="/bum-shorts" class="mobile-cat-link">BUM SHORTS</a>
-    <a href="/joggers" class="mobile-cat-link">JOGGERS</a>
-    <a href="/jogger-shorts" class="mobile-cat-link">JOGGER SHORTS</a>
-    <a href="/2-piece-sets" class="mobile-cat-link">2PC SETS</a>
-    <a href="/combos" class="mobile-cat-link">COMBOS</a>
-    <a href="/bags" class="mobile-cat-link">BAGS</a>
-    <a href="/others" class="mobile-cat-link">OTHERS</a>
-    <a href="/collection" class="mobile-cat-link">SHOP ALL</a>
-  </div>
-</nav>
+<nav class="mobile-cat-nav"><div class="mobile-cat-nav-inner"><a href="/new-arrivals" class="mobile-cat-link">NEW</a><a href="/bundledeals" class="mobile-cat-link">BUNDLE DEALS</a><a href="/tops" class="mobile-cat-link">TOPS</a><a href="/jeans" class="mobile-cat-link">JEANS</a><a href="/jumpsuit" class="mobile-cat-link">JUMPSUIT</a><a href="/collection" class="mobile-cat-link">SHOP ALL</a></div></nav>
 
-<!-- CART SIDEBAR -->
-<div class="cart-sidebar" id="cartSidebar">
-  <div class="cart-header">
-    <h3>Your Bag</h3>
-    <button id="close-cart"><i class="ri-close-line"></i></button>
-  </div>
-  <div class="cart-items" id="cartItemsContainer">
-    <p style="text-align:center; padding:3rem; color:#999;">Your cart is empty</p>
-  </div>
-  <div class="cart-footer">
-    <div class="cart-total"><span>Subtotal</span> <strong id="cartTotal">₦0</strong></div>
-    <button class="btn" id="checkoutBtn">CHECKOUT</button>
-    <button class="btn btn-outline" id="clearCartBtn">Clear Cart</button>
-  </div>
-</div>
+<div class="cart-sidebar" id="cartSidebar"><div class="cart-header"><h3>Your Bag</h3><button id="close-cart"><i class="ri-close-line"></i></button></div><div class="cart-items" id="cartItemsContainer"><p style="text-align:center;padding:3rem;color:#999;">Your cart is empty</p></div><div class="cart-footer"><div class="cart-total"><span>Subtotal</span><strong id="cartTotal">₦0</strong></div><button class="btn" id="checkoutBtn">CHECKOUT</button><button class="btn btn-outline" id="clearCartBtn">Clear Cart</button></div></div>
 
 <main>
-  <!-- HERO SPLIT -->
   <section class="hero-split">
-    <div class="hero-left">
-      <h1>Ladey Storee</h1>
-      <div class="hero-tagline">Timeless Stories, Worn Beautifully</div>
-      <p class="hero-description">
-        Discover our curated collection of sophisticated essentials designed for the modern woman who values timeless elegance over fleeting trends.
-      </p>
-      <a href="/collection" class="hero-cta">
-        EXPLORE COLLECTION 
-        <i class="ri-arrow-right-line"></i>
-      </a>
-    </div>
-    <div class="hero-right">
-      <img class="hero-img" src="{{ url_for('static', filename='Ladey.jpeg') }}" alt="Ladey Storee Editorial" loading="eager" onerror="this.src='https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800&auto=format'">
-      <div class="hero-overlay"></div>
-      <div class="hero-badge">
-        <span>New Collection</span><br>
-        <small style="color:var(--ash-dark);">Spring 2026</small>
-      </div>
-    </div>
+    <div class="hero-left"><h1>Ladey Storee</h1><div class="hero-tagline">Timeless Stories, Worn Beautifully</div><p class="hero-description">Discover our curated collection of sophisticated essentials designed for the modern woman who values timeless elegance over fleeting trends.</p><a href="/collection" class="hero-cta">EXPLORE COLLECTION <i class="ri-arrow-right-line"></i></a></div>
+    <div class="hero-right"><img class="hero-img" src="{{ url_for('static', filename='Ladey.jpeg') }}" alt="Ladey Storee Editorial" loading="eager" onerror="this.src='https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?w=800&auto=format'"><div class="hero-badge"><span>New Collection</span><br><small style="color:var(--ash-dark);">Spring 2026</small></div></div>
   </section>
 
-  <!-- MARQUEE -->
-  <div class="marquee-strip">
-    <div class="marquee-inner" id="marqueeInner"></div>
-  </div>
+  <div class="marquee-strip"><div class="marquee-inner" id="marqueeInner"></div></div>
 
-  <!-- FEATURED PRODUCTS (Essential Selection) -->
-  <section class="container section-padding" style="padding-bottom: 2rem;">
-    <div class="section-header fade-up">
-      <div class="section-eyebrow">Handpicked For You</div>
-      <h2>Essential Selection</h2>
-    </div>
+  <section class="container section-padding" style="padding-bottom:2rem;">
+    <div class="section-header fade-up"><div class="section-eyebrow">Handpicked For You</div><h2>Essential Selection</h2></div>
     <div class="product-grid" id="productGrid">
-      {% if products %}
-        {% for product in products[:8] %}
-        <div class="product-card fade-up">
-          <a href="/product/{{ product._id }}">
-            <div class="product-img-wrap">
-              <img src="{{ product.image or 'https://via.placeholder.com/400x500/f0f0f0/9E9E9E?text=LADEY' }}" alt="{{ product.name }}" loading="lazy">
-              <button class="quick-add" data-id="{{ product._id }}" data-name="{{ product.name }}" data-price="{{ product.price }}" aria-label="Quick add">
-                <i class="ri-add-line"></i>
-              </button>
-            </div>
-            <div class="product-info">
-              <div class="product-brand">LADEY STOREE</div>
-              <div class="product-name">{{ product.name }}</div>
-              <div class="product-price">{{ format_currency(product.price) }}</div>
-            </div>
-          </a>
-        </div>
-        {% endfor %}
-      {% else %}
-        <div class="empty-state">
-          <i class="ri-inbox-line"></i>
-          <p>No products available yet.</p>
-        </div>
-      {% endif %}
+      {% if products %}{% for product in products[:8] %}<div class="product-card fade-up"><a href="/product/{{ product._id }}"><div class="product-img-wrap"><img src="{{ product.image or 'https://via.placeholder.com/400x500/f0f0f0/9E9E9E?text=LADEY' }}" alt="{{ product.name }}" loading="lazy"><button class="quick-add" data-id="{{ product._id }}" data-name="{{ product.name }}" data-price="{{ product.price }}"><i class="ri-add-line"></i></button></div><div class="product-info"><div class="product-brand">LADEY STOREE</div><div class="product-name">{{ product.name }}</div><div class="product-price">{{ format_currency(product.price) }}</div></div></a></div>{% endfor %}{% else %}<div class="empty-state"><i class="ri-inbox-line"></i><p>No products available yet.</p></div>{% endif %}
     </div>
   </section>
 
-  <!-- CATEGORY SHOWCASE (Signature Edit) -->
-  <section class="container section-padding" style="padding-top: 2rem;">
-    <div class="section-header fade-up">
-      <div class="section-eyebrow">Curated Collections</div>
-      <h2>Signature Edit</h2>
-    </div>
+  <section class="container section-padding" style="padding-top:2rem;">
+    <div class="section-header fade-up"><div class="section-eyebrow">Curated Collections</div><h2>Signature Edit</h2></div>
     <div class="category-grid">
-      <a href="/new-arrivals" class="category-card fade-up">
-        <img src="https://images.unsplash.com/photo-1485462537746-965f33f7f6a7?w=600&auto=format" alt="New Arrivals" loading="lazy">
-        <div class="category-overlay"><span>New Arrivals</span></div>
-      </a>
-      <a href="/bundledeals" class="category-card fade-up">
-        <img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&auto=format" alt="Bundle Deals" loading="lazy">
-        <div class="category-overlay"><span>Bundle Deals</span></div>
-      </a>
-      <a href="/tops" class="category-card fade-up">
-        <img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&auto=format" alt="Tops" loading="lazy">
-        <div class="category-overlay"><span>Tops</span></div>
-      </a>
+      <a href="/new-arrivals" class="category-card fade-up"><img src="https://images.unsplash.com/photo-1485462537746-965f33f7f6a7?w=600&auto=format" alt="New Arrivals"><div class="category-overlay"><span>New Arrivals</span></div></a>
+      <a href="/bundledeals" class="category-card fade-up"><img src="https://images.unsplash.com/photo-1595777457583-95e059d581b8?w=600&auto=format" alt="Bundle Deals"><div class="category-overlay"><span>Bundle Deals</span></div></a>
+      <a href="/tops" class="category-card fade-up"><img src="https://images.unsplash.com/photo-1434389677669-e08b4cac3105?w=600&auto=format" alt="Tops"><div class="category-overlay"><span>Tops</span></div></a>
     </div>
   </section>
 
-  <!-- BRAND STORY -->
-  <section class="brand-story">
-    <div class="brand-story-grid">
-      <div class="story-content fade-up">
-        <h2>Our Story</h2>
-        <p>Ladey Storee was born from a simple belief: that true elegance is timeless, not seasonal. We create pieces that transcend trends, designed to become cherished staples in your wardrobe.</p>
-        <p>Every garment tells a story of craftsmanship, ethical production, and conscious design. We partner with artisans who share our commitment to quality and sustainability.</p>
-        <a href="/about" class="hero-cta" style="margin-top: 2rem; color: white; border-color: var(--ash);">Discover More <i class="ri-arrow-right-line"></i></a>
-      </div>
-      <div class="story-image fade-up">
-        <img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format" alt="Atelier" loading="lazy">
-      </div>
-    </div>
-  </section>
+  <section class="brand-story"><div class="brand-story-grid"><div class="story-content fade-up"><h2>Our Story</h2><p>Ladey Storee was born from a simple belief: that true elegance is timeless, not seasonal.</p><p>Every garment tells a story of craftsmanship, ethical production, and conscious design.</p><a href="/about" class="hero-cta" style="margin-top:2rem;color:white;border-color:var(--ash);">Discover More <i class="ri-arrow-right-line"></i></a></div><div class="story-image fade-up"><img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format" alt="Atelier"></div></div></section>
 
-  <!-- VALUES STRIP -->
-  <div class="values-strip">
-    <div class="container values-container">
-      <div class="value-item fade-up"><i class="ri-leaf-line"></i><h4>Ethically Made</h4><p>Conscious sourcing</p></div>
-      <div class="value-item fade-up"><i class="ri-time-line"></i><h4>Timeless Design</h4><p>Beyond seasons</p></div>
-      <div class="value-item fade-up"><i class="ri-arrow-go-back-line"></i><h4>Free Returns</h4><p>14-day policy</p></div>
-      <div class="value-item fade-up"><i class="ri-heart-line"></i><h4>Conscious Fashion</h4><p>Slow luxury</p></div>
-    </div>
-  </div>
+  <div class="values-strip"><div class="container values-container">
+    <div class="value-item fade-up"><i class="ri-leaf-line"></i><h4>Ethically Made</h4><p>Conscious sourcing</p></div>
+    <div class="value-item fade-up"><i class="ri-time-line"></i><h4>Timeless Design</h4><p>Beyond seasons</p></div>
+    <div class="value-item fade-up"><i class="ri-heart-line"></i><h4>Conscious Fashion</h4><p>Slow luxury</p></div>
+  </div></div>
 </main>
 
-<!-- FOOTER -->
 <footer>
-  <div class="footer-grid">
-    <div class="footer-col">
-      <h4 class="brand-script" style="font-size: 1.4rem; letter-spacing: 1px; text-transform: none;">Ladey Storee</h4>
-      <p>Timeless stories, worn beautifully. Modern elegance for the discerning woman who values quality, craftsmanship, and conscious luxury.</p>
-      <div class="social-links">
-        <a href="https://instagram.com/ladeystoreeee" target="_blank" aria-label="Instagram"><i class="ri-instagram-line"></i></a>
-        <a href="#" aria-label="Snapchat"><i class="fa-brands fa-snapchat"></i></a>
-      </div>
-    </div>
-    <div class="footer-col">
-      <h4>Shop</h4>
-      <ul>
-        <li><a href="/new-arrivals">New Arrivals</a></li>
-        <li><a href="/bundledeals">Bundle Deals</a></li>
-        <li><a href="/tops">Tops</a></li>
-        <li><a href="/jeans">Jeans/Denims</a></li>
-        <li><a href="/jumpsuit">Jumpsuit</a></li>
-        <li><a href="/joggers">Joggers</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>More</h4>
-      <ul>
-        <li><a href="/mom-shorts">Mom Shorts</a></li>
-        <li><a href="/bum-shorts">Bum Shorts</a></li>
-        <li><a href="/jogger-shorts">Jogger Shorts</a></li>
-        <li><a href="/2-piece-sets">2-Piece Sets</a></li>
-        <li><a href="/combos">Combos</a></li>
-        <li><a href="/bags">Bags</a></li>
-        <li><a href="/others">Others</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h4>Customer Care</h4>
-      <ul>
-        <li><a href="/contact">Contact Us</a></li>
-        <li><a href="https://wa.me/2348033786290" target="_blank">WhatsApp</a></li>
-        <li><a href="/about">About</a></li>
-        <li><a href="/collection">All Collection</a></li>
-      </ul>
-    </div>
-  </div>
-  <div class="footer-bottom">
-    <span>© 2026 Ladey Storee — All rights reserved. Crafted with intention.</span>
-    <div class="payment-icons">
-      <i class="ri-visa-line"></i>
-      <i class="ri-mastercard-line"></i>
-    </div>
-  </div>
+  <div class="footer-grid"><div class="footer-col"><h4 class="brand-script" style="font-size:1.4rem;text-transform:none;">Ladey Storee</h4><p>Timeless stories, worn beautifully.</p><div class="social-links"><a href="https://instagram.com/ladeystoreeee" target="_blank"><i class="ri-instagram-line"></i></a><a href="#"><i class="fa-brands fa-snapchat"></i></a></div></div><div class="footer-col"><h4>Shop</h4><ul><li><a href="/new-arrivals">New Arrivals</a></li><li><a href="/bundledeals">Bundle Deals</a></li><li><a href="/tops">Tops</a></li><li><a href="/jeans">Jeans/Denims</a></li><li><a href="/jumpsuit">Jumpsuit</a></li><li><a href="/joggers">Joggers</a></li></ul></div><div class="footer-col"><h4>More</h4><ul><li><a href="/mom-shorts">Mom Shorts</a></li><li><a href="/bum-shorts">Bum Shorts</a></li><li><a href="/jogger-shorts">Jogger Shorts</a></li><li><a href="/2-piece-sets">2-Piece Sets</a></li><li><a href="/combos">Combos</a></li><li><a href="/bags">Bags</a></li><li><a href="/others">Others</a></li></ul></div><div class="footer-col"><h4>Customer Care</h4><ul><li><a href="/contact">Contact Us</a></li><li><a href="https://wa.me/2348033786290" target="_blank">WhatsApp</a></li><li><a href="/about">About</a></li><li><a href="/collection">All Collection</a></li></ul></div></div>
+  <div class="footer-bottom"><span>© 2026 Ladey Storee</span><div><i class="ri-visa-line"></i> <i class="ri-mastercard-line"></i></div></div>
 </footer>
 
-<!-- BOTTOM NAVIGATION -->
-<nav class="bottom-nav">
-  <a href="/" class="bottom-nav-item active"><i class="ri-home-4-line"></i><span>Home</span></a>
-  <a href="/collection" class="bottom-nav-item"><i class="ri-store-line"></i><span>Shop</span></a>
-  <div class="bottom-nav-item" id="bottomCartToggle"><i class="ri-shopping-bag-line"></i><span>Cart</span></div>
-  <div class="bottom-nav-item" id="bottomMenuToggle"><i class="ri-menu-line"></i><span>Menu</span></div>
-</nav>
+<nav class="bottom-nav"><a href="/" class="bottom-nav-item active"><i class="ri-home-4-line"></i><span>Home</span></a><a href="/collection" class="bottom-nav-item"><i class="ri-store-line"></i><span>Shop</span></a><div class="bottom-nav-item" id="bottomCartToggle"><i class="ri-shopping-bag-line"></i><span>Cart</span></div><div class="bottom-nav-item" id="bottomMenuToggle"><i class="ri-menu-line"></i><span>Menu</span></div></nav>
 
 <script>
-  (function(){
-    "use strict";
-
-    let cart = JSON.parse(localStorage.getItem('ladeyCart')) || [];
-    
-    const progressBar = document.getElementById('scroll-progress');
-    const menuToggle = document.getElementById('menu-toggle');
-    const sideMenu = document.getElementById('side-menu');
-    const overlay = document.getElementById('overlay');
-    const closeSidebar = document.getElementById('closeSidebar');
-    const cartIcon = document.getElementById('cartIcon');
-    const cartSidebar = document.getElementById('cartSidebar');
-    const closeCart = document.getElementById('close-cart');
-    const cartCountSpan = document.getElementById('cart-count');
-    const cartItemsDiv = document.getElementById('cartItemsContainer');
-    const cartTotalSpan = document.getElementById('cartTotal');
-    
-    const bottomCartToggle = document.getElementById('bottomCartToggle');
-    const bottomMenuToggle = document.getElementById('bottomMenuToggle');
-    
-    function updateScroll() {
-      const scrolled = window.scrollY;
-      const winH = document.documentElement.scrollHeight - window.innerHeight;
-      progressBar.style.width = winH > 0 ? (scrolled / winH) * 100 + '%' : '0%';
-    }
-    window.addEventListener('scroll', updateScroll);
-    updateScroll();
-
-    const fadeElements = document.querySelectorAll('.fade-up');
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => { 
-        if(entry.isIntersecting) entry.target.classList.add('visible');
-      });
-    }, { threshold: 0.12, rootMargin: '0px 0px -20px 0px' });
-    fadeElements.forEach(el => observer.observe(el));
-
-    function openMenu() { sideMenu.classList.add('active'); overlay.classList.add('active'); }
-    function closeMenu() { sideMenu.classList.remove('active'); overlay.classList.remove('active'); }
-    
-    menuToggle.addEventListener('click', openMenu);
-    closeSidebar.addEventListener('click', closeMenu);
-    overlay.addEventListener('click', closeMenu);
-    document.querySelectorAll('.sidebar-nav a, .cat-chip').forEach(link => link.addEventListener('click', closeMenu));
-
-    if(bottomMenuToggle) bottomMenuToggle.addEventListener('click', openMenu);
-    if(bottomCartToggle) bottomCartToggle.addEventListener('click', () => cartSidebar.classList.add('open'));
-
-    function saveCart() { localStorage.setItem('ladeyCart', JSON.stringify(cart)); updateCartUI(); }
-    
-    function updateCartUI() {
-      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-      cartCountSpan.textContent = totalItems;
-      
-      if (!cart.length) {
-        cartItemsDiv.innerHTML = '<p style="text-align:center; padding:3rem; color:#999;">Your cart is empty</p>';
-        cartTotalSpan.textContent = '₦0';
-        return;
-      }
-      
-      let total = 0, html = '';
-      cart.forEach((item) => {
-        total += item.price * item.quantity;
-        html += `<div class="cart-item">
-          <div><strong>${item.name}</strong><br><small style="color:#999;">Qty: ${item.quantity} × ₦${item.price.toLocaleString()}</small></div>
-          <div style="display:flex; align-items:center; gap:12px;">
-            <span style="font-weight:600;">₦${(item.price * item.quantity).toLocaleString()}</span>
-            <button class="remove-item" data-id="${item.id}" style="background:none;border:none;cursor:pointer;color:#999;font-size:1.5rem;">×</button>
-          </div>
-        </div>`;
-      });
-      
-      cartItemsDiv.innerHTML = html;
-      cartTotalSpan.textContent = '₦' + total.toLocaleString();
-      
-      document.querySelectorAll('.remove-item').forEach(btn => {
-        btn.addEventListener('click', () => {
-          cart = cart.filter(i => i.id !== btn.dataset.id);
-          saveCart();
-        });
-      });
-    }
-    
-    function addToCart(productId, name, price) {
-      const existing = cart.find(item => item.id === productId);
-      if(existing) existing.quantity++;
-      else cart.push({ id: productId, name, price, quantity: 1 });
-      saveCart();
-      cartSidebar.classList.add('open');
-    }
-    
-    document.getElementById('clearCartBtn').addEventListener('click', () => { cart = []; saveCart(); });
-    cartIcon.addEventListener('click', () => cartSidebar.classList.add('open'));
-    closeCart.addEventListener('click', () => cartSidebar.classList.remove('open'));
-    window.addEventListener('click', (e) => { if(e.target === cartSidebar) cartSidebar.classList.remove('open'); });
-
-    document.querySelectorAll('.quick-add').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        addToCart(btn.dataset.id, btn.dataset.name, parseFloat(btn.dataset.price));
-      });
-    });
-    
-    updateCartUI();
-
-    document.getElementById('checkoutBtn').addEventListener('click', () => {
-      window.location.href = '/checkout';
-    });
-
-    const marqueeItems = ['NEW ARRIVALS', 'FREE SHIPPING OVER ₦150,000', 'ETHICALLY MADE', 'TIMELESS DESIGN', 'CONSCIOUS LUXURY', 'SLOW FASHION'];
-    const marqueeInner = document.getElementById('marqueeInner');
-    const marqueeContent = marqueeItems.map(t => `<span class="marquee-item"><span class="marquee-dot"></span>${t}</span>`).join('');
-    marqueeInner.innerHTML = marqueeContent + marqueeContent + marqueeContent;
-
-    setTimeout(() => document.querySelectorAll('.product-card.fade-up').forEach(card => observer.observe(card)), 100);
-  })();
+(function(){
+let cart=JSON.parse(localStorage.getItem('ladeyCart'))||[];
+const progressBar=document.getElementById('scroll-progress'),menuToggle=document.getElementById('menu-toggle'),sideMenu=document.getElementById('side-menu'),overlay=document.getElementById('overlay'),closeSidebar=document.getElementById('closeSidebar'),cartIcon=document.getElementById('cartIcon'),cartSidebar=document.getElementById('cartSidebar'),closeCart=document.getElementById('close-cart'),cartCountSpan=document.getElementById('cart-count'),cartItemsDiv=document.getElementById('cartItemsContainer'),cartTotalSpan=document.getElementById('cartTotal'),bottomCartToggle=document.getElementById('bottomCartToggle'),bottomMenuToggle=document.getElementById('bottomMenuToggle');
+function updateScroll(){const s=window.scrollY,wh=document.documentElement.scrollHeight-window.innerHeight;progressBar.style.width=wh>0?(s/wh)*100+'%':'0%';}window.addEventListener('scroll',updateScroll);updateScroll();
+const fe=document.querySelectorAll('.fade-up'),ob=new IntersectionObserver((e)=>{e.forEach(en=>{if(en.isIntersecting)en.target.classList.add('visible');});},{threshold:0.12});fe.forEach(el=>ob.observe(el));
+function om(){sideMenu.classList.add('active');overlay.classList.add('active');}function cm(){sideMenu.classList.remove('active');overlay.classList.remove('active');}
+menuToggle.addEventListener('click',om);closeSidebar.addEventListener('click',cm);overlay.addEventListener('click',cm);document.querySelectorAll('.sidebar-nav a,.cat-chip').forEach(l=>l.addEventListener('click',cm));if(bottomMenuToggle)bottomMenuToggle.addEventListener('click',om);if(bottomCartToggle)bottomCartToggle.addEventListener('click',()=>cartSidebar.classList.add('open'));
+function sc(){localStorage.setItem('ladeyCart',JSON.stringify(cart));uc();}
+function uc(){const ti=cart.reduce((s,i)=>s+i.quantity,0);cartCountSpan.textContent=ti;if(!cart.length){cartItemsDiv.innerHTML='<p style="text-align:center;padding:3rem;color:#999;">Your cart is empty</p>';cartTotalSpan.textContent='₦0';return;}let t=0,h='';cart.forEach(i=>{t+=i.price*i.quantity;h+=`<div class="cart-item"><div><strong>${i.name}</strong><br><small>Qty:${i.quantity}×₦${i.price.toLocaleString()}</small></div><div style="display:flex;align-items:center;gap:12px;"><span>₦${(i.price*i.quantity).toLocaleString()}</span><button class="remove-item" data-id="${i.id}" style="background:none;border:none;cursor:pointer;color:#999;font-size:1.5rem;">×</button></div></div>`;});cartItemsDiv.innerHTML=h;cartTotalSpan.textContent='₦'+t.toLocaleString();document.querySelectorAll('.remove-item').forEach(b=>b.addEventListener('click',()=>{cart=cart.filter(i=>i.id!==b.dataset.id);sc();}));}
+document.getElementById('clearCartBtn').addEventListener('click',()=>{cart=[];sc();});cartIcon.addEventListener('click',()=>cartSidebar.classList.add('open'));closeCart.addEventListener('click',()=>cartSidebar.classList.remove('open'));document.querySelectorAll('.quick-add').forEach(btn=>{btn.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();const ex=cart.find(i=>i.id===btn.dataset.id);if(ex)ex.quantity++;else cart.push({id:btn.dataset.id,name:btn.dataset.name,price:parseFloat(btn.dataset.price),quantity:1});sc();cartSidebar.classList.add('open');});});uc();document.getElementById('checkoutBtn').addEventListener('click',()=>{window.location.href='/checkout';});
+const mi=['NEW ARRIVALS','FREE SHIPPING OVER ₦150,000','ETHICALLY MADE','TIMELESS DESIGN','CONSCIOUS LUXURY','SLOW FASHION'],marqueeInner=document.getElementById('marqueeInner'),mc=mi.map(t=>`<span class="marquee-item"><span class="marquee-dot"></span>${t}</span>`).join('');marqueeInner.innerHTML=mc+mc+mc;setTimeout(()=>document.querySelectorAll('.product-card.fade-up').forEach(c=>ob.observe(c)),100);
+})();
 </script>
 </body>
 </html>
