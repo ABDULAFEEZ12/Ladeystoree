@@ -86,7 +86,7 @@
     }
     .add-to-cart-btn-main:hover { background: #000; transform: scale(1.02); box-shadow: var(--shadow-lift); }
     .trust-section { margin: 30px 0 20px; background: #f9f9f9; padding: 20px 25px; border-radius: 24px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; }
-    .trust-item { display: flex; align-items: center; gap: 10px; font-size: 0.85rem; color: #555; }
+    .trust-item { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; color: #555; }
     .trust-item i { color: var(--charcoal); font-size: 1.2rem; }
     .back-link { display: inline-block; margin-top: 25px; color: var(--charcoal); border-bottom: 1px solid var(--charcoal); padding-bottom: 4px; font-weight: 500; }
     .back-link:hover { color: #000; }
@@ -200,9 +200,8 @@
         
         <div class="trust-section">
           <div class="trust-item"><i class="ri-checkbox-circle-fill"></i> Premium Quality</div>
-          <div class="trust-item"><i class="ri-checkbox-circle-fill"></i> Ethically Made</div>
-          <div class="trust-item"><i class="ri-checkbox-circle-fill"></i> Timeless Design</div>
-          <div class="trust-item"><i class="ri-checkbox-circle-fill"></i> Fast Delivery</div>
+          <div class="trust-item"><i class="ri-truck-line"></i> Ethically Delivered within Lagos 24-72hrs</div>
+          <div class="trust-item"><i class="ri-calendar-check-line"></i> Weighbills Every Weekend</div>
         </div>
         <a href="/collection" class="back-link"><i class="ri-arrow-left-line"></i> Back to shop</a>
       </div>
@@ -299,7 +298,6 @@
       `;
     }
     
-    // Product data
     const productId = "{{ product._id }}";
     const productName = "{{ product.name }}";
     const productPrice = {{ product.price }};
@@ -336,20 +334,14 @@
     });
     if (thumbnails.length === 1) thumbnails[0].classList.add('active-thumb');
 
-    // Bottom cart toggle - redirect to checkout
     const bottomCartToggle = document.getElementById('bottomCartToggle');
     if(bottomCartToggle) {
-      bottomCartToggle.addEventListener('click', () => {
-        window.location.href = '/checkout';
-      });
+      bottomCartToggle.addEventListener('click', () => { window.location.href = '/checkout'; });
     }
 
-    // Top cart icon - redirect to checkout
     const cartIcon = document.getElementById('cartIcon');
     if(cartIcon) {
-      cartIcon.addEventListener('click', () => {
-        window.location.href = '/checkout';
-      });
+      cartIcon.addEventListener('click', () => { window.location.href = '/checkout'; });
     }
   })();
 </script>
