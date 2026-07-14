@@ -5,10 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LADEY STOREE · Admin</title>
 
-  <!-- Premium Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  
-  <!-- Icons -->
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
@@ -73,7 +70,6 @@
     .flash.error { border-left-color: #E8A0A0; }
     .logout-link { color: var(--ash-dark); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; transition: color 0.2s; display: inline-flex; align-items: center; gap: 6px; }
     .logout-link:hover { color: var(--white-pure); }
-    .new-orders-badge { background: #D4AF37; color: #000; padding: 4px 12px; border-radius: 20px; font-size: 0.7rem; font-family: var(--font-sans); margin-left: 10px; letter-spacing: 1px; font-weight: 600; }
     .view-details-summary { cursor: pointer; color: var(--ash-dark); }
     .view-details-summary:hover { color: var(--ash); }
     .order-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.8rem; }
@@ -118,8 +114,8 @@
           <label>Category *</label>
           <select name="category" required>
             <option value="">Select Category</option>
+            <option value="Bundle Deals">Bundle Deals</option>
             <option value="New Arrivals">New Arrivals</option>
-            <option value="Dresses">Dresses</option>
             <option value="Tops">Tops</option>
             <option value="Jeans/Denims">Jeans/Denims</option>
             <option value="Jumpsuit">Jumpsuit</option>
@@ -217,6 +213,29 @@
     </div>
   </div>
 
+  <!-- ✅ NEW: Messages Section -->
+  <div class="section">
+    <h2><i class="ri-message-line" style="margin-right: 10px;"></i> Messages</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Date</th><th>Name</th><th>Email</th><th>Subject</th><th>Message</th></tr></thead>
+        <tbody>
+          {% for msg in messages %}
+          <tr>
+            <td>{% if msg.createdAt %}{{ msg.createdAt.strftime('%d/%m/%y %H:%M') }}{% else %}—{% endif %}</td>
+            <td><strong>{{ msg.name or '—' }}</strong></td>
+            <td>{{ msg.email or '—' }}</td>
+            <td>{{ msg.subject or '—' }}</td>
+            <td>{{ msg.message or '—' }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="5" style="text-align:center;padding:3rem;color:var(--ash-dark);"><i class="ri-message-line" style="font-size:2rem;display:block;margin-bottom:1rem;"></i>No messages yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -231,6 +250,5 @@
     });
   });
 </script>
-
 </body>
 </html>
