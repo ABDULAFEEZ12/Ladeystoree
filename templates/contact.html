@@ -347,9 +347,33 @@
     }
     updateCartCount();
 
+    // ✅ UPDATED: Save message to database
     document.getElementById('contactForm').addEventListener('submit', (e) => {
       e.preventDefault();
-      alert('Thank you for your message! We will get back to you soon.');
+      
+      const name = e.target.querySelector('input[placeholder="Your Name"]').value.trim();
+      const email = e.target.querySelector('input[placeholder="Your Email"]').value.trim();
+      const subject = e.target.querySelector('input[placeholder="Subject"]').value.trim();
+      const message = e.target.querySelector('textarea').value.trim();
+      
+      if (!name || !email || !message) {
+        alert('Please fill in your name, email, and message.');
+        return;
+      }
+      
+      fetch('/send-message', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, subject, message })
+      })
+      .then(res => res.json())
+      .then(data => {
+        alert('Thank you! Your message has been received. We will get back to you soon.');
+        e.target.reset();
+      })
+      .catch(err => {
+        alert('Failed to send message. Please try again.');
+      });
     });
 
     const bottomCartToggle = document.getElementById('bottomCartToggle');
