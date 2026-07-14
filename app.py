@@ -207,11 +207,11 @@ def new_arrivals():
 @app.route("/dresses")
 def dresses():
     try:
-        products = convert_cursor(products_collection.find({"category": "Dresses"}))
+        products = convert_cursor(products_collection.find({"category": "Bundle Deals"}))
     except Exception as e:
         print(f"Database error: {e}")
         products = []
-    return render_template("dresses.html", products=products, category_name="Dresses")
+    return render_template("bundledeals.html", products=products, category_name="Bundle Deals")
 
 @app.route("/tops")
 def tops():
