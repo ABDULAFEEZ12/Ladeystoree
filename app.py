@@ -57,7 +57,7 @@ db = client["ladeystoree"]
 products_collection = db["products"]
 orders_collection = db["orders"]
 admins_collection = db["admins"]
-messages_collection = db["messages"]  # ✅ NEW
+messages_collection = db["messages"]
 
 def safe_objectid(id_str):
     try: return ObjectId(id_str)
@@ -109,9 +109,6 @@ def token_required(f):
         return f(current_admin, *args, **kwargs)
     return decorated
 
-# ==========================
-# PUBLIC ROUTES
-# ==========================
 @app.route("/")
 def home():
     try: products = convert_cursor(products_collection.find().limit(8))
@@ -247,8 +244,10 @@ def save_order():
         "paymentReference": reference,
         "customerName": data.get("customerName", "Unknown"),
         "customerPhone": data.get("customerPhone", ""),
+        "customerWhatsapp": data.get("customerWhatsapp", ""),
         "customerEmail": data.get("customerEmail", ""),
         "deliveryAddress": data.get("deliveryAddress", ""),
+        "state": data.get("state", ""),
         "size": data.get("size", ""),
         "color": data.get("color", ""),
         "items": data.get("items", []),
@@ -263,12 +262,10 @@ def save_order():
     except Exception as e:
         return jsonify({"message": "Failed", "error": str(e)}), 500
 
-# ✅ NEW: Save Contact Messages
 @app.route("/send-message", methods=["POST"])
 def send_message():
     data = request.get_json()
-    if not data:
-        return jsonify({"message": "Invalid request"}), 400
+    if not data: return jsonify({"message": "Invalid request"}), 400
     message_data = {
         "name": data.get("name", "Unknown"),
         "email": data.get("email", ""),
@@ -278,7 +275,6 @@ def send_message():
     }
     try:
         messages_collection.insert_one(message_data)
-        print(f"✅ Message saved from: {data.get('name')}")
         return jsonify({"message": "Message sent successfully!"})
     except Exception as e:
         return jsonify({"message": "Failed to send message", "error": str(e)}), 500
@@ -289,9 +285,6 @@ def order_status(reference):
     if not order: abort(404)
     return render_template("order_status.html", order=convert_doc(order))
 
-# ==========================
-# ADMIN ROUTES
-# ==========================
 @app.route("/admin/seed")
 def seed_admin():
     if admins_collection.find_one({"email": "admin@ladeystoree.com"}):
@@ -322,10 +315,9 @@ def admin_dashboard(current_admin):
     try:
         products = convert_cursor(products_collection.find())
         orders = convert_cursor(orders_collection.find().sort("createdAt", -1))
-        messages = convert_cursor(messages_collection.find().sort("createdAt", -1))  # ✅ NEW
+        messages = convert_cursor(messages_collection.find().sort("createdAt", -1))
     except:
         products, orders, messages = [], [], []
-    
     for order in orders:
         if 'items' in order and isinstance(order['items'], list):
             order['orderItems'] = order.pop('items')
@@ -333,14 +325,15 @@ def admin_dashboard(current_admin):
             order['orderItems'] = []
         order.setdefault('customerName', '—')
         order.setdefault('customerPhone', '—')
+        order.setdefault('customerWhatsapp', '—')
         order.setdefault('customerEmail', '')
         order.setdefault('deliveryAddress', '—')
+        order.setdefault('state', '—')
         order.setdefault('size', '—')
         order.setdefault('color', '—')
         order.setdefault('amount', 0)
         order.setdefault('status', 'Pending')
         order.setdefault('paymentReference', '—')
-    
     return render_template("admin.html", products=products, orders=orders, messages=messages)
 
 @app.route("/admin/logout")
