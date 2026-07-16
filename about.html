@@ -140,7 +140,7 @@
 <div class="cart-sidebar" id="cartSidebar">
   <div class="cart-header"><h3>Your Bag</h3><button id="close-cart"><i class="ri-close-line"></i></button></div>
   <div class="cart-items" id="cartItemsContainer"><p style="text-align:center; padding:2rem; color:#888;">Your cart is empty</p></div>
-  <div class="cart-footer"><div class="cart-total"><span>Subtotal</span> <strong id="cartTotal">$0</strong></div><button class="btn" id="checkoutBtn">CHECKOUT</button><button class="btn-outline" id="clearCartBtn">Clear</button></div>
+  <div class="cart-footer"><div class="cart-total"><span>Subtotal</span> <strong id="cartTotal">₦0</strong></div><button class="btn" id="checkoutBtn">CHECKOUT</button><button class="btn-outline" id="clearCartBtn">Clear Cart</button></div>
 </div>
 
 <main>
@@ -152,7 +152,8 @@
       <p>Welcome to a new kind of elegance. Welcome to LADEY STOREE.</p>
     </div>
     <div class="about-image">
-      <img src="https://images.unsplash.com/photo-1485462537746-965f33f7f6a7?w=1200&auto=format" alt="Atelier">
+      <!-- ✅ CHANGED: Ladey Storee image instead of Unsplash -->
+      <img src="{{ url_for('static', filename='Ladey.jpeg') }}" alt="Ladey Storee" onerror="this.src='https://images.unsplash.com/photo-1485462537746-965f33f7f6a7?w=1200&auto=format'">
     </div>
   </section>
 
@@ -209,10 +210,10 @@
     function saveCart() { localStorage.setItem('ladeyCart', JSON.stringify(cart)); updateCartUI(); }
     function updateCartUI() {
       const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0); cartCountSpan.textContent = totalItems;
-      if (!cart.length) { cartItemsDiv.innerHTML = '<p style="text-align:center; padding:2rem; color:#888;">Your cart is empty</p>'; cartTotalSpan.textContent = '$0'; return; }
+      if (!cart.length) { cartItemsDiv.innerHTML = '<p style="text-align:center; padding:2rem; color:#888;">Your cart is empty</p>'; cartTotalSpan.textContent = '₦0'; return; }
       let total = 0, html = '';
-      cart.forEach(item => { total += item.price * item.quantity; html += `<div class="cart-item"><div><strong>${item.name}</strong><br><small>Qty: ${item.quantity}</small></div><div><span>$${item.price}</span><button class="remove-item" data-id="${item.id}" style="background:none;border:none;cursor:pointer;color:#999;">✕</button></div></div>`; });
-      cartItemsDiv.innerHTML = html; cartTotalSpan.textContent = '$' + total;
+      cart.forEach(item => { total += item.price * item.quantity; html += `<div class="cart-item"><div><strong>${item.name}</strong><br><small>Qty: ${item.quantity} × ₦${item.price.toLocaleString()}</small></div><div><span>₦${(item.price * item.quantity).toLocaleString()}</span><button class="remove-item" data-id="${item.id}" style="background:none;border:none;cursor:pointer;color:#999;">✕</button></div></div>`; });
+      cartItemsDiv.innerHTML = html; cartTotalSpan.textContent = '₦' + total.toLocaleString();
       document.querySelectorAll('.remove-item').forEach(btn => btn.addEventListener('click', () => { cart = cart.filter(i => i.id !== btn.dataset.id); saveCart(); }));
     }
     document.getElementById('clearCartBtn').addEventListener('click', () => { cart = []; saveCart(); });
@@ -220,7 +221,7 @@
     closeCart.addEventListener('click', () => cartSidebar.classList.remove('open'));
 
     updateCartUI();
-    document.getElementById('checkoutBtn').addEventListener('click', () => alert('Proceed to checkout (demo)'));
+    document.getElementById('checkoutBtn').addEventListener('click', () => { window.location.href = '/checkout'; });
   })();
 </script>
 </body>
