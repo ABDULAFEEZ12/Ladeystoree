@@ -112,13 +112,11 @@
 
     <div>
       <div class="section-title"><i class="ri-user-line"></i><span>Your Details</span></div>
-      
       <div class="form-group"><label>Full Name *</label><input id="fullName" placeholder="Enter your full name" required></div>
       <div class="form-group"><label>Calling Number *</label><input id="phone" type="tel" placeholder="080xxxxxxxx" required></div>
       <div class="form-group"><label>WhatsApp Number *</label><input id="whatsapp" type="tel" placeholder="080xxxxxxxx" required></div>
       <div class="form-group"><label>Email</label><input id="email" type="email" placeholder="your@email.com"></div>
       <div class="form-group"><label>Delivery Address *</label><textarea id="address" rows="2" placeholder="Enter your full delivery address" required></textarea></div>
-      
       <div class="row">
         <div class="form-group">
           <label>State *</label>
@@ -255,8 +253,33 @@
       total: total
     }));
 
-    // ✅ Pass amount to SquadCo via URL
-    window.location.href = `https://pay.squadco.com/ladeystoree?amount=${total}`;
+    // ✅ Create payment link via SquadCo API with exact amount
+    const payBtn = document.getElementById("payNow");
+    payBtn.disabled = true;
+    payBtn.innerHTML = '<i class="ri-loader-4-line"></i> Creating payment...';
+    
+    fetch('/create-payment-link', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        amount: total,
+        email: email || 'customer@ladeystoree.com',
+        name: name
+      })
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.payment_url) {
+        window.location.href = data.payment_url;
+      } else {
+        // Fallback to simple payment link
+        window.location.href = "https://pay.squadco.com/ladeystoree";
+      }
+    })
+    .catch(err => {
+      // Fallback to simple payment link
+      window.location.href = "https://pay.squadco.com/ladeystoree";
+    });
   };
 </script>
 </body>
