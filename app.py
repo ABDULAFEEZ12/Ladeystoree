@@ -29,6 +29,7 @@ app.secret_key = os.getenv("JWT_SECRET")
 MONGO_URI = os.getenv("MONGO_URI")
 JWT_SECRET = os.getenv("JWT_SECRET")
 IMGBB_API_KEY = os.getenv("IMGBB_API_KEY")
+SQUADCO_SECRET_KEY = os.getenv("SQUADCO_SECRET_KEY")  # ✅ NEW
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
@@ -253,6 +254,51 @@ def checkout(): return render_template("checkout.html")
 @app.route("/order-confirmed")
 def order_confirmed(): return render_template("order-confirmed.html")
 
+# ✅ NEW: Create SquadCo payment link with exact amount
+@app.route("/create-payment-link", methods=["POST"])
+def create_payment_link():
+    data = request.get_json()
+    if not data:
+        return jsonify({"error": "Invalid request"}), 400
+    
+    amount = data.get("amount", 0)
+    email = data.get("email", "customer@ladeystoree.com")
+    name = data.get("name", "Customer")
+    
+    if not SQUADCO_SECRET_KEY:
+        return jsonify({"error": "Payment not configured"}), 500
+    
+    try:
+        response = requests.post(
+            "https://api.squadco.com/transaction/initiate",
+            headers={
+                "Authorization": f"Bearer {SQUADCO_SECRET_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "amount": float(amount) * 100,
+                "email": email,
+                "name": name,
+                "currency": "NGN",
+                "redirect_url": "https://ladeystoree.com/order-confirmed"
+            }
+        )
+        
+        result = response.json()
+        print(f"SquadCo response: {result}")
+        
+        if result.get("status") == "success" or result.get("data", {}).get("checkout_url"):
+            checkout_url = result.get("data", {}).get("checkout_url")
+            return jsonify({"payment_url": checkout_url})
+        else:
+            # Fallback to simple payment link
+            return jsonify({"payment_url": f"https://pay.squadco.com/ladeystoree"})
+            
+    except Exception as e:
+        print(f"SquadCo error: {e}")
+        # Fallback
+        return jsonify({"payment_url": f"https://pay.squadco.com/ladeystoree"})
+
 @app.route("/save-order", methods=["POST"])
 def save_order():
     data = request.get_json()
@@ -266,7 +312,7 @@ def save_order():
         "customerEmail": data.get("customerEmail", ""),
         "deliveryAddress": data.get("deliveryAddress", ""),
         "state": data.get("state", ""),
-        "country": data.get("country", "Nigeria"),  # ✅ NEW
+        "country": data.get("country", "Nigeria"),
         "size": data.get("size", ""),
         "color": data.get("color", ""),
         "items": data.get("items", []),
@@ -351,7 +397,7 @@ def admin_dashboard(current_admin):
         order.setdefault('customerEmail', '')
         order.setdefault('deliveryAddress', '—')
         order.setdefault('state', '—')
-        order.setdefault('country', '—')  # ✅ NEW
+        order.setdefault('country', '—')
         order.setdefault('size', '—')
         order.setdefault('color', '—')
         order.setdefault('amount', 0)
