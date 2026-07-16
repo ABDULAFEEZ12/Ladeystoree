@@ -116,26 +116,18 @@ def token_required(f):
 def home():
     try:
         products = convert_cursor(products_collection.find().limit(8))
-        
         new_arrival = products_collection.find_one({"category": "New Arrivals"})
         bundle_deal = products_collection.find_one({"category": "Bundle Deals"})
         top = products_collection.find_one({"category": "Tops"})
-        
         new_arrivals_image = new_arrival.get("image") if new_arrival else None
         bundle_deals_image = bundle_deal.get("image") if bundle_deal else None
         tops_image = top.get("image") if top else None
-        
     except:
         products = []
         new_arrivals_image = None
         bundle_deals_image = None
         tops_image = None
-    
-    return render_template("home.html", 
-                          products=products,
-                          new_arrivals_image=new_arrivals_image,
-                          bundle_deals_image=bundle_deals_image,
-                          tops_image=tops_image)
+    return render_template("home.html", products=products, new_arrivals_image=new_arrivals_image, bundle_deals_image=bundle_deals_image, tops_image=tops_image)
 
 @app.route("/new-arrivals")
 def new_arrivals():
@@ -145,14 +137,12 @@ def new_arrivals():
     except: products = []
     return render_template("new-arrivals.html", products=products, category_name="New Arrivals")
 
-# ✅ NEW: Bundle Deals route
 @app.route("/bundledeals")
 def bundledeals():
     try: products = convert_cursor(products_collection.find({"category": "Bundle Deals"}))
     except: products = []
     return render_template("bundledeals.html", products=products, category_name="Bundle Deals")
 
-# Old dresses route redirects to bundledeals
 @app.route("/dresses")
 def dresses():
     return redirect(url_for("bundledeals"))
@@ -276,6 +266,7 @@ def save_order():
         "customerEmail": data.get("customerEmail", ""),
         "deliveryAddress": data.get("deliveryAddress", ""),
         "state": data.get("state", ""),
+        "country": data.get("country", "Nigeria"),  # ✅ NEW
         "size": data.get("size", ""),
         "color": data.get("color", ""),
         "items": data.get("items", []),
@@ -360,6 +351,7 @@ def admin_dashboard(current_admin):
         order.setdefault('customerEmail', '')
         order.setdefault('deliveryAddress', '—')
         order.setdefault('state', '—')
+        order.setdefault('country', '—')  # ✅ NEW
         order.setdefault('size', '—')
         order.setdefault('color', '—')
         order.setdefault('amount', 0)
