@@ -104,11 +104,6 @@
     .product-brand { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 2px; color: var(--ash-dark); }
     .product-name { font-family: var(--font-serif); font-size: 1.1rem; margin: 6px 0; }
     .product-price { font-weight: 500; font-size: 1rem; }
-    .category-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem; }
-    .category-card { position: relative; overflow: hidden; aspect-ratio: 4/5; cursor: pointer; box-shadow: var(--shadow-soft); border-radius: 6px; }
-    .category-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 1s; }
-    .category-overlay { position: absolute; inset: 0; background: linear-gradient(to top, rgba(26,26,26,0.6), transparent 50%); display: flex; align-items: flex-end; justify-content: center; padding-bottom: 2.5rem; opacity: 0; transition: opacity 0.4s; }
-    .category-overlay span { background: rgba(255,255,255,0.95); padding: 12px 36px; font-family: var(--font-serif); font-size: 1.4rem; letter-spacing: 4px; border-radius: 4px; }
     .brand-story { background: linear-gradient(135deg, var(--charcoal-warm) 0%, var(--charcoal) 100%); color: var(--off-white); padding: 6rem 5%; }
     .brand-story-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 4rem; align-items: center; max-width: 1200px; margin: 0 auto; }
     .story-content h2 { font-size: 2.5rem; margin-bottom: 1.5rem; color: white; }
@@ -136,7 +131,7 @@
     @media (max-width: 1000px) { .product-grid { grid-template-columns: repeat(3, 1fr); } }
     @media (max-width: 860px) { .hero-split { grid-template-columns: 1fr; min-height: auto; } .hero-left { order: 2; padding: 4rem 6%; text-align: center; } .hero-right { order: 1; height: 65vh; } .brand-story-grid { grid-template-columns: 1fr; } }
     @media (max-width: 750px) { .product-grid { grid-template-columns: repeat(2, 1fr); gap: 1rem; } }
-    @media (max-width: 700px) { .category-grid { grid-template-columns: 1fr; } .values-container { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 700px) { .values-container { grid-template-columns: repeat(2, 1fr); } }
     @media (max-width: 550px) { .footer-grid { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; gap: 1.2rem; text-align: center; } }
     @media (max-width: 400px) { .values-container { grid-template-columns: 1fr; } }
   </style>
@@ -179,38 +174,20 @@
     </div>
   </section>
 
-  <!-- ✅ DYNAMIC CATEGORY SHOWCASE WITH REAL PRODUCT IMAGES -->
-  <section class="container section-padding" style="padding-top:2rem;">
-    <div class="section-header fade-up"><div class="section-eyebrow">Curated Collections</div><h2>Signature Edit</h2></div>
-    <div class="category-grid">
-      <a href="/new-arrivals" class="category-card fade-up">
-        {% if new_arrivals_image %}
-        <img src="{{ new_arrivals_image }}" alt="New Arrivals" loading="lazy">
-        {% else %}
-        <img src="https://via.placeholder.com/600x750/f0f0f0/9E9E9E?text=New+Arrivals" alt="New Arrivals">
-        {% endif %}
-        <div class="category-overlay"><span>New Arrivals</span></div>
-      </a>
-      <a href="/bundledeals" class="category-card fade-up">
-        {% if bundle_deals_image %}
-        <img src="{{ bundle_deals_image }}" alt="Bundle Deals" loading="lazy">
-        {% else %}
-        <img src="https://via.placeholder.com/600x750/f0f0f0/9E9E9E?text=Bundle+Deals" alt="Bundle Deals">
-        {% endif %}
-        <div class="category-overlay"><span>Bundle Deals</span></div>
-      </a>
-      <a href="/tops" class="category-card fade-up">
-        {% if tops_image %}
-        <img src="{{ tops_image }}" alt="Tops" loading="lazy">
-        {% else %}
-        <img src="https://via.placeholder.com/600x750/f0f0f0/9E9E9E?text=Tops" alt="Tops">
-        {% endif %}
-        <div class="category-overlay"><span>Tops</span></div>
-      </a>
+  <!-- ✅ BRAND STORY WITH LADEY STOREE IMAGE -->
+  <section class="brand-story">
+    <div class="brand-story-grid">
+      <div class="story-content fade-up">
+        <h2>Our Story</h2>
+        <p>Ladey Storee was born from a simple belief: that true elegance is timeless, not seasonal.</p>
+        <p>Every garment tells a story of craftsmanship, ethical production, and conscious design.</p>
+        <a href="/about" class="hero-cta" style="margin-top:2rem;color:white;border-color:var(--ash);">Discover More <i class="ri-arrow-right-line"></i></a>
+      </div>
+      <div class="story-image fade-up">
+        <img src="{{ url_for('static', filename='Ladey.jpeg') }}" alt="Ladey Storee" onerror="this.src='https://via.placeholder.com/600x800/f0f0f0/9E9E9E?text=LADEY+STOREE'">
+      </div>
     </div>
   </section>
-
-  <section class="brand-story"><div class="brand-story-grid"><div class="story-content fade-up"><h2>Our Story</h2><p>Ladey Storee was born from a simple belief: that true elegance is timeless, not seasonal.</p><p>Every garment tells a story of craftsmanship, ethical production, and conscious design.</p><a href="/about" class="hero-cta" style="margin-top:2rem;color:white;border-color:var(--ash);">Discover More <i class="ri-arrow-right-line"></i></a></div><div class="story-image fade-up"><img src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=800&auto=format" alt="Atelier"></div></div></section>
 
   <div class="values-strip"><div class="container values-container">
     <div class="value-item fade-up"><i class="ri-leaf-line"></i><h4>Ethically Made</h4><p>Conscious sourcing</p></div>
