@@ -383,6 +383,18 @@ def save_order():
     }
     try:
         orders_collection.update_one({"paymentReference": reference}, {"$set": order_data}, upsert=True)
+        for item in order_data["items"]:
+            product_id = safe_objectid(item.get("id", ""))
+            qty = int(item.get("quantity") or 1)
+            if not product_id or qty <= 0:
+                continue
+            # Only decrement if enough stock is on record; otherwise clamp to 0 rather than go negative.
+            result = products_collection.update_one(
+                {"_id": product_id, "stock": {"$gte": qty}},
+                {"$inc": {"stock": -qty}}
+            )
+            if result.matched_count == 0:
+                products_collection.update_one({"_id": product_id}, {"$set": {"stock": 0}})
         return jsonify({"message": "Order saved", "reference": reference})
     except Exception as e:
         return jsonify({"message": "Failed", "error": str(e)}), 500
