@@ -1,0 +1,227 @@
+/* ============================================================
+   LADEY STOREE — Premium finish layer
+   Loaded after each page's own <style> block so it can refine,
+   not fight, the existing charcoal / ash / cream design system.
+   ============================================================ */
+
+:root {
+  --gold: #B08D57;
+  --gold-soft: rgba(176, 141, 87, 0.35);
+  --ease-lux: cubic-bezier(0.16, 1, 0.3, 1);
+  --shadow-soft: 0 8px 30px rgba(20, 20, 20, 0.06);
+  --shadow-lift: 0 24px 48px rgba(20, 20, 20, 0.14);
+}
+
+/* ---------- Foundations ---------- */
+html { scroll-behavior: smooth; }
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+::selection { background: #1A1A1A; color: #fff; }
+
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(26,26,26,0.25); border-radius: 10px; border: 2px solid transparent; background-clip: padding-box; }
+::-webkit-scrollbar-thumb:hover { background: rgba(26,26,26,0.45); background-clip: padding-box; }
+
+a, button, .btn, .quick-add, .cat-chip, .mobile-cat-link, .desktop-nav a {
+  transition: color 0.45s var(--ease-lux), background-color 0.45s var(--ease-lux),
+              border-color 0.45s var(--ease-lux), transform 0.45s var(--ease-lux),
+              box-shadow 0.45s var(--ease-lux), opacity 0.45s var(--ease-lux) !important;
+}
+
+:focus-visible {
+  outline: 1.5px solid var(--gold) !important;
+  outline-offset: 3px !important;
+}
+
+/* ---------- Header / nav polish ---------- */
+#top-bar {
+  box-shadow: 0 1px 0 rgba(26,26,26,0.04);
+}
+
+.brand-script {
+  position: relative;
+  letter-spacing: 2.5px !important;
+}
+
+.desktop-nav a {
+  position: relative;
+}
+.desktop-nav a::after {
+  content: '';
+  position: absolute;
+  left: 0; right: 100%;
+  bottom: -4px;
+  height: 1px;
+  background: var(--gold);
+  transition: right 0.45s var(--ease-lux);
+}
+.desktop-nav a:hover::after,
+.desktop-nav a.active::after {
+  right: 0;
+}
+
+.mobile-cat-link.active {
+  color: #1A1A1A !important;
+}
+
+.cart-icon { transition: transform 0.35s var(--ease-lux) !important; }
+.cart-icon:hover { transform: translateY(-2px) scale(1.06); }
+
+#cart-count {
+  box-shadow: 0 2px 8px rgba(26,26,26,0.25);
+}
+
+/* ---------- Hero / page header polish ---------- */
+.page-header h1, .hero h1, h1.brand-script {
+  position: relative;
+}
+
+.breadcrumb a:hover { color: var(--gold) !important; }
+
+/* ---------- Buttons ---------- */
+.btn {
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(26,26,26,0.12);
+}
+.btn::before {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(120deg, transparent, rgba(255,255,255,0.16), transparent);
+  transition: left 0.6s var(--ease-lux);
+}
+.btn:hover::before { left: 100%; }
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 28px rgba(26,26,26,0.2);
+}
+.btn:active { transform: translateY(0); }
+
+.btn-outline:hover {
+  border-color: var(--gold) !important;
+  color: #1A1A1A !important;
+}
+
+/* ---------- Product grid / cards ---------- */
+.product-grid { animation: lux-fade-in 0.6s var(--ease-lux) both; }
+
+.product-card {
+  border: 1px solid rgba(26,26,26,0.05);
+  box-shadow: var(--shadow-soft) !important;
+  transition: transform 0.55s var(--ease-lux), box-shadow 0.55s var(--ease-lux), border-color 0.55s var(--ease-lux) !important;
+}
+.product-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lift) !important;
+  border-color: rgba(176,141,87,0.25);
+}
+.product-card:active { transform: translateY(-2px) scale(0.99); }
+
+.product-img-wrap {
+  position: relative;
+}
+.product-img-wrap::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(180deg, rgba(0,0,0,0) 60%, rgba(0,0,0,0.08) 100%);
+  opacity: 0;
+  transition: opacity 0.5s var(--ease-lux);
+  pointer-events: none;
+}
+.product-card:hover .product-img-wrap::after { opacity: 1; }
+.product-img-wrap img {
+  transition: transform 0.9s var(--ease-lux) !important;
+}
+.product-card:hover .product-img-wrap img {
+  transform: scale(1.06);
+}
+
+.quick-add {
+  box-shadow: 0 6px 16px rgba(26,26,26,0.18);
+  transform: translateY(6px);
+  opacity: 0.92;
+}
+.product-card:hover .quick-add {
+  transform: translateY(0);
+  opacity: 1;
+}
+.quick-add:hover {
+  background: #1A1A1A !important;
+  color: #fff !important;
+  transform: scale(1.08) !important;
+}
+
+.product-brand {
+  color: var(--gold) !important;
+  opacity: 0.9;
+}
+
+.product-price { position: relative; }
+
+/* ---------- Empty / loading states ---------- */
+.empty-state {
+  animation: lux-fade-in 0.5s var(--ease-lux) both;
+}
+.empty-state i { color: var(--gold) !important; opacity: 0.7; }
+
+/* ---------- Pagination ---------- */
+nav[aria-label="Pagination"] a:hover {
+  border-color: var(--gold) !important;
+  color: #1A1A1A !important;
+  transform: translateY(-2px);
+}
+
+/* ---------- Forms ---------- */
+input[type="text"], input[type="email"], input[type="tel"], input[type="number"],
+input[type="password"], textarea, select {
+  transition: border-color 0.4s var(--ease-lux), box-shadow 0.4s var(--ease-lux) !important;
+}
+input[type="text"]:focus, input[type="email"]:focus, input[type="tel"]:focus,
+input[type="number"]:focus, input[type="password"]:focus, textarea:focus, select:focus {
+  border-color: var(--gold) !important;
+  box-shadow: 0 0 0 3px var(--gold-soft) !important;
+  outline: none !important;
+}
+
+/* ---------- Footer polish ---------- */
+footer { position: relative; }
+footer::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(176,141,87,0.4), transparent);
+}
+.footer-col a { position: relative; }
+.footer-col a:hover { color: #fff !important; padding-left: 4px; }
+.social-links a:hover {
+  box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+}
+
+/* ---------- Sidebar / cart panel polish ---------- */
+#side-menu, .cart-sidebar, .cart-panel {
+  box-shadow: 0 0 60px rgba(0,0,0,0.15);
+}
+.cat-chip:hover {
+  border-color: var(--gold) !important;
+  color: #1A1A1A !important;
+  transform: translateY(-1px);
+}
+
+/* ---------- Motion ---------- */
+@keyframes lux-fade-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
