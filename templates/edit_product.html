@@ -93,7 +93,7 @@
         
         <div class="form-group">
           <label>Available Sizes</label>
-          {% set size_options = ['XS','S','M','L','XL','XXL','3XL','Free Size'] %}
+          {% set size_options = ['4','6','8','10','12','14','16','18','20'] %}
           <select name="size" multiple style="min-height: 100px;">
             {% for s in size_options %}
             <option {% if s in (product.sizes or []) %}selected{% endif %}>{{ s }}</option>
