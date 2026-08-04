@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover, shrink-to-fit=no">
-  <title>Tops · Ladey Storee</title>
+  <title>Bags · Ladey Storee</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -104,6 +104,7 @@
 
 <div id="overlay"></div>
 
+<!-- SIDE MENU -->
 <aside id="side-menu">
   <div class="sidebar-header"><a href="/" class="brand-script">Ladey Storee</a><i class="ri-close-line close-icon" id="closeSidebar"></i></div>
   <nav class="sidebar-nav">
@@ -135,29 +136,34 @@
   </div>
 </aside>
 
+<!-- TOP BAR -->
 <header id="top-bar">
   <button id="menu-toggle">☰</button>
   <a href="/" class="brand-script">Ladey Storee</a>
   <nav class="desktop-nav">
     <a href="/">Home</a><a href="/bundledeals">Bundle Deals</a>
-    <a href="/tops" class="active">Tops</a><a href="/jeans">Jeans</a>
+    <a href="/tops">Tops</a><a href="/jeans">Jeans</a>
     <a href="/jumpsuit">Jumpsuit</a><a href="/joggers">Joggers</a>
-    <a href="/2-piece-sets">2-Pc Sets</a><a href="/collection">Shop All</a><a href="/about">About</a>
+    <a href="/bags" class="active">Bags</a><a href="/collection">Shop All</a><a href="/about">About</a>
   </nav>
-  <div class="header-actions"><div class="cart-icon" id="cartIcon"><i class="ri-shopping-bag-line"></i><span id="cart-count">0</span></div></div>
+  <div class="header-actions">
+    <div class="cart-icon" id="cartIcon"><i class="ri-shopping-bag-line"></i><span id="cart-count">0</span></div>
+  </div>
 </header>
 
+<!-- MOBILE CAT NAV -->
 <nav class="mobile-cat-nav">
   <div class="mobile-cat-nav-inner">
     
     <a href="/bundledeals" class="mobile-cat-link">BUNDLE DEALS</a>
-    <a href="/tops" class="mobile-cat-link active">TOPS</a>
+    <a href="/tops" class="mobile-cat-link">TOPS</a>
     <a href="/jeans" class="mobile-cat-link">JEANS</a>
-    <a href="/jumpsuit" class="mobile-cat-link">JUMPSUIT</a>
+    <a href="/bags" class="mobile-cat-link active">BAGS</a>
     <a href="/collection" class="mobile-cat-link">SHOP ALL</a>
   </div>
 </nav>
 
+<!-- CART SIDEBAR -->
 <div class="cart-sidebar" id="cartSidebar">
   <div class="cart-header"><h3>Your Bag</h3><button id="close-cart"><i class="ri-close-line"></i></button></div>
   <div class="cart-items" id="cartItemsContainer"><p style="text-align:center;padding:2rem;color:#999;">Your cart is empty</p></div>
@@ -165,14 +171,21 @@
 </div>
 
 <main>
-  <div class="page-header container"><div class="breadcrumb"><a href="/">Home</a> / Tops</div><h1>Tops</h1><div class="product-count">{{ total_products }} product{{ 's' if total_products != 1 else '' }}</div></div>
+  <div class="page-header container">
+    <div class="breadcrumb"><a href="/">Home</a> / Bags</div>
+    <h1>Bags</h1>
+    <div class="product-count">{{ total_products }} product{{ 's' if total_products != 1 else '' }}</div>
+  </div>
   <div class="container">
     {% if products %}
     <div class="product-grid">
       {% for product in products %}
       <div class="product-card">
         <a href="/product/{{ product._id }}">
-          <div class="product-img-wrap"><img src="{{ product.image or 'https://via.placeholder.com/400x500/f0f0f0/9E9E9E?text=LADEY' }}" alt="{{ product.name }}" loading="lazy"><button class="quick-add" data-id="{{ product._id }}" data-name="{{ product.name }}" data-price="{{ product.price }}"><i class="ri-add-line"></i></button></div>
+          <div class="product-img-wrap">
+            <img src="{{ product.image or 'https://via.placeholder.com/400x500/f0f0f0/9E9E9E?text=LADEY' }}" alt="{{ product.name }}" loading="lazy">
+            <button class="quick-add" data-id="{{ product._id }}" data-name="{{ product.name }}" data-price="{{ product.price }}"><i class="ri-add-line"></i></button>
+          </div>
           <div class="product-info"><div class="product-brand">LADEY STOREE</div><div class="product-name">{{ product.name }}</div><div class="product-price">{{ format_currency(product.price) }}</div></div>
         </a>
       </div>
@@ -180,7 +193,7 @@
     </div>
     {% include "_pagination.html" %}
     {% else %}
-    <div class="empty-state"><i class="ri-inbox-line" style="font-size:3rem;display:block;margin-bottom:1rem;"></i><p>No tops found.</p></div>
+    <div class="empty-state"><i class="ri-inbox-line" style="font-size:3rem;display:block;margin-bottom:1rem;"></i><p>No products found.</p></div>
     {% endif %}
   </div>
 </main>
@@ -211,7 +224,7 @@ const bottomCartToggle=document.getElementById('bottomCartToggle'),bottomMenuTog
 function openMenu(){sideMenu.classList.add('active');overlay.classList.add('active');}
 function closeMenu(){sideMenu.classList.remove('active');overlay.classList.remove('active');}
 menuToggle.addEventListener('click',openMenu);closeSidebar.addEventListener('click',closeMenu);overlay.addEventListener('click',closeMenu);
-document.querySelectorAll('.sidebar-nav a, .cat-chip').forEach(l=>l.addEventListener('click',closeMenu));
+document.querySelectorAll('.sidebar-nav a,.cat-chip').forEach(l=>l.addEventListener('click',closeMenu));
 if(bottomMenuToggle)bottomMenuToggle.addEventListener('click',openMenu);
 if(bottomCartToggle)bottomCartToggle.addEventListener('click',()=>cartSidebar.classList.add('open'));
 function saveCart(){localStorage.setItem('ladeyCart',JSON.stringify(cart));updateCartUI();}

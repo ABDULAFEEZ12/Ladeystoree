@@ -1,0 +1,19 @@
+{% if total_pages and total_pages > 1 %}
+<nav aria-label="Pagination" style="display:flex;align-items:center;justify-content:center;gap:0.4rem;flex-wrap:wrap;padding:2rem 0 4rem;">
+  {% if page > 1 %}
+  <a href="{{ url_for(endpoint, page=page-1, **pagination_args) }}" style="padding:10px 16px;border:1px solid var(--ash);color:var(--charcoal);font-size:0.8rem;letter-spacing:1px;border-radius:4px;">‹ Prev</a>
+  {% endif %}
+  {% for p in range(1, total_pages + 1) %}
+    {% if p == page %}
+    <span style="padding:10px 15px;background:var(--charcoal);color:#fff;font-size:0.8rem;border-radius:4px;">{{ p }}</span>
+    {% elif p == 1 or p == total_pages or (p >= page - 2 and p <= page + 2) %}
+    <a href="{{ url_for(endpoint, page=p, **pagination_args) }}" style="padding:10px 15px;border:1px solid rgba(184,184,184,0.4);color:var(--charcoal);font-size:0.8rem;border-radius:4px;">{{ p }}</a>
+    {% elif p == page - 3 or p == page + 3 %}
+    <span style="padding:10px 4px;color:var(--ash-dark);font-size:0.8rem;">…</span>
+    {% endif %}
+  {% endfor %}
+  {% if page < total_pages %}
+  <a href="{{ url_for(endpoint, page=page+1, **pagination_args) }}" style="padding:10px 16px;border:1px solid var(--ash);color:var(--charcoal);font-size:0.8rem;letter-spacing:1px;border-radius:4px;">Next ›</a>
+  {% endif %}
+</nav>
+{% endif %}

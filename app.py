@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import ssl
 import bcrypt
@@ -7,6 +8,10 @@ import datetime
 import requests
 import certifi
 import uuid
+import base64
+import math
+from io import BytesIO
+from PIL import Image
 from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, send_from_directory, abort
 from flask_cors import CORS
@@ -16,9 +21,6 @@ from dotenv import load_dotenv
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
 
-# ==========================
-# WINDOWS SSL FIX
-# ==========================
 if sys.platform == 'win32':
     ssl._create_default_https_context = ssl._create_unverified_context
 
@@ -26,357 +28,413 @@ load_dotenv()
 
 app = Flask(__name__)
 CORS(app)
-
 app.secret_key = os.getenv("JWT_SECRET")
 
-# ==========================
-# ENV VARIABLES
-# ==========================
 MONGO_URI = os.getenv("MONGO_URI")
 JWT_SECRET = os.getenv("JWT_SECRET")
-PAYSTACK_SECRET = os.getenv("PAYSTACK_SECRET")
-PAYSTACK_PUBLIC_KEY = os.getenv("PAYSTACK_PUBLIC_KEY")
+IMGBB_API_KEY = os.getenv("IMGBB_API_KEY")
+SQUADCO_SECRET_KEY = os.getenv("SQUADCO_SECRET_KEY")
 
-# ==========================
-# FILE UPLOAD CONFIGURATION
-# ==========================
-UPLOAD_FOLDER = 'static/uploads'
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
-app.config['MAX_CONTENT_LENGTH'] = 16 * 1024 * 1024  # 16MB
-
-os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 
 def allowed_file(filename):
-    """Check if the uploaded file has an allowed extension."""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-# ==========================
-# DATABASE - WITH SSL FIX
-# ==========================
+MAX_IMAGE_DIMENSION = 1600
+IMAGE_JPEG_QUALITY = 80
+
+def compress_image(file_data):
+    """Downscale and re-encode an uploaded image as JPEG to cut its file size before hosting it."""
+    try:
+        img = Image.open(BytesIO(file_data))
+        img = img.convert("RGB")
+        if max(img.size) > MAX_IMAGE_DIMENSION:
+            img.thumbnail((MAX_IMAGE_DIMENSION, MAX_IMAGE_DIMENSION), Image.LANCZOS)
+        buffer = BytesIO()
+        img.save(buffer, format="JPEG", quality=IMAGE_JPEG_QUALITY, optimize=True)
+        return buffer.getvalue()
+    except Exception:
+        return file_data
+
+def upload_image(file):
+    if not IMGBB_API_KEY:
+        return "https://via.placeholder.com/400x500/f0f0f0/9E9E9E?text=LADEY"
+    try:
+        file_data = compress_image(file.read())
+        encoded_image = base64.b64encode(file_data).decode('utf-8')
+        response = requests.post("https://api.imgbb.com/1/upload", data={"key": IMGBB_API_KEY, "image": encoded_image})
+        result = response.json()
+        if result.get("success"): return result["data"]["url"]
+        return None
+    except: return None
+
 try:
-    # Try with certifi first
-    client = MongoClient(
-        MONGO_URI,
-        tls=True,
-        tlsCAFile=certifi.where(),
-        tlsAllowInvalidCertificates=True,  # Development only - fixes Windows SSL issue
-        serverSelectionTimeoutMS=5000
-    )
-    # Test connection
+    client = MongoClient(MONGO_URI, tls=True, tlsCAFile=certifi.where(), tlsAllowInvalidCertificates=True, serverSelectionTimeoutMS=5000)
     client.admin.command('ping')
-    print("✅ Connected to MongoDB Atlas!")
-except Exception as e:
-    print(f"⚠️ SSL connection failed: {e}")
-    print("🔄 Falling back to insecure connection (development only)...")
+except:
     client = MongoClient(MONGO_URI, tls=True, tlsAllowInvalidCertificates=True)
 
 db = client["ladeystoree"]
 products_collection = db["products"]
 orders_collection = db["orders"]
 admins_collection = db["admins"]
+messages_collection = db["messages"]
 
-# ==========================
-# HELPER FUNCTIONS
-# ==========================
+PRODUCTS_PER_PAGE = 10
+
+def paginate_products(query, page, sort=None):
+    """Fetch one page of products matching query. Returns (products, page, total_pages, total_count)."""
+    total = products_collection.count_documents(query)
+    total_pages = max(1, math.ceil(total / PRODUCTS_PER_PAGE))
+    page = min(max(1, page), total_pages)
+    cursor = products_collection.find(query)
+    if sort:
+        cursor = cursor.sort(*sort)
+    cursor = cursor.skip((page - 1) * PRODUCTS_PER_PAGE).limit(PRODUCTS_PER_PAGE)
+    return convert_cursor(cursor), page, total_pages, total
+
 def safe_objectid(id_str):
-    """Convert a string to ObjectId safely. Return None if invalid."""
-    try:
-        return ObjectId(id_str)
-    except (InvalidId, TypeError):
-        return None
+    try: return ObjectId(id_str)
+    except: return None
 
 def convert_doc(doc):
-    """Convert a MongoDB document to a JSON‑friendly dict (ObjectId → str)."""
-    if not doc:
-        return doc
+    if not doc: return doc
     doc["_id"] = str(doc["_id"])
     return doc
 
 def convert_cursor(cursor):
-    """Convert a cursor of MongoDB documents to a list of JSON‑friendly dicts."""
     return [convert_doc(doc) for doc in cursor]
 
-def validate_product_data(name, price, stock, length, category):
-    """Validate common product fields. Return (is_valid, error_message)."""
-    if not name or not name.strip():
-        return False, "Product name is required."
+def validate_product_data(name, price, stock, category):
+    if not name or not name.strip(): return False, "Product name is required."
     try:
-        price_val = float(price)
-        if price_val < 0:
-            return False, "Price cannot be negative."
-    except (ValueError, TypeError):
-        return False, "Price must be a valid number."
-
+        if float(price) < 0: return False, "Price cannot be negative."
+    except: return False, "Price must be a valid number."
     try:
-        stock_val = int(stock)
-        if stock_val < 0:
-            return False, "Stock cannot be negative."
-    except (ValueError, TypeError):
-        return False, "Stock must be a valid integer."
-
-    try:
-        length_val = int(length) if length else 0
-        if length_val < 0:
-            return False, "Length cannot be negative."
-    except (ValueError, TypeError):
-        return False, "Length must be a valid integer."
-
-    if not category or not category.strip():
-        return False, "Category is required."
-
+        if int(stock) < 0: return False, "Stock cannot be negative."
+    except: return False, "Stock must be a valid integer."
+    if not category or not category.strip(): return False, "Category is required."
     return True, ""
 
-# ==========================
-# AUTH DECORATOR
-# ==========================
+def format_currency(amount):
+    try: return "₦{:,.2f}".format(float(amount))
+    except: return "₦0.00"
+
+app.jinja_env.globals.update(format_currency=format_currency)
+
 def token_required(f):
-    """Decorator to protect admin routes. Extracts JWT from cookie and loads current admin."""
     @wraps(f)
     def decorated(*args, **kwargs):
         token = request.cookies.get("admin_token")
         if not token:
             flash("Please log in to access the admin area.", "error")
             return redirect(url_for("admin_login_page"))
-
         try:
             data = jwt.decode(token, JWT_SECRET, algorithms=["HS256"])
             admin_id = safe_objectid(data.get("id"))
-            if not admin_id:
-                raise InvalidId
+            if not admin_id: raise InvalidId
             current_admin = admins_collection.find_one({"_id": admin_id})
             if not current_admin:
                 flash("Admin account not found.", "error")
                 return redirect(url_for("admin_login_page"))
-        except (jwt.InvalidTokenError, InvalidId, Exception):
-            flash("Invalid or expired session. Please log in again.", "error")
+        except:
+            flash("Invalid or expired session.", "error")
             return redirect(url_for("admin_login_page"))
-
         return f(current_admin, *args, **kwargs)
     return decorated
 
 # ==========================
-# PUBLIC ROUTES (PAGES)
+# PUBLIC ROUTES
 # ==========================
 @app.route("/")
 def home():
     try:
         products = convert_cursor(products_collection.find().limit(8))
-    except Exception as e:
-        print(f"Database error: {e}")
+        bundle_deal = products_collection.find_one({"category": "Bundle Deals"})
+        top = products_collection.find_one({"category": "Tops"})
+        bundle_deals_image = bundle_deal.get("image") if bundle_deal else None
+        tops_image = top.get("image") if top else None
+    except:
         products = []
-    return render_template("home.html", products=products)
+        bundle_deals_image = None
+        tops_image = None
+    return render_template("home.html", products=products, bundle_deals_image=bundle_deals_image, tops_image=tops_image)
 
-@app.route("/new-arrivals")
-def new_arrivals():
+def render_product_page(template, query, category_name, sort=None, endpoint=None, **extra_context):
+    page = request.args.get("page", 1, type=int)
     try:
-        thirty_days_ago = datetime.datetime.utcnow() - datetime.timedelta(days=30)
-        products = convert_cursor(products_collection.find({
-            "$or": [
-                {"created_at": {"$gte": thirty_days_ago}},
-                {"created_at": {"$exists": False}}
-            ]
-        }).sort("created_at", -1))
-    except Exception as e:
-        print(f"Database error: {e}")
-        products = []
-    return render_template("new-arrivals.html", products=products, category_name="New Arrivals")
+        products, page, total_pages, total = paginate_products(query, page, sort=sort)
+    except:
+        products, page, total_pages, total = [], 1, 1, 0
+    pagination_args = {k: v for k, v in request.args.items() if k != "page"}
+    return render_template(template, products=products, category_name=category_name,
+                            page=page, total_pages=total_pages, total_products=total,
+                            endpoint=endpoint or request.endpoint, pagination_args=pagination_args,
+                            **extra_context)
+
+@app.route("/bundledeals")
+def bundledeals():
+    return render_product_page("bundledeals.html", {"category": "Bundle Deals"}, "Bundle Deals")
 
 @app.route("/dresses")
 def dresses():
-    try:
-        products = convert_cursor(products_collection.find({"category": "Dresses"}))
-    except Exception as e:
-        print(f"Database error: {e}")
-        products = []
-    return render_template("dresses.html", products=products, category_name="Dresses")
+    return redirect(url_for("bundledeals"))
 
+# ✅ FIXED: Case-insensitive category matching for all category routes
 @app.route("/tops")
 def tops():
+    return render_product_page("tops.html", {"category": {"$regex": "^tops$", "$options": "i"}}, "Tops")
+
+JEANS_QUERY = {"category": {"$regex": "^jeans", "$options": "i"}}
+
+def get_jeans_waist_sizes():
+    """Jeans products are named like 'Waist 28' - pull the distinct waist numbers straight from product names."""
     try:
-        products = convert_cursor(products_collection.find({"category": "Tops"}))
-    except Exception as e:
-        print(f"Database error: {e}")
-        products = []
-    return render_template("tops.html", products=products, category_name="Tops")
+        names = products_collection.find(JEANS_QUERY).distinct("name")
+        sizes = {m.group(0) for n in names if n for m in [re.search(r"\d+", n)] if m}
+        return sorted(sizes, key=int)
+    except:
+        return []
+
+@app.route("/jeans")
+def jeans():
+    waist_sizes = get_jeans_waist_sizes()
+    query = dict(JEANS_QUERY)
+    waist = request.args.get("waist", "").strip()
+    if waist and waist in waist_sizes:
+        query["name"] = {"$regex": r"\bwaist\s*" + re.escape(waist) + r"\b", "$options": "i"}
+    else:
+        waist = ""
+    return render_product_page("jeans.html", query, "Jeans/Denims", selected_waist=waist, waist_sizes=waist_sizes)
+
+@app.route("/jumpsuit")
+def jumpsuit():
+    return render_product_page("jumpsuit.html", {"category": {"$regex": "^jumpsuit$", "$options": "i"}}, "Jumpsuit")
+
+@app.route("/mom-shorts")
+def mom_shorts():
+    return render_product_page("mom-shorts.html", {"category": {"$regex": "^mom shorts$", "$options": "i"}}, "Mom Shorts")
+
+@app.route("/bum-shorts")
+def bum_shorts():
+    return render_product_page("bum-shorts.html", {"category": {"$regex": "^bum shorts$", "$options": "i"}}, "Bum Shorts")
+
+@app.route("/joggers")
+def joggers():
+    return render_product_page("joggers.html", {"category": {"$regex": "^joggers$", "$options": "i"}}, "Joggers")
+
+@app.route("/jogger-shorts")
+def jogger_shorts():
+    return render_product_page("jogger-shorts.html", {"category": {"$regex": "^jogger shorts$", "$options": "i"}}, "Jogger Shorts")
+
+@app.route("/2-piece-sets")
+def two_piece_sets():
+    return render_product_page("2-piece-sets.html", {"category": {"$regex": "^2-piece sets$", "$options": "i"}}, "2-Piece Sets")
+
+@app.route("/combos")
+def combos():
+    return render_product_page("combos.html", {"category": {"$regex": "^combos$", "$options": "i"}}, "Combos")
+
+@app.route("/bags")
+def bags():
+    return render_product_page("bags.html", {"category": {"$regex": "^bags$", "$options": "i"}}, "Bags")
+
+@app.route("/others")
+def others():
+    return render_product_page("others.html", {"category": {"$regex": "^others$", "$options": "i"}}, "Others")
 
 @app.route("/about")
-def about():
-    return render_template("about.html")
+def about(): return render_template("about.html")
 
 @app.route("/collection")
 def collection():
-    try:
-        products = convert_cursor(products_collection.find())
-    except Exception as e:
-        print(f"Database error: {e}")
-        products = []
-    return render_template("collection.html", products=products, category_name="All Collection")
+    return render_product_page("collection.html", {}, "All Collection")
 
 @app.route("/shop")
 def shop():
-    try:
-        products = convert_cursor(products_collection.find())
-    except Exception as e:
-        print(f"Database error: {e}")
-        products = []
-    return render_template("shop.html", products=products)
+    return render_product_page("shop.html", {}, None)
 
 @app.route("/cart")
-def cart():
-    return render_template("cart.html")
+def cart(): return render_template("cart.html")
 
 @app.route("/contact")
-def contact():
-    return render_template("contact.html")
+def contact(): return render_template("contact.html")
 
 @app.route("/product/<product_id>")
 def product_detail(product_id):
     obj_id = safe_objectid(product_id)
-    if not obj_id:
-        abort(404, description="Invalid product ID format.")
-    
+    if not obj_id: abort(404)
     product = products_collection.find_one({"_id": obj_id})
-    if not product:
-        abort(404, description="Product not found.")
-    
+    if not product: abort(404)
     product = convert_doc(product)
     product["id"] = product["_id"]
-    
     related_products = []
     if product.get("category"):
-        related_cursor = products_collection.find({
-            "_id": {"$ne": obj_id},
-            "category": product["category"]
-        }).limit(4)
-        related_products = convert_cursor(related_cursor)
-    
+        related_products = convert_cursor(products_collection.find({"_id": {"$ne": obj_id}, "category": product["category"]}).limit(4))
     return render_template("product.html", product=product, related_products=related_products)
 
-# ==========================
-# CHECKOUT & PAYMENT ROUTES
-# ==========================
 @app.route("/checkout")
-def checkout():
-    return render_template("checkout.html", public_key=PAYSTACK_PUBLIC_KEY)
+def checkout(): return render_template("checkout.html")
 
-@app.route("/verify-payment", methods=["POST"])
-def verify_payment():
+@app.route("/order-confirmed")
+def order_confirmed(): return render_template("order-confirmed.html")
+
+def verify_squad_transaction(reference):
+    """Ask SquadCo whether a transaction actually succeeded. Returns the transaction data dict, or None if it can't be confirmed."""
+    if not SQUADCO_SECRET_KEY or not reference:
+        return None
+    headers = {"Authorization": f"Bearer {SQUADCO_SECRET_KEY}"}
+    try:
+        resp = requests.get(f"https://api-d.squadco.com/transaction/verify/{reference}", headers=headers, timeout=15)
+        if resp.status_code != 200:
+            return None
+        result = resp.json()
+        return result.get("data")
+    except Exception as e:
+        print(f"SquadCo verify error: {e}")
+        return None
+
+@app.route("/create-payment-link", methods=["POST"])
+def create_payment_link():
     data = request.get_json()
     if not data:
-        return jsonify({"message": "Invalid request"}), 400
+        return jsonify({"error": "Invalid request"}), 400
 
+    amount = data.get("amount", 0)
+    email = data.get("email", "customer@ladeystoree.com")
+    name = data.get("name", "Customer")
     reference = data.get("reference")
-    order_data = data.get("orderData", {})
 
-    if not reference or not order_data:
-        return jsonify({"message": "Missing reference or order data"}), 400
+    if not reference:
+        return jsonify({"error": "Missing order reference"}), 400
+    if not SQUADCO_SECRET_KEY:
+        return jsonify({"error": "Payment not configured"}), 500
 
     try:
-        response = requests.get(
-            f"https://api.paystack.co/transaction/verify/{reference}",
-            headers={"Authorization": f"Bearer {PAYSTACK_SECRET}"}
+        response = requests.post(
+            "https://api-d.squadco.com/transaction/initiate",
+            headers={
+                "Authorization": f"Bearer {SQUADCO_SECRET_KEY}",
+                "Content-Type": "application/json"
+            },
+            json={
+                "amount": float(amount) * 100,
+                "email": email,
+                "customer_name": name,
+                "currency": "NGN",
+                "initiate_type": "inline",
+                "pass_charge": True,
+                "transaction_ref": reference,
+                "callback_url": "https://ladeystoree.com/order-confirmed"
+            }
         )
+
         result = response.json()
+        print(f"SquadCo response: {result}")
+        checkout_url = result.get("data", {}).get("checkout_url")
+
+        if checkout_url:
+            return jsonify({"payment_url": checkout_url})
+        else:
+            return jsonify({"error": "Could not create payment link", "detail": result}), 502
+
     except Exception as e:
-        return jsonify({"message": "Paystack verification failed", "error": str(e)}), 500
+        print(f"SquadCo error: {e}")
+        return jsonify({"error": "Payment service unavailable"}), 502
 
-    if result.get("status") and result["data"]["status"] == "success":
-        items = order_data.get("items", [])
-        stock_errors = []
-        for item in items:
-            product_id = item.get("productId")
-            quantity = item.get("quantity", 1)
-            obj_id = safe_objectid(product_id)
-            if not obj_id:
-                stock_errors.append(f"Invalid product ID: {product_id}")
-                continue
-            product = products_collection.find_one({"_id": obj_id})
-            if not product:
-                stock_errors.append(f"Product not found: {product_id}")
-                continue
-            current_stock = product.get("stock", 0)
-            if current_stock < quantity:
-                stock_errors.append(
-                    f"Insufficient stock for {product.get('name', product_id)}. "
-                    f"Available: {current_stock}, requested: {quantity}"
-                )
-        if stock_errors:
-            return jsonify({"message": "Stock validation failed", "errors": stock_errors}), 400
+@app.route("/save-order", methods=["POST"])
+def save_order():
+    data = request.get_json()
+    if not data: return jsonify({"message": "Invalid request"}), 400
+    reference = data.get("reference")
+    if not reference:
+        return jsonify({"message": "Missing order reference"}), 400
 
-        for item in items:
-            product_id = item.get("productId")
-            quantity = item.get("quantity", 1)
-            obj_id = safe_objectid(product_id)
-            if obj_id:
-                products_collection.update_one(
-                    {"_id": obj_id},
-                    {"$inc": {"stock": -quantity}}
-                )
+    # Idempotent: if this reference was already recorded as paid, don't re-verify or duplicate it.
+    existing = orders_collection.find_one({"paymentReference": reference})
+    if existing and existing.get("status") == "Paid":
+        return jsonify({"message": "Order already recorded", "reference": reference})
 
-        order_data["paymentReference"] = reference
-        order_data["status"] = "Paid"
-        order_data["createdAt"] = datetime.datetime.utcnow()
-        order_data["paidAt"] = datetime.datetime.utcnow()
-        orders_collection.insert_one(order_data)
+    transaction = verify_squad_transaction(reference)
+    if not transaction or str(transaction.get("transaction_status", "")).lower() != "success":
+        return jsonify({"message": "Payment could not be verified. Order was not recorded.", "verified": False}), 402
 
-        return jsonify({"message": "Payment verified and order saved", "reference": reference})
+    expected_kobo = float(data.get("totalAmount", 0)) * 100
+    paid_kobo = float(transaction.get("transaction_amount") or 0)
+    if expected_kobo > 0 and paid_kobo < expected_kobo * 0.99:
+        return jsonify({"message": "Paid amount does not match order total. Order was not recorded.", "verified": False}), 402
 
-    return jsonify({"message": "Payment verification failed", "details": result}), 400
+    order_data = {
+        "paymentReference": reference,
+        "customerName": data.get("customerName", "Unknown"),
+        "customerPhone": data.get("customerPhone", ""),
+        "customerWhatsapp": data.get("customerWhatsapp", ""),
+        "customerEmail": data.get("customerEmail", ""),
+        "deliveryAddress": data.get("deliveryAddress", ""),
+        "state": data.get("state", ""),
+        "country": data.get("country", "Nigeria"),
+        "size": data.get("size", ""),
+        "color": data.get("color", ""),
+        "items": data.get("items", []),
+        "amount": float(data.get("totalAmount", 0)),
+        "paymentMethod": data.get("paymentMethod", "SquadCo"),
+        "status": "Paid",
+        "createdAt": datetime.datetime.utcnow()
+    }
+    try:
+        orders_collection.update_one({"paymentReference": reference}, {"$set": order_data}, upsert=True)
+        return jsonify({"message": "Order saved", "reference": reference})
+    except Exception as e:
+        return jsonify({"message": "Failed", "error": str(e)}), 500
+
+@app.route("/send-message", methods=["POST"])
+def send_message():
+    data = request.get_json()
+    if not data: return jsonify({"message": "Invalid request"}), 400
+    message_data = {
+        "name": data.get("name", "Unknown"),
+        "email": data.get("email", ""),
+        "subject": data.get("subject", ""),
+        "message": data.get("message", ""),
+        "createdAt": datetime.datetime.utcnow()
+    }
+    try:
+        messages_collection.insert_one(message_data)
+        return jsonify({"message": "Message sent successfully!"})
+    except Exception as e:
+        return jsonify({"message": "Failed to send message", "error": str(e)}), 500
 
 @app.route("/order/<reference>")
 def order_status(reference):
     order = orders_collection.find_one({"paymentReference": reference})
-    if not order:
-        abort(404, description="Order not found.")
-    order = convert_doc(order)
-    return render_template("order_status.html", order=order)
+    if not order: abort(404)
+    return render_template("order_status.html", order=convert_doc(order))
 
 # ==========================
 # ADMIN ROUTES
 # ==========================
+@app.route("/admin/seed")
+def seed_admin():
+    if admins_collection.find_one({"email": "admin@ladeystoree.com"}):
+        return "Admin already exists.", 200
+    hashed = bcrypt.hashpw("admin123".encode(), bcrypt.gensalt())
+    admins_collection.insert_one({"email": "admin@ladeystoree.com", "password": hashed, "role": "admin", "created_at": datetime.datetime.utcnow()})
+    return "✅ Admin created! DELETE THIS ROUTE.", 201
+
 @app.route("/admin/login", methods=["GET", "POST"])
 def admin_login_page():
     if request.method == "POST":
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
-
-        print(f"🔐 Login attempt: {email}")
-
         admin = admins_collection.find_one({"email": email})
-        if not admin:
-            print(f"❌ Admin not found: {email}")
+        if not admin or not bcrypt.checkpw(password.encode(), admin["password"]):
             flash("Invalid email or password.", "error")
             return redirect(url_for("admin_login_page"))
-
-        if not bcrypt.checkpw(password.encode(), admin["password"]):
-            print(f"❌ Password incorrect for: {email}")
-            flash("Invalid email or password.", "error")
-            return redirect(url_for("admin_login_page"))
-
-        print(f"✅ Login successful: {email}")
-
-        token = jwt.encode(
-            {
-                "id": str(admin["_id"]),
-                "exp": datetime.datetime.utcnow() + datetime.timedelta(days=7)
-            },
-            JWT_SECRET,
-            algorithm="HS256"
-        )
-
+        token = jwt.encode({"id": str(admin["_id"]), "exp": datetime.datetime.utcnow() + datetime.timedelta(days=7)}, JWT_SECRET, algorithm="HS256")
         response = redirect(url_for("admin_dashboard"))
-        response.set_cookie(
-            "admin_token",
-            token,
-            httponly=True,
-            secure=False,
-            samesite="Lax",
-            max_age=60*60*24*7
-        )
+        response.set_cookie("admin_token", token, httponly=True, secure=False, samesite="Lax", max_age=60*60*24*7)
         flash("Login successful!", "success")
         return response
-
     return render_template("admin_login.html")
 
 @app.route("/admin/dashboard")
@@ -385,17 +443,33 @@ def admin_dashboard(current_admin):
     try:
         products = convert_cursor(products_collection.find())
         orders = convert_cursor(orders_collection.find().sort("createdAt", -1))
-    except Exception as e:
-        print(f"Database error: {e}")
-        products = []
-        orders = []
-    return render_template("admin.html", products=products, orders=orders)
+        messages = convert_cursor(messages_collection.find().sort("createdAt", -1))
+    except:
+        products, orders, messages = [], [], []
+    for order in orders:
+        if 'items' in order and isinstance(order['items'], list):
+            order['orderItems'] = order.pop('items')
+        else:
+            order['orderItems'] = []
+        order.setdefault('customerName', '—')
+        order.setdefault('customerPhone', '—')
+        order.setdefault('customerWhatsapp', '—')
+        order.setdefault('customerEmail', '')
+        order.setdefault('deliveryAddress', '—')
+        order.setdefault('state', '—')
+        order.setdefault('country', '—')
+        order.setdefault('size', '—')
+        order.setdefault('color', '—')
+        order.setdefault('amount', 0)
+        order.setdefault('status', 'Pending')
+        order.setdefault('paymentReference', '—')
+    return render_template("admin.html", products=products, orders=orders, messages=messages)
 
 @app.route("/admin/logout")
 def admin_logout():
     response = redirect(url_for("admin_login_page"))
     response.delete_cookie("admin_token")
-    flash("You have been logged out.", "success")
+    flash("Logged out.", "success")
     return response
 
 @app.route("/admin/register", methods=["GET", "POST"])
@@ -405,205 +479,113 @@ def admin_register(current_admin):
         email = request.form.get("email", "").strip().lower()
         password = request.form.get("password", "")
         confirm = request.form.get("confirm_password", "")
-
-        if not email or not password:
-            flash("Email and password are required.", "error")
-            return redirect(url_for("admin_register"))
-
-        if password != confirm:
-            flash("Passwords do not match.", "error")
-            return redirect(url_for("admin_register"))
-
-        if admins_collection.find_one({"email": email}):
-            flash("An admin with that email already exists.", "error")
-            return redirect(url_for("admin_register"))
-
-        hashed = bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt())
-        admins_collection.insert_one({
-            "email": email,
-            "password": hashed,
-            "created_by": current_admin["email"],
-            "role": "admin",
-            "created_at": datetime.datetime.utcnow()
-        })
-
-        flash("New admin created successfully!", "success")
+        if not email or not password: flash("Required.", "error"); return redirect(url_for("admin_register"))
+        if password != confirm: flash("Passwords don't match.", "error"); return redirect(url_for("admin_register"))
+        if admins_collection.find_one({"email": email}): flash("Already exists.", "error"); return redirect(url_for("admin_register"))
+        hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
+        admins_collection.insert_one({"email": email, "password": hashed, "created_by": current_admin["email"], "role": "admin", "created_at": datetime.datetime.utcnow()})
+        flash("Admin created!", "success")
         return redirect(url_for("admin_dashboard"))
-
     return render_template("admin_register.html")
 
 @app.route("/admin/edit-product/<product_id>", methods=["GET", "POST"])
 @token_required
 def edit_product(current_admin, product_id):
     obj_id = safe_objectid(product_id)
-    if not obj_id:
-        flash("Invalid product ID.", "error")
-        return redirect(url_for("admin_dashboard"))
-
+    if not obj_id: flash("Invalid ID.", "error"); return redirect(url_for("admin_dashboard"))
     product = products_collection.find_one({"_id": obj_id})
-    if not product:
-        flash("Product not found.", "error")
-        return redirect(url_for("admin_dashboard"))
-
+    if not product: flash("Not found.", "error"); return redirect(url_for("admin_dashboard"))
     if request.method == "POST":
-        name = request.form.get("name", "").strip()
+        name = request.form.get("name","").strip()
         price = request.form.get("price")
-        category = request.form.get("category", "").strip()
-        length = request.form.get("length")
+        category = request.form.get("category","").strip()
         stock = request.form.get("stock")
-        description = request.form.get("description", "").strip()
-
-        is_valid, error_msg = validate_product_data(name, price, stock, length, category)
-        if not is_valid:
-            flash(error_msg, "error")
-            return redirect(url_for("edit_product", product_id=product_id))
-
+        description = request.form.get("description","").strip()
+        sizes = request.form.getlist("size")
+        colors = request.form.getlist("color")
+        valid, msg = validate_product_data(name, price, stock, category)
+        if not valid: flash(msg, "error"); return redirect(url_for("edit_product", product_id=product_id))
         update_data = {
-            "name": name,
-            "price": float(price),
-            "category": category,
-            "length": int(length) if length else 0,
-            "stock": int(stock),
-            "description": description
+            "name": name, "price": float(price), "category": category,
+            "stock": int(stock), "description": description,
+            "sizes": sizes, "colors": colors
         }
-
-        if 'image' in request.files and request.files['image'].filename != '':
+        if 'image' in request.files and request.files['image'].filename:
             file = request.files['image']
-            
-            if not allowed_file(file.filename):
-                flash("Invalid file type. Allowed: png, jpg, jpeg, gif, webp.", "error")
-                return redirect(url_for("edit_product", product_id=product_id))
-            
-            old_image = product.get("image", "")
-            if old_image and old_image.startswith('/static/uploads/'):
-                old_filename = old_image.split('/')[-1]
-                old_path = os.path.join(app.config['UPLOAD_FOLDER'], old_filename)
-                if os.path.exists(old_path):
-                    try:
-                        os.remove(old_path)
-                    except Exception as e:
-                        print(f"Error deleting old image: {e}")
-            
-            original_filename = secure_filename(file.filename)
-            unique_filename = f"{uuid.uuid4().hex}_{original_filename}"
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-            file.save(file_path)
-            image_url = url_for('static', filename='uploads/' + unique_filename)
-            update_data["image"] = image_url
-
-        products_collection.update_one(
-            {"_id": obj_id},
-            {"$set": update_data}
-        )
-        
-        flash("Product updated successfully.", "success")
+            if not allowed_file(file.filename): flash("Invalid file.", "error"); return redirect(url_for("edit_product", product_id=product_id))
+            url = upload_image(file)
+            if url: update_data["image"] = url
+            else: flash("Upload failed.", "error"); return redirect(url_for("edit_product", product_id=product_id))
+        products_collection.update_one({"_id": obj_id}, {"$set": update_data})
+        flash("Updated!", "success")
         return redirect(url_for("admin_dashboard"))
-
-    product = convert_doc(product)
-    return render_template("edit_product.html", product=product)
+    return render_template("edit_product.html", product=convert_doc(product))
 
 @app.route("/admin/add-product", methods=["POST"])
 @token_required
 def add_product(current_admin):
-    name = request.form.get("name", "").strip()
+    name = request.form.get("name","").strip()
     price = request.form.get("price")
-    description = request.form.get("description", "").strip()
+    description = request.form.get("description","").strip()
     stock = request.form.get("stock")
-    category = request.form.get("category", "").strip()
-    length = request.form.get("length")
-
-    is_valid, error_msg = validate_product_data(name, price, stock, length, category)
-    if not is_valid:
-        flash(error_msg, "error")
-        return redirect(url_for("admin_dashboard"))
-
-    if 'image' not in request.files:
-        flash("No image file provided.", "error")
-        return redirect(url_for("admin_dashboard"))
-
+    category = request.form.get("category","").strip()
+    sizes = request.form.getlist("size")
+    colors = request.form.getlist("color")
+    valid, msg = validate_product_data(name, price, stock, category)
+    if not valid: flash(msg, "error"); return redirect(url_for("admin_dashboard"))
+    if 'image' not in request.files: flash("No image.", "error"); return redirect(url_for("admin_dashboard"))
     file = request.files['image']
-    if file.filename == '':
-        flash("No selected file.", "error")
-        return redirect(url_for("admin_dashboard"))
-
-    if not allowed_file(file.filename):
-        flash("Invalid file type. Allowed: png, jpg, jpeg, gif, webp.", "error")
-        return redirect(url_for("admin_dashboard"))
-
-    original_filename = secure_filename(file.filename)
-    unique_filename = f"{uuid.uuid4().hex}_{original_filename}"
-    file_path = os.path.join(app.config['UPLOAD_FOLDER'], unique_filename)
-    file.save(file_path)
-    image_url = url_for('static', filename='uploads/' + unique_filename)
-
-    product_data = {
-        "name": name,
-        "price": float(price),
-        "image": image_url,
-        "description": description,
-        "stock": int(stock),
-        "category": category,
-        "length": int(length) if length else 0,
+    if not file.filename: flash("No file.", "error"); return redirect(url_for("admin_dashboard"))
+    if not allowed_file(file.filename): flash("Invalid type.", "error"); return redirect(url_for("admin_dashboard"))
+    url = upload_image(file)
+    if not url: flash("Upload failed.", "error"); return redirect(url_for("admin_dashboard"))
+    products_collection.insert_one({
+        "name": name, "price": float(price), "image": url,
+        "description": description, "stock": int(stock),
+        "category": category, "sizes": sizes, "colors": colors,
         "created_at": datetime.datetime.utcnow()
-    }
-    products_collection.insert_one(product_data)
-    flash("Product added successfully!", "success")
+    })
+    flash("Added!", "success")
     return redirect(url_for("admin_dashboard"))
 
 @app.route("/admin/delete-product/<product_id>")
 @token_required
 def delete_product(current_admin, product_id):
     obj_id = safe_objectid(product_id)
-    if not obj_id:
-        flash("Invalid product ID.", "error")
-        return redirect(url_for("admin_dashboard"))
-
-    result = products_collection.delete_one({"_id": obj_id})
-    if result.deleted_count == 0:
-        flash("Product not found.", "error")
-    else:
-        flash("Product deleted successfully.", "success")
+    if not obj_id: flash("Invalid ID.", "error"); return redirect(url_for("admin_dashboard"))
+    products_collection.delete_one({"_id": obj_id})
+    flash("Deleted!", "success")
     return redirect(url_for("admin_dashboard"))
 
 @app.route("/admin/update-order/<reference>", methods=["POST"])
 @token_required
 def update_order(current_admin, reference):
-    new_status = request.form.get("status")
-    if not new_status:
-        flash("Status is required.", "error")
-        return redirect(url_for("admin_dashboard"))
-
-    result = orders_collection.update_one(
-        {"paymentReference": reference},
-        {"$set": {"status": new_status}}
-    )
-    if result.matched_count == 0:
-        flash("Order not found.", "error")
-    else:
-        flash("Order status updated.", "success")
+    status = request.form.get("status")
+    if not status: flash("Status required.", "error"); return redirect(url_for("admin_dashboard"))
+    orders_collection.update_one({"paymentReference": reference}, {"$set": {"status": status}})
+    flash("Updated!", "success")
     return redirect(url_for("admin_dashboard"))
 
-# ==========================
-# SERVE UPLOADED FILES
-# ==========================
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+@app.route("/admin/delete-order/<reference>")
+@token_required
+def delete_order(current_admin, reference):
+    result = orders_collection.delete_one({"paymentReference": reference})
+    if result.deleted_count == 0: flash("Order not found.", "error")
+    else: flash("Order deleted.", "success")
+    return redirect(url_for("admin_dashboard"))
 
-# ==========================
-# ERROR HANDLERS
-# ==========================
+@app.route("/admin/clear-orders")
+@token_required
+def clear_orders(current_admin):
+    result = orders_collection.delete_many({})
+    flash(f"Deleted {result.deleted_count} orders.", "success")
+    return redirect(url_for("admin_dashboard"))
+
 @app.errorhandler(404)
-def page_not_found(e):
-    return render_template("404.html"), 404
+def page_not_found(e): return render_template("404.html"), 404
 
 @app.errorhandler(500)
-def internal_server_error(e):
-    return render_template("500.html"), 500
+def internal_server_error(e): return render_template("500.html"), 500
 
-# ==========================
-# RUN SERVER
-# ==========================
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
-    app.run(host='0.0.0.0', port=port, debug=True)
+    app.run(host='0.0.0.0', port=int(os.environ.get("PORT", 5000)))

@@ -5,403 +5,87 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>LADEY STOREE · Admin</title>
 
-  <!-- Premium Fonts -->
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
-  
-  <!-- Icons -->
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://i.ibb.co">
+  <link rel="dns-prefetch" href="https://i.ibb.co">
 
   <style>
-    /* ---------- RESET & VARIABLES ---------- */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
-      --ash: #B8B8B8;
-      --ash-dark: #9E9E9E;
-      --charcoal: #1A1A1A;
-      --charcoal-soft: #0D0D0D;
-      --charcoal-light: #2A2A2A;
-      --white-pure: #FFFFFF;
-      --off-white: #FAFAFA;
-      --cream-bg: #F5F5F5;
+      --ash: #B8B8B8; --ash-dark: #9E9E9E; --charcoal: #1A1A1A; --charcoal-soft: #0D0D0D;
+      --charcoal-light: #2A2A2A; --white-pure: #FFFFFF; --off-white: #FAFAFA;
       --border-light: rgba(184, 184, 184, 0.2);
-      
-      --font-serif: 'Cormorant Garamond', serif;
-      --font-sans: 'Inter', sans-serif;
-      
+      --font-serif: 'Cormorant Garamond', serif; --font-sans: 'Inter', sans-serif;
       --transition-smooth: cubic-bezier(0.23, 1, 0.32, 1);
       --shadow-soft: 0 12px 30px -8px rgba(0,0,0,0.15);
     }
-
-    body {
-      font-family: var(--font-sans);
-      background: var(--charcoal-soft);
-      color: var(--off-white);
-      line-height: 1.6;
-      padding: 32px 5%;
-      min-height: 100vh;
-    }
-
-    h1, h2, h3 {
-      font-family: var(--font-serif);
-      font-weight: 400;
-      letter-spacing: 1px;
-    }
-
-    h1 {
-      font-size: 2.8rem;
-      font-weight: 300;
-      letter-spacing: 6px;
-      text-transform: uppercase;
-      color: var(--white-pure);
-      margin-bottom: 2rem;
-      border-bottom: 1px solid var(--border-light);
-      padding-bottom: 1.5rem;
-    }
-
-    h2 {
-      font-size: 1.6rem;
-      font-weight: 300;
-      letter-spacing: 3px;
-      color: var(--ash);
-      margin-bottom: 1.5rem;
-    }
-
-    /* ---------- LAYOUT ---------- */
-    .admin-container {
-      max-width: 1400px;
-      margin: 0 auto;
-    }
-
-    .admin-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin-bottom: 2rem;
-      flex-wrap: wrap;
-      gap: 1rem;
-    }
-
-    .admin-actions {
-      display: flex;
-      gap: 1rem;
-    }
-
-    .btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      padding: 12px 24px;
-      background: transparent;
-      border: 1px solid var(--ash-dark);
-      color: var(--ash);
-      font-family: var(--font-sans);
-      font-size: 0.75rem;
-      font-weight: 500;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      cursor: pointer;
-      transition: all 0.25s var(--transition-smooth);
-      border-radius: 0;
-    }
-
-    .btn:hover {
-      background: var(--ash);
-      color: var(--charcoal);
-      border-color: var(--ash);
-    }
-
-    .btn-primary {
-      background: var(--ash);
-      color: var(--charcoal);
-      border-color: var(--ash);
-    }
-
-    .btn-primary:hover {
-      background: var(--white-pure);
-      border-color: var(--white-pure);
-    }
-
-    .btn-danger {
-      border-color: #8B4E4E;
-      color: #E8A0A0;
-    }
-
-    .btn-danger:hover {
-      background: #8B4E4E;
-      color: white;
-    }
-
-    .btn-small {
-      padding: 6px 14px;
-      font-size: 0.65rem;
-    }
-
-    /* ---------- SECTIONS ---------- */
-    .section {
-      background: var(--charcoal-light);
-      border: 1px solid var(--border-light);
-      padding: 2rem;
-      margin-bottom: 2rem;
-    }
-
-    /* ---------- FORMS ---------- */
-    .form-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 1.5rem;
-    }
-
-    .form-group {
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-    }
-
-    .form-group label {
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      color: var(--ash);
-    }
-
-    input, select, textarea {
-      background: var(--charcoal);
-      border: 1px solid var(--border-light);
-      padding: 12px 16px;
-      color: var(--white-pure);
-      font-family: var(--font-sans);
-      font-size: 0.85rem;
-      transition: border-color 0.2s;
-      outline: none;
-    }
-
-    input:focus, select:focus, textarea:focus {
-      border-color: var(--ash);
-    }
-
-    input::placeholder {
-      color: var(--ash-dark);
-    }
-
-    textarea {
-      min-height: 80px;
-      resize: vertical;
-    }
-
-    .file-input-wrapper {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .file-input-wrapper input[type="file"] {
-      position: absolute;
-      opacity: 0;
-      width: 100%;
-      height: 100%;
-      cursor: pointer;
-    }
-
-    .file-input-custom {
-      width: 100%;
-      padding: 12px 16px;
-      background: var(--charcoal);
-      border: 1px solid var(--border-light);
-      color: var(--ash-dark);
-      font-size: 0.85rem;
-      cursor: pointer;
-      transition: border-color 0.2s;
-    }
-
-    .file-input-custom i {
-      margin-right: 8px;
-    }
-
-    .file-input-wrapper:hover .file-input-custom {
-      border-color: var(--ash);
-    }
-
-    /* ---------- TABLES ---------- */
-    .table-wrapper {
-      overflow-x: auto;
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 0.8rem;
-    }
-
-    th {
-      text-align: left;
-      padding: 1rem 0.75rem;
-      font-weight: 500;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      color: var(--ash);
-      font-size: 0.65rem;
-      border-bottom: 1px solid var(--border-light);
-    }
-
-    td {
-      padding: 1rem 0.75rem;
-      border-bottom: 1px solid rgba(184, 184, 184, 0.08);
-      vertical-align: middle;
-    }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    .product-image {
-      width: 50px;
-      height: 60px;
-      object-fit: cover;
-      background: var(--charcoal);
-    }
-
-    .action-links {
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-    }
-
-    .action-links a {
-      color: var(--ash);
-      text-decoration: none;
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 1.5px;
-      transition: color 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .action-links a:hover {
-      color: var(--white-pure);
-    }
-
-    .action-links .delete-link {
-      color: #E8A0A0;
-    }
-
-    .action-links .delete-link:hover {
-      color: #FF6B6B;
-    }
-
-    .status-badge {
-      display: inline-block;
-      padding: 4px 10px;
-      font-size: 0.6rem;
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      background: rgba(184, 184, 184, 0.15);
-      color: var(--ash);
-    }
-
-    .status-badge.delivered {
-      background: rgba(46, 125, 50, 0.2);
-      color: #81C784;
-    }
-
-    .status-badge.shipped {
-      background: rgba(25, 118, 210, 0.2);
-      color: #64B5F6;
-    }
-
-    .status-badge.paid {
-      background: rgba(184, 135, 40, 0.2);
-      color: #D4AF37;
-    }
-
-    .order-update-form {
-      display: flex;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .order-update-form select {
-      width: auto;
-      padding: 8px 12px;
-      font-size: 0.7rem;
-    }
-
-    /* ---------- FLASH MESSAGES ---------- */
-    .flash-messages {
-      margin-bottom: 1.5rem;
-    }
-
-    .flash {
-      padding: 14px 20px;
-      margin-bottom: 0.5rem;
-      background: var(--charcoal-light);
-      border-left: 3px solid var(--ash);
-      color: var(--off-white);
-      font-size: 0.8rem;
-    }
-
-    .flash.success {
-      border-left-color: #4CAF50;
-    }
-
-    .flash.error {
-      border-left-color: #E8A0A0;
-    }
-
-    /* ---------- RESPONSIVE ---------- */
-    @media (max-width: 768px) {
-      body {
-        padding: 20px 4%;
-      }
-
-      h1 {
-        font-size: 2rem;
-      }
-
-      .section {
-        padding: 1.5rem;
-      }
-
-      .admin-header {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-
-      .order-update-form {
-        flex-direction: column;
-        align-items: flex-start;
-      }
-    }
-
-    /* ---------- LOGOUT LINK ---------- */
-    .logout-link {
-      color: var(--ash-dark);
-      font-size: 0.7rem;
-      text-transform: uppercase;
-      letter-spacing: 2px;
-      text-decoration: none;
-      transition: color 0.2s;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .logout-link:hover {
-      color: var(--white-pure);
-    }
+    body { font-family: var(--font-sans); background: var(--charcoal-soft); color: var(--off-white); line-height: 1.6; padding: 32px 5%; min-height: 100vh; }
+    h1, h2, h3 { font-family: var(--font-serif); font-weight: 400; letter-spacing: 1px; }
+    h1 { font-size: 2.8rem; font-weight: 300; letter-spacing: 6px; text-transform: uppercase; color: var(--white-pure); margin-bottom: 2rem; border-bottom: 1px solid var(--border-light); padding-bottom: 1.5rem; }
+    h2 { font-size: 1.6rem; font-weight: 300; letter-spacing: 3px; color: var(--ash); margin-bottom: 1.5rem; }
+    .admin-container { max-width: 1400px; margin: 0 auto; }
+    .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem; }
+    .admin-actions { display: flex; gap: 1rem; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: transparent; border: 1px solid var(--ash-dark); color: var(--ash); font-family: var(--font-sans); font-size: 0.75rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.25s; border-radius: 0; text-decoration: none; }
+    .btn:hover { background: var(--ash); color: var(--charcoal); border-color: var(--ash); }
+    .btn-primary { background: var(--ash); color: var(--charcoal); border-color: var(--ash); }
+    .btn-primary:hover { background: var(--white-pure); border-color: var(--white-pure); }
+    .btn-small { padding: 6px 14px; font-size: 0.65rem; }
+    .btn-danger-sm { padding: 6px 10px; font-size: 0.6rem; background: transparent; border: 1px solid #E8A0A0; color: #E8A0A0; cursor: pointer; transition: all 0.2s; }
+    .btn-danger-sm:hover { background: #8B4E4E; color: #fff; border-color: #8B4E4E; }
+    .section { background: var(--charcoal-light); border: 1px solid var(--border-light); padding: 2rem; margin-bottom: 2rem; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .form-group label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; color: var(--ash); }
+    input, select, textarea { background: var(--charcoal); border: 1px solid var(--border-light); padding: 12px 16px; color: var(--white-pure); font-family: var(--font-sans); font-size: 0.85rem; transition: border-color 0.2s; outline: none; }
+    input:focus, select:focus, textarea:focus { border-color: var(--ash); }
+    input::placeholder { color: var(--ash-dark); }
+    textarea { min-height: 80px; resize: vertical; }
+    .file-input-wrapper { position: relative; display: flex; align-items: center; }
+    .file-input-wrapper input[type="file"] { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+    .file-input-custom { width: 100%; padding: 12px 16px; background: var(--charcoal); border: 1px solid var(--border-light); color: var(--ash-dark); font-size: 0.85rem; cursor: pointer; transition: border-color 0.2s; }
+    .file-input-custom i { margin-right: 8px; }
+    .file-input-wrapper:hover .file-input-custom { border-color: var(--ash); }
+    .table-wrapper { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    th { text-align: left; padding: 1rem 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ash); font-size: 0.65rem; border-bottom: 1px solid var(--border-light); }
+    td { padding: 1rem 0.75rem; border-bottom: 1px solid rgba(184, 184, 184, 0.08); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    .product-image { width: 50px; height: 60px; object-fit: cover; background: var(--charcoal); }
+    .action-links { display: flex; gap: 1rem; align-items: center; }
+    .action-links a { color: var(--ash); text-decoration: none; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; transition: color 0.2s; display: inline-flex; align-items: center; gap: 4px; }
+    .action-links a:hover { color: var(--white-pure); }
+    .action-links .delete-link { color: #E8A0A0; }
+    .action-links .delete-link:hover { color: #FF6B6B; }
+    .status-badge { display: inline-block; padding: 6px 14px; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; border-radius: 20px; font-weight: 600; }
+    .status-badge.pending { background: rgba(212, 175, 55, 0.2); color: #D4AF37; border: 1px solid rgba(212, 175, 55, 0.3); }
+    .status-badge.paid { background: rgba(76, 175, 80, 0.2); color: #81C784; border: 1px solid rgba(76, 175, 80, 0.3); }
+    .status-badge.shipped { background: rgba(33, 150, 243, 0.2); color: #64B5F6; border: 1px solid rgba(33, 150, 243, 0.3); }
+    .status-badge.delivered { background: rgba(46, 125, 50, 0.2); color: #A5D6A7; border: 1px solid rgba(46, 125, 50, 0.3); }
+    .order-update-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .order-update-form select { width: auto; padding: 8px 12px; font-size: 0.7rem; }
+    .flash-messages { margin-bottom: 1.5rem; }
+    .flash { padding: 14px 20px; margin-bottom: 0.5rem; background: var(--charcoal-light); border-left: 3px solid var(--ash); color: var(--off-white); font-size: 0.8rem; }
+    .flash.success { border-left-color: #4CAF50; }
+    .flash.error { border-left-color: #E8A0A0; }
+    .logout-link { color: var(--ash-dark); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; transition: color 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+    .logout-link:hover { color: var(--white-pure); }
+    .view-details-summary { cursor: pointer; color: var(--ash-dark); }
+    .view-details-summary:hover { color: var(--ash); }
+    .order-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.8rem; }
+    .order-detail-grid strong { color: var(--ash); }
+    .order-detail-grid ul { list-style: none; margin-top: 4px; }
+    .order-detail-grid li { padding: 2px 0; color: var(--off-white); }
+    .order-detail-grid p { margin-top: 4px; color: var(--off-white); }
+    @media (max-width: 768px) { body { padding: 20px 4%; } h1 { font-size: 2rem; } .section { padding: 1.5rem; } .admin-header { flex-direction: column; align-items: flex-start; } .order-update-form { flex-direction: column; align-items: flex-start; } }
   </style>
 </head>
 <body>
 
 <div class="admin-container">
   
-  <!-- Flash Messages -->
   {% with messages = get_flashed_messages(with_categories=true) %}
     {% if messages %}
       <div class="flash-messages">
@@ -412,194 +96,168 @@
     {% endif %}
   {% endwith %}
 
-  <!-- Header -->
   <div class="admin-header">
     <h1>LADEY STOREE<br><span style="font-size: 0.9rem; letter-spacing: 4px; color: var(--ash-dark);">ADMINISTRATION</span></h1>
     <div class="admin-actions">
       <a href="{{ url_for('admin_register') }}" class="btn btn-small"><i class="ri-user-add-line"></i> New Admin</a>
       <a href="{{ url_for('home') }}" class="btn btn-small"><i class="ri-store-line"></i> View Store</a>
-      <a href="#" class="logout-link" onclick="document.cookie='admin_token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;'; window.location.href='/'"><i class="ri-logout-box-r-line"></i> Logout</a>
+      <a href="{{ url_for('admin_logout') }}" class="logout-link"><i class="ri-logout-box-r-line"></i> Logout</a>
     </div>
   </div>
 
-  <!-- Add Product Section -->
+  <!-- ✅ ADD PRODUCT WITH SIZE & COLOR -->
   <div class="section">
     <h2><i class="ri-add-line" style="margin-right: 10px;"></i> Add New Product</h2>
-    
     <form method="POST" action="{{ url_for('add_product') }}" enctype="multipart/form-data">
       <div class="form-grid">
-        <div class="form-group">
-          <label>Product Name *</label>
-          <input type="text" name="name" placeholder="e.g., Silk Crepe Blouse" required>
-        </div>
-        
-        <div class="form-group">
-          <label>Price (₦) *</label>
-          <input type="number" name="price" placeholder="0" step="0.01" required>
-        </div>
-        
+        <div class="form-group"><label>Product Name *</label><input type="text" name="name" placeholder="e.g., Silk Crepe Blouse" required></div>
+        <div class="form-group"><label>Price (₦) *</label><input type="number" name="price" placeholder="0" step="0.01" min="0" required></div>
         <div class="form-group">
           <label>Category *</label>
           <select name="category" required>
             <option value="">Select Category</option>
+            <option value="Bundle Deals">Bundle Deals</option>
             <option value="New Arrivals">New Arrivals</option>
-            <option value="Dresses">Dresses</option>
             <option value="Tops">Tops</option>
-            <option value="Knitwear">Knitwear</option>
-            <option value="Outerwear">Outerwear</option>
-            <option value="Trousers">Trousers</option>
-            <option value="Skirts">Skirts</option>
-            <option value="Accessories">Accessories</option>
+            <option value="Jeans/Denims">Jeans/Denims</option>
+            <option value="Jumpsuit">Jumpsuit</option>
+            <option value="Mom Shorts">Mom Shorts</option>
+            <option value="Bum Shorts">Bum Shorts</option>
+            <option value="Joggers">Joggers</option>
+            <option value="Jogger Shorts">Jogger Shorts</option>
+            <option value="2-Piece Sets">2-Piece Sets</option>
+            <option value="Combos">Combos</option>
+            <option value="Bags">Bags</option>
+            <option value="Others">Others</option>
           </select>
         </div>
+        <div class="form-group"><label>Stock *</label><input type="number" name="stock" placeholder="0" min="0" required></div>
         
+        <!-- ✅ NEW: Size -->
         <div class="form-group">
-          <label>Length (optional)</label>
-          <input type="text" name="length" placeholder="e.g., Regular, Midi">
+          <label>Available Sizes</label>
+          <select name="size" multiple style="min-height: 100px;">
+            <option>XS</option><option>S</option><option>M</option><option>L</option>
+            <option>XL</option><option>XXL</option><option>3XL</option>
+            <option>Free Size</option>
+          </select>
+          <small style="color: var(--ash-dark); font-size: 0.6rem; margin-top: 4px;">Hold Ctrl/Cmd to select multiple sizes. For Jeans/Denims, put the waist size in the product name instead (e.g. "Waist 28") - that's what the waist filter matches on.</small>
         </div>
         
+        <!-- ✅ NEW: Color -->
         <div class="form-group">
-          <label>Stock *</label>
-          <input type="number" name="stock" placeholder="0" required>
+          <label>Available Colors</label>
+          <select name="color" multiple style="min-height: 100px;">
+            <option>Black</option><option>White</option><option>Red</option><option>Blue</option>
+            <option>Green</option><option>Pink</option><option>Grey</option><option>Brown</option>
+            <option>Navy</option><option>Beige</option><option>Purple</option><option>Yellow</option>
+            <option>Orange</option><option>Multi</option>
+          </select>
+          <small style="color: var(--ash-dark); font-size: 0.6rem; margin-top: 4px;">Hold Ctrl/Cmd to select multiple colors</small>
         </div>
         
-        <div class="form-group">
-          <label>Product Image *</label>
-          <div class="file-input-wrapper">
-            <input type="file" name="image" accept="image/*" required>
-            <div class="file-input-custom">
-              <i class="ri-image-line"></i> Choose image...
-            </div>
-          </div>
-        </div>
-        
-        <div class="form-group" style="grid-column: span 2;">
-          <label>Description</label>
-          <textarea name="description" placeholder="Product description..."></textarea>
-        </div>
+        <div class="form-group"><label>Product Image *</label><div class="file-input-wrapper"><input type="file" name="image" accept="image/*" required><div class="file-input-custom"><i class="ri-image-line"></i> Choose image...</div></div></div>
+        <div class="form-group" style="grid-column: span 2;"><label>Description</label><textarea name="description" placeholder="Product description..."></textarea></div>
       </div>
-      
-      <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem;">
-        <i class="ri-add-line"></i> Add Product
-      </button>
+      <button type="submit" class="btn btn-primary" style="margin-top: 1.5rem;"><i class="ri-add-line"></i> Add Product</button>
     </form>
   </div>
 
-  <!-- Products Section -->
   <div class="section">
     <h2><i class="ri-shirt-line" style="margin-right: 10px;"></i> Products</h2>
-    
     <div class="table-wrapper">
       <table>
-        <thead>
-          <tr>
-            <th>Image</th>
-            <th>Name</th>
-            <th>Category</th>
-            <th>Length</th>
-            <th>Price</th>
-            <th>Stock</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
         <tbody>
           {% for product in products %}
           <tr>
-            <td>
-              {% if product.image %}
-              <img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">
-              {% else %}
-              <div class="product-image" style="display: flex; align-items: center; justify-content: center; color: var(--ash-dark);">
-                <i class="ri-image-line"></i>
-              </div>
-              {% endif %}
-            </td>
+            <td>{% if product.image %}<img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">{% else %}<div class="product-image" style="display:flex;align-items:center;justify-content:center;color:var(--ash-dark);"><i class="ri-image-line"></i></div>{% endif %}</td>
             <td>{{ product.name }}</td>
             <td>{{ product.category }}</td>
-            <td>{{ product.length if product.length else '—' }}</td>
-            <td>₦{{ "%.2f"|format(product.price) }}</td>
+            <td>{{ format_currency(product.price) }}</td>
             <td>{{ product.stock }}</td>
-            <td>
-              <div class="action-links">
-                <a href="{{ url_for('edit_product', product_id=product._id) }}">
-                  <i class="ri-edit-line"></i> Edit
-                </a>
-                <a href="{{ url_for('delete_product', product_id=product._id) }}" class="delete-link" onclick="return confirm('Delete this product?')">
-                  <i class="ri-delete-bin-line"></i> Delete
-                </a>
-              </div>
-            </td>
+            <td><div class="action-links"><a href="{{ url_for('edit_product', product_id=product._id) }}"><i class="ri-edit-line"></i> Edit</a><a href="#" class="delete-link" onclick="if(confirm('Delete this product?')){window.location.href='{{ url_for('delete_product', product_id=product._id) }}';}return false;"><i class="ri-delete-bin-line"></i> Delete</a></div></td>
           </tr>
           {% else %}
-          <tr>
-            <td colspan="7" style="text-align: center; padding: 3rem; color: var(--ash-dark);">
-              <i class="ri-inbox-line" style="font-size: 2rem; display: block; margin-bottom: 1rem;"></i>
-              No products yet. Add your first product above.
-            </td>
-          </tr>
+          <tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--ash-dark);"><i class="ri-inbox-line" style="font-size:2rem;display:block;margin-bottom:1rem;"></i>No products yet.</td></tr>
           {% endfor %}
         </tbody>
       </table>
     </div>
   </div>
 
-  <!-- Orders Section -->
+  <!-- ✅ ORDERS SECTION WITH COLOR AS MAIN COLUMN -->
   <div class="section">
     <h2><i class="ri-shopping-bag-line" style="margin-right: 10px;"></i> Orders</h2>
-    
     <div class="table-wrapper">
       <table>
-        <thead>
-          <tr>
-            <th>Reference</th>
-            <th>Customer</th>
-            <th>Amount</th>
-            <th>Status</th>
-            <th>Date</th>
-            <th>Update</th>
-          </tr>
-        </thead>
+        <thead><tr><th>Reference</th><th>Customer</th><th>Phone</th><th>WhatsApp</th><th>State</th><th>Country</th><th>Size</th><th>Color</th><th>Amount</th><th>Status</th><th>Date</th><th>Actions</th></tr></thead>
         <tbody>
           {% for order in orders %}
-          <tr>
+          <tr style="{% if order.status == 'Pending' %}border-left:3px solid #D4AF37;{% elif order.status == 'Paid' %}border-left:3px solid #4CAF50;{% elif order.status == 'Shipped' %}border-left:3px solid #2196F3;{% elif order.status == 'Delivered' %}border-left:3px solid #81C784;{% endif %}">
+            <td><code style="background:var(--charcoal);padding:4px 8px;font-size:0.7rem;">{{ order.paymentReference or '—' }}</code></td>
+            <td><strong>{{ order.customerName or '—' }}</strong>{% if order.customerEmail %}<br><small style="color:var(--ash-dark);">{{ order.customerEmail }}</small>{% endif %}</td>
+            <td>{{ order.customerPhone or '—' }}</td>
+            <td>{{ order.customerWhatsapp or '—' }}</td>
+            <td>{{ order.state or '—' }}</td>
+            <td>{{ order.country or '—' }}</td>
+            <td>{{ order.size or '—' }}</td>
+            <td>{{ order.color or '—' }}</td>
+            <td><strong>{{ format_currency(order.amount|default(0)) }}</strong></td>
+            <td><span class="status-badge {{ order.status|lower if order.status else 'pending' }}">{{ order.status or 'Pending' }}</span></td>
+            <td>{% if order.createdAt %}{{ order.createdAt.strftime('%d/%m/%y %H:%M') }}{% else %}—{% endif %}</td>
             <td>
-              <code style="background: var(--charcoal); padding: 4px 8px; font-size: 0.7rem;">
-                {{ order.paymentReference[:12] }}...
-              </code>
+              <div class="order-update-form">
+                <form method="POST" action="{{ url_for('update_order', reference=order.paymentReference) }}" style="display:flex;gap:6px;align-items:center;">
+                  <select name="status" style="width:auto;padding:8px 12px;font-size:0.7rem;">
+                    <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
+                    <option value="Paid" {% if order.status == 'Paid' %}selected{% endif %}>Paid</option>
+                    <option value="Shipped" {% if order.status == 'Shipped' %}selected{% endif %}>Shipped</option>
+                    <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
+                  </select>
+                  <button type="submit" class="btn btn-small">Update</button>
+                </form>
+                <a href="#" class="btn-danger-sm" onclick="if(confirm('Delete this order permanently?')){window.location.href='{{ url_for('delete_order', reference=order.paymentReference) }}';}return false;" title="Delete Order">
+                  <i class="ri-delete-bin-line"></i>
+                </a>
+              </div>
             </td>
-            <td>{{ order.customerEmail or '—' }}</td>
-            <td>₦{{ "%.2f"|format(order.amount|default(0)) }}</td>
-            <td>
-              <span class="status-badge {{ order.status|lower }}">
-                {{ order.status }}
-              </span>
-            </td>
-            <td>
-              {% if order.createdAt %}
-                {{ order.createdAt.strftime('%d/%m/%Y') }}
-              {% else %}
-                —
-              {% endif %}
-            </td>
-            <td>
-              <form method="POST" action="{{ url_for('update_order', reference=order.paymentReference) }}" class="order-update-form">
-                <select name="status">
-                  <option value="Pending" {% if order.status == 'Pending' %}selected{% endif %}>Pending</option>
-                  <option value="Paid" {% if order.status == 'Paid' %}selected{% endif %}>Paid</option>
-                  <option value="Shipped" {% if order.status == 'Shipped' %}selected{% endif %}>Shipped</option>
-                  <option value="Delivered" {% if order.status == 'Delivered' %}selected{% endif %}>Delivered</option>
-                </select>
-                <button type="submit" class="btn btn-small">Update</button>
-              </form>
+          </tr>
+          <tr style="background:rgba(0,0,0,0.1);">
+            <td colspan="12" style="padding:0.5rem 1rem;font-size:0.75rem;color:var(--ash);">
+              <details>
+                <summary style="cursor:pointer;color:var(--ash-dark);">📋 View Order Details</summary>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:0.8rem;">
+                  <div><strong>🛍 Items:</strong>{% if order.orderItems %}<ul style="list-style:none;margin-top:4px;">{% for item in order.orderItems %}<li style="padding:2px 0;">• {{ item.name }} (×{{ item.quantity|default(1) }})</li>{% endfor %}</ul>{% else %}<p>No items listed</p>{% endif %}</div>
+                  <div><strong>📍 Address:</strong><p style="margin-top:4px;">{{ order.deliveryAddress or 'Not provided' }}</p></div>
+                </div>
+              </details>
             </td>
           </tr>
           {% else %}
+          <tr><td colspan="12" style="text-align:center;padding:3rem;color:var(--ash-dark);"><i class="ri-shopping-bag-line" style="font-size:2rem;display:block;margin-bottom:1rem;"></i>No orders yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section">
+    <h2><i class="ri-message-line" style="margin-right: 10px;"></i> Messages</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Date</th><th>Name</th><th>Email</th><th>Subject</th><th>Message</th></tr></thead>
+        <tbody>
+          {% for msg in messages %}
           <tr>
-            <td colspan="6" style="text-align: center; padding: 3rem; color: var(--ash-dark);">
-              <i class="ri-shopping-bag-line" style="font-size: 2rem; display: block; margin-bottom: 1rem;"></i>
-              No orders yet.
-            </td>
+            <td>{% if msg.createdAt %}{{ msg.createdAt.strftime('%d/%m/%y %H:%M') }}{% else %}—{% endif %}</td>
+            <td><strong>{{ msg.name or '—' }}</strong></td>
+            <td>{{ msg.email or '—' }}</td>
+            <td>{{ msg.subject or '—' }}</td>
+            <td>{{ msg.message or '—' }}</td>
           </tr>
+          {% else %}
+          <tr><td colspan="5" style="text-align:center;padding:3rem;color:var(--ash-dark);"><i class="ri-message-line" style="font-size:2rem;display:block;margin-bottom:1rem;"></i>No messages yet.</td></tr>
           {% endfor %}
         </tbody>
       </table>
@@ -609,7 +267,6 @@
 </div>
 
 <script>
-  // Update file input display text
   document.querySelectorAll('.file-input-wrapper input[type="file"]').forEach(input => {
     input.addEventListener('change', function() {
       const customDisplay = this.parentElement.querySelector('.file-input-custom');
@@ -621,6 +278,5 @@
     });
   });
 </script>
-
 </body>
 </html>
