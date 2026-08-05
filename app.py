@@ -207,6 +207,10 @@ def jeans():
         waist = ""
     return render_product_page("jeans.html", query, "Jeans/Denims", selected_waist=waist, waist_sizes=waist_sizes)
 
+@app.route("/denims")
+def denims():
+    return render_product_page("denims.html", {"category": {"$regex": "^denims$", "$options": "i"}}, "Denims")
+
 @app.route("/jumpsuit")
 def jumpsuit():
     return render_product_page("jumpsuit.html", {"category": {"$regex": "^jumpsuit$", "$options": "i"}}, "Jumpsuit")
