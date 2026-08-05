@@ -101,6 +101,11 @@
       margin-top: 10px; text-transform: uppercase; letter-spacing: 2px;
     }
     .add-to-cart-btn-main:hover { background: #000; transform: scale(1.02); box-shadow: var(--shadow-lift); }
+    .add-to-cart-btn-main:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
+    .stock-status { display: flex; align-items: center; gap: 8px; font-size: 0.85rem; font-weight: 500; margin: -8px 0 20px; }
+    .stock-status.in-stock { color: #2e7d32; }
+    .stock-status.low-stock { color: #c07a00; }
+    .stock-status.out-of-stock { color: #c0392b; }
     .trust-section { margin: 30px 0 20px; background: #f9f9f9; padding: 20px 25px; border-radius: 24px; display: flex; flex-wrap: wrap; gap: 20px; justify-content: space-between; }
     .trust-item { display: flex; align-items: center; gap: 10px; font-size: 0.8rem; color: #555; }
     .trust-item i { color: var(--charcoal); font-size: 1.2rem; }
@@ -202,6 +207,16 @@
         <div class="product-title">{{ product.name }}{% if product.badge %}<span class="product-badge">{{ product.badge }}</span>{% endif %}</div>
         <div class="product-price">₦{{ "{:,.0f}".format(product.price) }}</div>
 
+        {% if product.stock is defined %}
+          {% if product.stock <= 0 %}
+          <div class="stock-status out-of-stock"><i class="ri-close-circle-line"></i> Out of Stock</div>
+          {% elif product.stock <= 5 %}
+          <div class="stock-status low-stock"><i class="ri-alarm-warning-line"></i> Only {{ product.stock }} left in stock</div>
+          {% else %}
+          <div class="stock-status in-stock"><i class="ri-checkbox-circle-line"></i> In Stock</div>
+          {% endif %}
+        {% endif %}
+
         <!-- ✅ SIZE DISPLAY -->
         {% if product.sizes and product.sizes|length > 0 %}
         <div class="product-variants">
@@ -236,7 +251,7 @@
             <button class="qty-btn" id="qtyPlus">+</button>
           </div>
         </div>
-        <button class="add-to-cart-btn-main" id="mainAddToCart"><i class="ri-shopping-bag-line"></i> Add to Cart</button>
+        <button class="add-to-cart-btn-main" id="mainAddToCart" {% if product.stock is defined and product.stock <= 0 %}disabled{% endif %}><i class="ri-shopping-bag-line"></i> {% if product.stock is defined and product.stock <= 0 %}Out of Stock{% else %}Add to Cart{% endif %}</button>
         
         <div class="trust-section">
           <div class="trust-item"><i class="ri-checkbox-circle-fill"></i> Premium Quality</div>
