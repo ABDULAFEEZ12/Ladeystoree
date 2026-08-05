@@ -157,6 +157,19 @@ a, button, .btn, .quick-add, .cat-chip, .mobile-cat-link, .desktop-nav a {
   color: #fff !important;
   transform: scale(1.08) !important;
 }
+.quick-add:disabled {
+  background: #eee !important;
+  color: #bbb !important;
+  border-color: #ddd !important;
+  cursor: not-allowed !important;
+  opacity: 0.7 !important;
+  transform: none !important;
+}
+.quick-add:disabled:hover {
+  background: #eee !important;
+  color: #bbb !important;
+  transform: none !important;
+}
 
 .product-brand {
   color: var(--gold) !important;

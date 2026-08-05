@@ -178,7 +178,7 @@
         <a href="/product/{{ product._id }}">
           <div class="product-img-wrap">
             <img src="{{ product.image or 'https://via.placeholder.com/400x500/f0f0f0/9E9E9E?text=LADEY' }}" alt="{{ product.name }}" loading="lazy">
-            <button class="quick-add" data-id="{{ product._id }}" data-name="{{ product.name }}" data-price="{{ product.price }}"><i class="ri-add-line"></i></button>
+            <button class="quick-add" data-id="{{ product._id }}" data-name="{{ product.name }}" data-price="{{ product.price }}" {% if product.stock is defined and product.stock <= 0 %}disabled{% endif %}><i class="ri-add-line"></i></button>
           </div>
           <div class="product-info"><div class="product-brand">LADEY STOREE</div><div class="product-name">{{ product.name }}</div><div class="product-price">{{ format_currency(product.price) }}</div></div>
         </a>
