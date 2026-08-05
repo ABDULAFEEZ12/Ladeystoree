@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Products · LADEY STOREE Admin</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="preconnect" href="https://i.ibb.co">
+  <link rel="dns-prefetch" href="https://i.ibb.co">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/premium.css') }}">
+
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --ash: #B8B8B8; --ash-dark: #9E9E9E; --charcoal: #1A1A1A; --charcoal-soft: #0D0D0D;
+      --charcoal-light: #2A2A2A; --white-pure: #FFFFFF; --off-white: #FAFAFA;
+      --border-light: rgba(184, 184, 184, 0.2);
+      --font-serif: 'Cormorant Garamond', serif; --font-sans: 'Inter', sans-serif;
+      --transition-smooth: cubic-bezier(0.23, 1, 0.32, 1);
+      --shadow-soft: 0 12px 30px -8px rgba(0,0,0,0.15);
+    }
+    body { font-family: var(--font-sans); background: var(--charcoal-soft); color: var(--off-white); line-height: 1.6; padding: 32px 5%; min-height: 100vh; }
+    h1, h2, h3 { font-family: var(--font-serif); font-weight: 400; letter-spacing: 1px; }
+    h1 { font-size: 2.8rem; font-weight: 300; letter-spacing: 6px; text-transform: uppercase; color: var(--white-pure); margin-bottom: 2rem; border-bottom: 1px solid var(--border-light); padding-bottom: 1.5rem; }
+    h2 { font-size: 1.6rem; font-weight: 300; letter-spacing: 3px; color: var(--ash); margin-bottom: 1.5rem; }
+    .admin-container { max-width: 1400px; margin: 0 auto; }
+    .admin-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+    .admin-actions { display: flex; gap: 1rem; }
+    .btn { display: inline-flex; align-items: center; gap: 8px; padding: 12px 24px; background: transparent; border: 1px solid var(--ash-dark); color: var(--ash); font-family: var(--font-sans); font-size: 0.75rem; font-weight: 500; letter-spacing: 2px; text-transform: uppercase; cursor: pointer; transition: all 0.25s; border-radius: 0; text-decoration: none; }
+    .btn:hover { background: var(--ash); color: var(--charcoal); border-color: var(--ash); }
+    .btn-primary { background: var(--ash); color: var(--charcoal); border-color: var(--ash); }
+    .btn-primary:hover { background: var(--white-pure); border-color: var(--white-pure); }
+    .btn-small { padding: 6px 14px; font-size: 0.65rem; }
+    .btn-danger-sm { padding: 6px 10px; font-size: 0.6rem; background: transparent; border: 1px solid #E8A0A0; color: #E8A0A0; cursor: pointer; transition: all 0.2s; }
+    .btn-danger-sm:hover { background: #8B4E4E; color: #fff; border-color: #8B4E4E; }
+    .admin-nav-bar { display: flex; gap: 0.25rem; margin-bottom: 2rem; border-bottom: 1px solid var(--border-light); flex-wrap: wrap; }
+    .admin-nav-link { display: inline-flex; align-items: center; gap: 8px; padding: 14px 20px; color: var(--ash-dark); text-decoration: none; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; border-bottom: 2px solid transparent; transition: all 0.2s; }
+    .admin-nav-link:hover { color: var(--white-pure); }
+    .admin-nav-link.active { color: var(--white-pure); border-bottom-color: var(--ash); }
+    .section { background: var(--charcoal-light); border: 1px solid var(--border-light); padding: 2rem; margin-bottom: 2rem; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; }
+    .form-group { display: flex; flex-direction: column; gap: 0.5rem; }
+    .form-group label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; color: var(--ash); }
+    input, select, textarea { background: var(--charcoal); border: 1px solid var(--border-light); padding: 12px 16px; color: var(--white-pure); font-family: var(--font-sans); font-size: 0.85rem; transition: border-color 0.2s; outline: none; }
+    input:focus, select:focus, textarea:focus { border-color: var(--ash); }
+    input::placeholder { color: var(--ash-dark); }
+    textarea { min-height: 80px; resize: vertical; }
+    .file-input-wrapper { position: relative; display: flex; align-items: center; }
+    .file-input-wrapper input[type="file"] { position: absolute; opacity: 0; width: 100%; height: 100%; cursor: pointer; }
+    .file-input-custom { width: 100%; padding: 12px 16px; background: var(--charcoal); border: 1px solid var(--border-light); color: var(--ash-dark); font-size: 0.85rem; cursor: pointer; transition: border-color 0.2s; }
+    .file-input-custom i { margin-right: 8px; }
+    .file-input-wrapper:hover .file-input-custom { border-color: var(--ash); }
+    .table-wrapper { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+    th { text-align: left; padding: 1rem 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ash); font-size: 0.65rem; border-bottom: 1px solid var(--border-light); }
+    td { padding: 1rem 0.75rem; border-bottom: 1px solid rgba(184, 184, 184, 0.08); vertical-align: middle; }
+    tr:last-child td { border-bottom: none; }
+    .product-image { width: 50px; height: 60px; object-fit: cover; background: var(--charcoal); }
+    .action-links { display: flex; gap: 1rem; align-items: center; }
+    .action-links a { color: var(--ash); text-decoration: none; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 1.5px; transition: color 0.2s; display: inline-flex; align-items: center; gap: 4px; }
+    .action-links a:hover { color: var(--white-pure); }
+    .action-links .delete-link { color: #E8A0A0; }
+    .action-links .delete-link:hover { color: #FF6B6B; }
+    .status-badge { display: inline-block; padding: 6px 14px; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; border-radius: 20px; font-weight: 600; }
+    .status-badge.pending { background: rgba(212, 175, 55, 0.2); color: #D4AF37; border: 1px solid rgba(212, 175, 55, 0.3); }
+    .status-badge.paid { background: rgba(76, 175, 80, 0.2); color: #81C784; border: 1px solid rgba(76, 175, 80, 0.3); }
+    .status-badge.shipped { background: rgba(33, 150, 243, 0.2); color: #64B5F6; border: 1px solid rgba(33, 150, 243, 0.3); }
+    .status-badge.delivered { background: rgba(46, 125, 50, 0.2); color: #A5D6A7; border: 1px solid rgba(46, 125, 50, 0.3); }
+    .order-update-form { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; }
+    .order-update-form select { width: auto; padding: 8px 12px; font-size: 0.7rem; }
+    .flash-messages { margin-bottom: 1.5rem; }
+    .flash { padding: 14px 20px; margin-bottom: 0.5rem; background: var(--charcoal-light); border-left: 3px solid var(--ash); color: var(--off-white); font-size: 0.8rem; }
+    .flash.success { border-left-color: #4CAF50; }
+    .flash.error { border-left-color: #E8A0A0; }
+    .logout-link { color: var(--ash-dark); font-size: 0.7rem; text-transform: uppercase; letter-spacing: 2px; text-decoration: none; transition: color 0.2s; display: inline-flex; align-items: center; gap: 6px; }
+    .logout-link:hover { color: var(--white-pure); }
+    .view-details-summary { cursor: pointer; color: var(--ash-dark); }
+    .view-details-summary:hover { color: var(--ash); }
+    .order-detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.8rem; }
+    .order-detail-grid strong { color: var(--ash); }
+    .order-detail-grid ul { list-style: none; margin-top: 4px; }
+    .order-detail-grid li { padding: 2px 0; color: var(--off-white); }
+    .order-detail-grid p { margin-top: 4px; color: var(--off-white); }
+    .order-item-thumbs { display: flex; gap: 4px; flex-wrap: wrap; }
+    .order-item-thumbs img { width: 34px; height: 34px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-light); }
+    .order-item-thumbs .thumb-more { width: 34px; height: 34px; border-radius: 4px; background: var(--charcoal); border: 1px solid var(--border-light); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: var(--ash-dark); }
+    @media (max-width: 768px) { body { padding: 20px 4%; } h1 { font-size: 2rem; } .section { padding: 1.5rem; } .admin-header { flex-direction: column; align-items: flex-start; } .order-update-form { flex-direction: column; align-items: flex-start; } }
+  </style>
+</head>
+<body>
+
+<div class="admin-container">
+{% set active_page = 'products' %}
+{% include "_admin_header.html" %}
+
+  <div class="section">
+    <h2><i class="ri-shirt-line" style="margin-right: 10px;"></i> Products</h2>
+    <div class="table-wrapper">
+      <table>
+        <thead><tr><th>Image</th><th>Name</th><th>Category</th><th>Price</th><th>Stock</th><th>Actions</th></tr></thead>
+        <tbody>
+          {% for product in products %}
+          <tr>
+            <td>{% if product.image %}<img src="{{ product.image }}" alt="{{ product.name }}" class="product-image">{% else %}<div class="product-image" style="display:flex;align-items:center;justify-content:center;color:var(--ash-dark);"><i class="ri-image-line"></i></div>{% endif %}</td>
+            <td>{{ product.name }}</td>
+            <td>{{ product.category }}</td>
+            <td>{{ format_currency(product.price) }}</td>
+            <td>{{ product.stock }}</td>
+            <td><div class="action-links"><a href="{{ url_for('edit_product', product_id=product._id) }}"><i class="ri-edit-line"></i> Edit</a><a href="#" class="delete-link" onclick="if(confirm('Delete this product?')){window.location.href='{{ url_for('delete_product', product_id=product._id) }}';}return false;"><i class="ri-delete-bin-line"></i> Delete</a></div></td>
+          </tr>
+          {% else %}
+          <tr><td colspan="6" style="text-align:center;padding:3rem;color:var(--ash-dark);"><i class="ri-inbox-line" style="font-size:2rem;display:block;margin-bottom:1rem;"></i>No products yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

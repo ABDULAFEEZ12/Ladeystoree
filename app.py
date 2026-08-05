@@ -10,6 +10,8 @@ import certifi
 import uuid
 import base64
 import math
+import smtplib
+from email.mime.text import MIMEText
 from io import BytesIO
 from PIL import Image
 from functools import wraps
@@ -34,6 +36,46 @@ MONGO_URI = os.getenv("MONGO_URI")
 JWT_SECRET = os.getenv("JWT_SECRET")
 IMGBB_API_KEY = os.getenv("IMGBB_API_KEY")
 SQUADCO_SECRET_KEY = os.getenv("SQUADCO_SECRET_KEY")
+
+MAIL_SERVER = os.getenv("MAIL_SERVER")
+MAIL_PORT = int(os.getenv("MAIL_PORT", "587") or "587")
+MAIL_USE_TLS = os.getenv("MAIL_USE_TLS", "true").lower() == "true"
+MAIL_USERNAME = os.getenv("MAIL_USERNAME")
+MAIL_PASSWORD = os.getenv("MAIL_PASSWORD")
+ORDER_NOTIFY_EMAIL = "demmierex@gmail.com"
+
+def send_order_notification(order_data):
+    """Best-effort email to the store owner when a payment is confirmed. Never blocks or fails the order itself."""
+    if not (MAIL_SERVER and MAIL_USERNAME and MAIL_PASSWORD):
+        return
+    try:
+        items_text = "\n".join(
+            f"- {item.get('name', 'Item')} x{item.get('quantity', 1)} (₦{item.get('price', 0):,.0f})"
+            for item in order_data.get("items", [])
+        ) or "No items listed"
+        body = (
+            f"New order received!\n\n"
+            f"Reference: {order_data.get('paymentReference')}\n"
+            f"Customer: {order_data.get('customerName')}\n"
+            f"Phone: {order_data.get('customerPhone')}\n"
+            f"WhatsApp: {order_data.get('customerWhatsapp')}\n"
+            f"Email: {order_data.get('customerEmail')}\n"
+            f"Amount: ₦{order_data.get('amount', 0):,.0f}\n\n"
+            f"Items:\n{items_text}\n\n"
+            f"Delivery: {order_data.get('deliveryAddress')}, {order_data.get('state')}, {order_data.get('country')}\n"
+            f"Size: {order_data.get('size')}  Color: {order_data.get('color')}"
+        )
+        msg = MIMEText(body)
+        msg["Subject"] = f"New Order - {order_data.get('paymentReference')}"
+        msg["From"] = MAIL_USERNAME
+        msg["To"] = ORDER_NOTIFY_EMAIL
+        with smtplib.SMTP(MAIL_SERVER, MAIL_PORT, timeout=10) as server:
+            if MAIL_USE_TLS:
+                server.starttls()
+            server.login(MAIL_USERNAME, MAIL_PASSWORD)
+            server.sendmail(MAIL_USERNAME, [ORDER_NOTIFY_EMAIL], msg.as_string())
+    except Exception as e:
+        print(f"Order notification email failed: {e}")
 
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'webp'}
 
@@ -368,6 +410,17 @@ def save_order():
     if expected_kobo > 0 and paid_kobo < expected_kobo * 0.99:
         return jsonify({"message": "Paid amount does not match order total. Order was not recorded.", "verified": False}), 402
 
+    # Attach each item's current product image so admin can see what was bought at a glance.
+    enriched_items = []
+    for item in data.get("items", []):
+        product_id = safe_objectid(item.get("id", ""))
+        image = None
+        if product_id:
+            product = products_collection.find_one({"_id": product_id}, {"image": 1})
+            if product:
+                image = product.get("image")
+        enriched_items.append({**item, "image": image})
+
     order_data = {
         "paymentReference": reference,
         "customerName": data.get("customerName", "Unknown"),
@@ -379,7 +432,7 @@ def save_order():
         "country": data.get("country", "Nigeria"),
         "size": data.get("size", ""),
         "color": data.get("color", ""),
-        "items": data.get("items", []),
+        "items": enriched_items,
         "amount": float(data.get("totalAmount", 0)),
         "paymentMethod": data.get("paymentMethod", "SquadCo"),
         "status": "Paid",
@@ -387,7 +440,7 @@ def save_order():
     }
     try:
         orders_collection.update_one({"paymentReference": reference}, {"$set": order_data}, upsert=True)
-        for item in order_data["items"]:
+        for item in enriched_items:
             product_id = safe_objectid(item.get("id", ""))
             qty = int(item.get("quantity") or 1)
             if not product_id or qty <= 0:
@@ -399,6 +452,7 @@ def save_order():
             )
             if result.matched_count == 0:
                 products_collection.update_one({"_id": product_id}, {"$set": {"stock": 0}})
+        send_order_notification(order_data)
         return jsonify({"message": "Order saved", "reference": reference})
     except Exception as e:
         return jsonify({"message": "Failed", "error": str(e)}), 500
@@ -447,7 +501,7 @@ def admin_login_page():
             flash("Invalid email or password.", "error")
             return redirect(url_for("admin_login_page"))
         token = jwt.encode({"id": str(admin["_id"]), "exp": datetime.datetime.utcnow() + datetime.timedelta(days=7)}, JWT_SECRET, algorithm="HS256")
-        response = redirect(url_for("admin_dashboard"))
+        response = redirect(url_for("admin_products"))
         response.set_cookie("admin_token", token, httponly=True, secure=False, samesite="Lax", max_age=60*60*24*7)
         flash("Login successful!", "success")
         return response
@@ -456,12 +510,23 @@ def admin_login_page():
 @app.route("/admin/dashboard")
 @token_required
 def admin_dashboard(current_admin):
+    return redirect(url_for("admin_products"))
+
+@app.route("/admin/products")
+@token_required
+def admin_products(current_admin):
     try:
         products = convert_cursor(products_collection.find())
-        orders = convert_cursor(orders_collection.find().sort("createdAt", -1))
-        messages = convert_cursor(messages_collection.find().sort("createdAt", -1))
     except:
-        products, orders, messages = [], [], []
+        products = []
+    return render_template("admin_products.html", products=products)
+
+@app.route("/admin/add-product-page")
+@token_required
+def admin_add_product_page(current_admin):
+    return render_template("admin_add_product.html")
+
+def _prepare_orders_for_admin(orders):
     for order in orders:
         if 'items' in order and isinstance(order['items'], list):
             order['orderItems'] = order.pop('items')
@@ -479,7 +544,26 @@ def admin_dashboard(current_admin):
         order.setdefault('amount', 0)
         order.setdefault('status', 'Pending')
         order.setdefault('paymentReference', '—')
-    return render_template("admin.html", products=products, orders=orders, messages=messages)
+    return orders
+
+@app.route("/admin/orders")
+@token_required
+def admin_orders(current_admin):
+    try:
+        orders = convert_cursor(orders_collection.find().sort("createdAt", -1))
+    except:
+        orders = []
+    orders = _prepare_orders_for_admin(orders)
+    return render_template("admin_orders.html", orders=orders)
+
+@app.route("/admin/messages")
+@token_required
+def admin_messages(current_admin):
+    try:
+        messages = convert_cursor(messages_collection.find().sort("createdAt", -1))
+    except:
+        messages = []
+    return render_template("admin_messages.html", messages=messages)
 
 @app.route("/admin/logout")
 def admin_logout():
@@ -501,16 +585,16 @@ def admin_register(current_admin):
         hashed = bcrypt.hashpw(password.encode(), bcrypt.gensalt())
         admins_collection.insert_one({"email": email, "password": hashed, "created_by": current_admin["email"], "role": "admin", "created_at": datetime.datetime.utcnow()})
         flash("Admin created!", "success")
-        return redirect(url_for("admin_dashboard"))
+        return redirect(url_for("admin_products"))
     return render_template("admin_register.html")
 
 @app.route("/admin/edit-product/<product_id>", methods=["GET", "POST"])
 @token_required
 def edit_product(current_admin, product_id):
     obj_id = safe_objectid(product_id)
-    if not obj_id: flash("Invalid ID.", "error"); return redirect(url_for("admin_dashboard"))
+    if not obj_id: flash("Invalid ID.", "error"); return redirect(url_for("admin_products"))
     product = products_collection.find_one({"_id": obj_id})
-    if not product: flash("Not found.", "error"); return redirect(url_for("admin_dashboard"))
+    if not product: flash("Not found.", "error"); return redirect(url_for("admin_products"))
     if request.method == "POST":
         name = request.form.get("name","").strip()
         price = request.form.get("price")
@@ -534,7 +618,7 @@ def edit_product(current_admin, product_id):
             else: flash("Upload failed.", "error"); return redirect(url_for("edit_product", product_id=product_id))
         products_collection.update_one({"_id": obj_id}, {"$set": update_data})
         flash("Updated!", "success")
-        return redirect(url_for("admin_dashboard"))
+        return redirect(url_for("admin_products"))
     return render_template("edit_product.html", product=convert_doc(product))
 
 @app.route("/admin/add-product", methods=["POST"])
@@ -548,13 +632,13 @@ def add_product(current_admin):
     sizes = request.form.getlist("size")
     colors = request.form.getlist("color")
     valid, msg = validate_product_data(name, price, stock, category)
-    if not valid: flash(msg, "error"); return redirect(url_for("admin_dashboard"))
-    if 'image' not in request.files: flash("No image.", "error"); return redirect(url_for("admin_dashboard"))
+    if not valid: flash(msg, "error"); return redirect(url_for("admin_add_product_page"))
+    if 'image' not in request.files: flash("No image.", "error"); return redirect(url_for("admin_add_product_page"))
     file = request.files['image']
-    if not file.filename: flash("No file.", "error"); return redirect(url_for("admin_dashboard"))
-    if not allowed_file(file.filename): flash("Invalid type.", "error"); return redirect(url_for("admin_dashboard"))
+    if not file.filename: flash("No file.", "error"); return redirect(url_for("admin_add_product_page"))
+    if not allowed_file(file.filename): flash("Invalid type.", "error"); return redirect(url_for("admin_add_product_page"))
     url = upload_image(file)
-    if not url: flash("Upload failed.", "error"); return redirect(url_for("admin_dashboard"))
+    if not url: flash("Upload failed.", "error"); return redirect(url_for("admin_add_product_page"))
     products_collection.insert_one({
         "name": name, "price": float(price), "image": url,
         "description": description, "stock": int(stock),
@@ -562,25 +646,25 @@ def add_product(current_admin):
         "created_at": datetime.datetime.utcnow()
     })
     flash("Added!", "success")
-    return redirect(url_for("admin_dashboard"))
+    return redirect(url_for("admin_products"))
 
 @app.route("/admin/delete-product/<product_id>")
 @token_required
 def delete_product(current_admin, product_id):
     obj_id = safe_objectid(product_id)
-    if not obj_id: flash("Invalid ID.", "error"); return redirect(url_for("admin_dashboard"))
+    if not obj_id: flash("Invalid ID.", "error"); return redirect(url_for("admin_products"))
     products_collection.delete_one({"_id": obj_id})
     flash("Deleted!", "success")
-    return redirect(url_for("admin_dashboard"))
+    return redirect(url_for("admin_products"))
 
 @app.route("/admin/update-order/<reference>", methods=["POST"])
 @token_required
 def update_order(current_admin, reference):
     status = request.form.get("status")
-    if not status: flash("Status required.", "error"); return redirect(url_for("admin_dashboard"))
+    if not status: flash("Status required.", "error"); return redirect(url_for("admin_orders"))
     orders_collection.update_one({"paymentReference": reference}, {"$set": {"status": status}})
     flash("Updated!", "success")
-    return redirect(url_for("admin_dashboard"))
+    return redirect(url_for("admin_orders"))
 
 @app.route("/admin/delete-order/<reference>")
 @token_required
@@ -588,14 +672,14 @@ def delete_order(current_admin, reference):
     result = orders_collection.delete_one({"paymentReference": reference})
     if result.deleted_count == 0: flash("Order not found.", "error")
     else: flash("Order deleted.", "success")
-    return redirect(url_for("admin_dashboard"))
+    return redirect(url_for("admin_orders"))
 
 @app.route("/admin/clear-orders")
 @token_required
 def clear_orders(current_admin):
     result = orders_collection.delete_many({})
     flash(f"Deleted {result.deleted_count} orders.", "success")
-    return redirect(url_for("admin_dashboard"))
+    return redirect(url_for("admin_orders"))
 
 @app.errorhandler(404)
 def page_not_found(e): return render_template("404.html"), 404
