@@ -85,7 +85,8 @@
     .order-detail-grid li { padding: 2px 0; color: var(--off-white); }
     .order-detail-grid p { margin-top: 4px; color: var(--off-white); }
     .order-item-thumbs { display: flex; gap: 4px; flex-wrap: wrap; }
-    .order-item-thumbs img { width: 34px; height: 34px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-light); }
+    .order-item-thumbs img { width: 34px; height: 34px; object-fit: cover; border-radius: 4px; border: 1px solid var(--border-light); cursor: pointer; transition: transform 0.15s; }
+    .order-item-thumbs img:hover { transform: scale(1.15); border-color: var(--ash); }
     .order-item-thumbs .thumb-more { width: 34px; height: 34px; border-radius: 4px; background: var(--charcoal); border: 1px solid var(--border-light); display: flex; align-items: center; justify-content: center; font-size: 0.65rem; color: var(--ash-dark); }
     @media (max-width: 768px) { body { padding: 20px 4%; } h1 { font-size: 2rem; } .section { padding: 1.5rem; } .admin-header { flex-direction: column; align-items: flex-start; } .order-update-form { flex-direction: column; align-items: flex-start; } }
   </style>
@@ -109,7 +110,7 @@
               {% if order.orderItems %}
               <div class="order-item-thumbs" title="{% for item in order.orderItems %}{{ item.name }} (x{{ item.quantity|default(1) }}){% if not loop.last %}, {% endif %}{% endfor %}">
                 {% for item in order.orderItems[:3] %}
-                  {% if item.image %}<img src="{{ item.image }}" alt="{{ item.name }}">{% else %}<div class="thumb-more"><i class="ri-image-line"></i></div>{% endif %}
+                  {% if item.image %}<a href="{{ item.image }}" target="_blank" title="Open full image"><img src="{{ item.image }}" alt="{{ item.name }}"></a>{% else %}<div class="thumb-more"><i class="ri-image-line"></i></div>{% endif %}
                 {% endfor %}
                 {% if order.orderItems|length > 3 %}<div class="thumb-more">+{{ order.orderItems|length - 3 }}</div>{% endif %}
               </div>
@@ -147,7 +148,7 @@
               <details>
                 <summary class="view-details-summary">📋 View Full Order Details</summary>
                 <div class="order-detail-grid">
-                  <div><strong>🛍 Items:</strong>{% if order.orderItems %}<ul>{% for item in order.orderItems %}<li style="display:flex;align-items:center;gap:8px;padding:4px 0;">{% if item.image %}<img src="{{ item.image }}" alt="{{ item.name }}" style="width:36px;height:36px;object-fit:cover;border-radius:4px;border:1px solid var(--border-light);">{% endif %}<span>{{ item.name }} (×{{ item.quantity|default(1) }})</span></li>{% endfor %}</ul>{% else %}<p>No items listed</p>{% endif %}</div>
+                  <div><strong>🛍 Items:</strong>{% if order.orderItems %}<ul>{% for item in order.orderItems %}<li style="display:flex;align-items:center;gap:8px;padding:4px 0;">{% if item.image %}<a href="{{ item.image }}" target="_blank" title="Open full image"><img src="{{ item.image }}" alt="{{ item.name }}" style="width:36px;height:36px;object-fit:cover;border-radius:4px;border:1px solid var(--border-light);"></a>{% endif %}<span>{{ item.name }} (×{{ item.quantity|default(1) }})</span></li>{% endfor %}</ul>{% else %}<p>No items listed</p>{% endif %}</div>
                   <div><strong>📍 Address:</strong><p>{{ order.deliveryAddress or 'Not provided' }}</p></div>
                 </div>
               </details>
