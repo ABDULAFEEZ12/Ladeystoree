@@ -325,6 +325,14 @@
     
     function addToCart(productId, productName, productPrice, quantity) {
       const existing = cart.find(item => item.id === productId);
+      const alreadyInCart = existing ? existing.quantity : 0;
+      if (alreadyInCart + quantity > productStock) {
+        const canAdd = productStock - alreadyInCart;
+        showModal('error', 'Limited Stock', canAdd > 0
+          ? `Only ${canAdd} more can be added - you already have ${alreadyInCart} of ${productStock} in stock in your cart.`
+          : `You already have all ${productStock} in stock of this item in your cart.`);
+        return;
+      }
       if (existing) {
         existing.quantity += quantity;
       } else {
@@ -355,16 +363,20 @@
     const productId = "{{ product._id }}";
     const productName = "{{ product.name }}";
     const productPrice = {{ product.price }};
-    
+    const productStock = {{ product.stock if product.stock is defined else 999999 }};
+
     let qty = 1;
     const qtyValueSpan = document.getElementById('qtyValue');
     const qtyMinus = document.getElementById('qtyMinus');
     const qtyPlus = document.getElementById('qtyPlus');
     const addToCartBtn = document.getElementById('mainAddToCart');
-    
+
     if (qtyMinus && qtyPlus && qtyValueSpan) {
       qtyMinus.addEventListener('click', () => { if (qty > 1) { qty--; qtyValueSpan.innerText = qty; } });
-      qtyPlus.addEventListener('click', () => { qty++; qtyValueSpan.innerText = qty; });
+      qtyPlus.addEventListener('click', () => {
+        if (qty < productStock) { qty++; qtyValueSpan.innerText = qty; }
+        else { showModal('error', 'Limited Stock', `Only ${productStock} left in stock - you can't add more than that.`); }
+      });
     }
     
     if (addToCartBtn) {

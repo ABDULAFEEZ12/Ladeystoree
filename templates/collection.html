@@ -1118,7 +1118,7 @@
         <a href="/product/{{ product._id }}">
           <div class="product-img-wrap">
             <img src="{{ product.image or 'https://via.placeholder.com/400x500/f0f0f0/9E9E9E?text=LADEY' }}" alt="{{ product.name }}" loading="lazy">
-            <button class="quick-add" data-id="{{ product._id }}" data-name="{{ product.name }}" data-price="{{ product.price }}" aria-label="Quick add" {% if product.stock is defined and product.stock <= 0 %}disabled{% endif %}>
+            <button class="quick-add" data-id="{{ product._id }}" data-name="{{ product.name }}" data-price="{{ product.price }}" data-stock="{{ product.stock if product.stock is defined else '' }}" aria-label="Quick add" {% if product.stock is defined and product.stock <= 0 %}disabled{% endif %}>
               <i class="ri-add-line"></i>
             </button>
           </div>
@@ -1296,9 +1296,13 @@
       });
     }
     
-    function addToCart(productId, name, price) {
+    function addToCart(productId, name, price, stock) {
       const existing = cart.find(item => item.id === productId);
-      if(existing) existing.quantity++;
+      const st = parseInt(stock, 10);
+      if(existing) {
+        if(!isNaN(st) && existing.quantity >= st) { alert('Only ' + st + ' left in stock.'); return; }
+        existing.quantity++;
+      }
       else cart.push({ id: productId, name, price, quantity: 1 });
       saveCart();
       cartSidebar.classList.add('open');
@@ -1313,7 +1317,7 @@
       btn.addEventListener('click', (e) => {
         e.preventDefault();
         e.stopPropagation();
-        addToCart(btn.dataset.id, btn.dataset.name, parseFloat(btn.dataset.price));
+        addToCart(btn.dataset.id, btn.dataset.name, parseFloat(btn.dataset.price), btn.dataset.stock);
       });
     });
     

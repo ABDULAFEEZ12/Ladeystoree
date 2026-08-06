@@ -191,7 +191,7 @@
         <a href="/product/{{ product._id }}">
           <div class="product-img-wrap">
             <img src="{{ product.image or 'https://via.placeholder.com/400x500/f0f0f0/9E9E9E?text=LADEY' }}" alt="{{ product.name }}" loading="lazy">
-            <button class="quick-add" data-id="{{ product._id }}" data-name="{{ product.name }}" data-price="{{ product.price }}" {% if product.stock is defined and product.stock <= 0 %}disabled{% endif %}><i class="ri-add-line"></i></button>
+            <button class="quick-add" data-id="{{ product._id }}" data-name="{{ product.name }}" data-price="{{ product.price }}" data-stock="{{ product.stock if product.stock is defined else '' }}" {% if product.stock is defined and product.stock <= 0 %}disabled{% endif %}><i class="ri-add-line"></i></button>
           </div>
           <div class="product-info"><div class="product-brand">LADEY STOREE</div><div class="product-name">{{ product.name }}</div><div class="product-price">{{ format_currency(product.price) }}</div></div>
         </a>
@@ -246,7 +246,7 @@ document.querySelectorAll('.remove-item').forEach(b=>b.addEventListener('click',
 document.getElementById('clearCartBtn').addEventListener('click',()=>{cart=[];saveCart();});
 cartIcon.addEventListener('click',()=>cartSidebar.classList.add('open'));
 closeCart.addEventListener('click',()=>cartSidebar.classList.remove('open'));
-document.querySelectorAll('.quick-add').forEach(btn=>{btn.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();const existing=cart.find(i=>i.id===btn.dataset.id);if(existing)existing.quantity++;else cart.push({id:btn.dataset.id,name:btn.dataset.name,price:parseFloat(btn.dataset.price),quantity:1});saveCart();cartSidebar.classList.add('open');});});
+document.querySelectorAll('.quick-add').forEach(btn=>{btn.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();const existing=cart.find(i=>i.id===btn.dataset.id);const stock=parseInt(btn.dataset.stock,10);if(existing){if(!isNaN(stock)&&existing.quantity>=stock){alert('Only '+stock+' left in stock.');return;}existing.quantity++;}else cart.push({id:btn.dataset.id,name:btn.dataset.name,price:parseFloat(btn.dataset.price),quantity:1});saveCart();cartSidebar.classList.add('open');});});
 updateCartUI();
 document.getElementById('checkoutBtn').addEventListener('click',()=>{window.location.href='/checkout';});
 })();
