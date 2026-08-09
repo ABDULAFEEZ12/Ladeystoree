@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover, shrink-to-fit=no">
-  <title>Combos · Ladey Storee</title>
+  <title>Search · Ladey Storee</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -105,6 +105,7 @@
 
 <div id="overlay"></div>
 
+<!-- SIDE MENU -->
 <aside id="side-menu">
   <div class="sidebar-header"><a href="/" class="brand-script">Ladey Storee</a><i class="ri-close-line close-icon" id="closeSidebar"></i></div>
   <nav class="sidebar-nav">
@@ -118,7 +119,7 @@
   <div class="sidebar-categories">
     <div class="sidebar-cat-label">Shop by Category</div>
     <div class="sidebar-cat-chips">
-      <a href="/dresses" class="cat-chip">Dresses</a><a href="/tops" class="cat-chip">Tops</a>
+      <a href="/bundledeals" class="cat-chip">Bundle Deals</a><a href="/tops" class="cat-chip">Tops</a>
       <a href="/jeans" class="cat-chip">Jeans/Denims</a><a href="/jumpsuit" class="cat-chip">Jumpsuit</a>
       <a href="/mom-shorts" class="cat-chip">Mom Shorts</a><a href="/bum-shorts" class="cat-chip">Bum Shorts</a>
       <a href="/joggers" class="cat-chip">Joggers</a><a href="/jogger-shorts" class="cat-chip">Jogger Shorts</a>
@@ -136,6 +137,7 @@
   </div>
 </aside>
 
+<!-- TOP BAR -->
 <header id="top-bar">
   <button id="menu-toggle">☰</button>
   <a href="/" class="brand-script">Ladey Storee</a>
@@ -145,6 +147,7 @@
   </div>
 </header>
 
+<!-- MOBILE CAT NAV -->
 <nav class="mobile-cat-nav">
   <div class="mobile-cat-nav-inner">
     <a href="/denims" class="mobile-cat-link">DENIMS</a>
@@ -158,6 +161,7 @@
   </div>
 </nav>
 
+<!-- CART SIDEBAR -->
 <div class="cart-sidebar" id="cartSidebar">
   <div class="cart-header"><h3>Your Bag</h3><button id="close-cart"><i class="ri-close-line"></i></button></div>
   <div class="cart-items" id="cartItemsContainer"><p style="text-align:center;padding:2rem;color:#999;">Your cart is empty</p></div>
@@ -166,8 +170,8 @@
 
 <main>
   <div class="page-header container">
-    <div class="breadcrumb"><a href="/">Home</a> / Combos</div>
-    <h1>Combos</h1>
+    <div class="breadcrumb"><a href="/">Home</a> / Search</div>
+    <h1>{% if search_query %}Results for "{{ search_query }}"{% else %}Search{% endif %}</h1>
     <div class="product-count">{{ total_products }} product{{ 's' if total_products != 1 else '' }}</div>
   </div>
   <div class="container">
@@ -187,7 +191,7 @@
     </div>
     {% include "_pagination.html" %}
     {% else %}
-    <div class="empty-state"><i class="ri-inbox-line" style="font-size:3rem;display:block;margin-bottom:1rem;"></i><p>No products found.</p></div>
+    <div class="empty-state"><i class="ri-search-line" style="font-size:3rem;display:block;margin-bottom:1rem;"></i><p>{% if search_query %}No products found for "{{ search_query }}". Try a different search.{% else %}Type something in the search bar above to find products.{% endif %}</p></div>
     {% endif %}
   </div>
 </main>
@@ -195,7 +199,7 @@
 <footer>
   <div class="footer-grid">
     <div class="footer-col"><h4 class="brand-script" style="font-size:1.4rem;text-transform:none;color:white;">Ladey Storee</h4><p>Timeless stories, worn beautifully.</p><div class="social-links"><a href="https://instagram.com/ladeystoreeee" target="_blank"><i class="ri-instagram-line"></i></a><a href="https://snapchat.com/t/rTdclU1P" target="_blank"><i class="fa-brands fa-snapchat"></i></a></div></div>
-    <div class="footer-col"><h4>Shop</h4><ul><li><a href="/dresses">Dresses</a></li><li><a href="/tops">Tops</a></li><li><a href="/jeans">Jeans/Denims</a></li><li><a href="/jumpsuit">Jumpsuit</a></li><li><a href="/joggers">Joggers</a></li></ul></div>
+    <div class="footer-col"><h4>Shop</h4><ul><li><a href="/bundledeals">Bundle Deals</a></li><li><a href="/tops">Tops</a></li><li><a href="/jeans">Jeans/Denims</a></li><li><a href="/jumpsuit">Jumpsuit</a></li><li><a href="/joggers">Joggers</a></li></ul></div>
     <div class="footer-col"><h4>More</h4><ul><li><a href="/mom-shorts">Mom Shorts</a></li><li><a href="/bum-shorts">Bum Shorts</a></li><li><a href="/jogger-shorts">Jogger Shorts</a></li><li><a href="/2-piece-sets">2-Piece Sets</a></li><li><a href="/combos">Combos</a></li><li><a href="/bags">Bags</a></li><li><a href="/others">Others</a></li></ul></div>
     <div class="footer-col"><h4>Customer Care</h4><ul><li><a href="/contact">Contact Us</a></li><li><a href="https://wa.me/2348033786290" target="_blank">WhatsApp</a></li><li><a href="/about">About</a></li><li><a href="/collection">All Collection</a></li></ul></div>
   </div>
@@ -218,7 +222,7 @@ const bottomCartToggle=document.getElementById('bottomCartToggle'),bottomMenuTog
 function openMenu(){sideMenu.classList.add('active');overlay.classList.add('active');}
 function closeMenu(){sideMenu.classList.remove('active');overlay.classList.remove('active');}
 menuToggle.addEventListener('click',openMenu);closeSidebar.addEventListener('click',closeMenu);overlay.addEventListener('click',closeMenu);
-document.querySelectorAll('.sidebar-nav a, .cat-chip').forEach(l=>l.addEventListener('click',closeMenu));
+document.querySelectorAll('.sidebar-nav a,.cat-chip').forEach(l=>l.addEventListener('click',closeMenu));
 if(bottomMenuToggle)bottomMenuToggle.addEventListener('click',openMenu);
 if(bottomCartToggle)bottomCartToggle.addEventListener('click',()=>cartSidebar.classList.add('open'));
 function saveCart(){localStorage.setItem('ladeyCart',JSON.stringify(cart));updateCartUI();}

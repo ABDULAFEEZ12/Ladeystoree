@@ -329,7 +329,7 @@
       <div class="brand-logo"><a href="{{ url_for('home') }}"><img src="{{ url_for('static', filename='kikkyhairs.jpeg') }}" alt="Kikky Hairs logo"></a></div>
     </div>
     <div class="header-actions">
-      <div class="cart-icon" id="cartIcon"><i class="ri-shopping-cart-line"></i><span id="cartCount">0</span></div>
+      {% include "_search_bar.html" %}<div class="cart-icon" id="cartIcon"><i class="ri-shopping-cart-line"></i><span id="cartCount">0</span></div>
     </div>
     <nav class="desktop-nav">
       <a href="{{ url_for('home') }}">Home</a>

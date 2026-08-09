@@ -296,6 +296,18 @@ def about(): return render_template("about.html")
 def collection():
     return render_product_page("collection.html", {}, "All Collection")
 
+@app.route("/search")
+def search():
+    q = request.args.get("q", "").strip()
+    if not q:
+        return render_template("search.html", products=[], total_products=0, page=1, total_pages=1,
+                                search_query="", endpoint="search", pagination_args={})
+    query = {"$or": [
+        {"name": {"$regex": re.escape(q), "$options": "i"}},
+        {"category": {"$regex": re.escape(q), "$options": "i"}}
+    ]}
+    return render_product_page("search.html", query, f'Search results for "{q}"', endpoint="search", search_query=q)
+
 @app.route("/shop")
 def shop():
     return render_product_page("shop.html", {}, None)
