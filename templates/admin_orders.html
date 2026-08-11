@@ -108,7 +108,7 @@
             <td><code style="background:var(--charcoal);padding:4px 8px;font-size:0.7rem;">{{ order.paymentReference or '—' }}</code></td>
             <td>
               {% if order.orderItems %}
-              <div class="order-item-thumbs" title="{% for item in order.orderItems %}{{ item.name }}{% if item.size %} (Size {{ item.size }}){% endif %} x{{ item.quantity|default(1) }}{% if not loop.last %}, {% endif %}{% endfor %}">
+              <div class="order-item-thumbs" title="{% for item in order.orderItems %}{{ item.name }}{% if item.size %} (Size {{ item.size }}){% endif %}{% if item.color %} - {{ item.color }}{% endif %} x{{ item.quantity|default(1) }}{% if not loop.last %}, {% endif %}{% endfor %}">
                 {% for item in order.orderItems[:3] %}
                   {% if item.image %}<a href="{{ item.image }}" target="_blank" title="Open full image"><img src="{{ item.image }}" alt="{{ item.name }}"></a>{% else %}<div class="thumb-more"><i class="ri-image-line"></i></div>{% endif %}
                 {% endfor %}
@@ -146,7 +146,7 @@
               <details>
                 <summary class="view-details-summary">📋 View Full Order Details</summary>
                 <div class="order-detail-grid">
-                  <div><strong>🛍 Items:</strong>{% if order.orderItems %}<ul>{% for item in order.orderItems %}<li style="display:flex;align-items:center;gap:8px;padding:4px 0;">{% if item.image %}<a href="{{ item.image }}" target="_blank" title="Open full image"><img src="{{ item.image }}" alt="{{ item.name }}" style="width:36px;height:36px;object-fit:cover;border-radius:4px;border:1px solid var(--border-light);"></a>{% endif %}<span>{{ item.name }}{% if item.size %} <strong>Size {{ item.size }}</strong>{% endif %} (×{{ item.quantity|default(1) }})</span></li>{% endfor %}</ul>{% else %}<p>No items listed</p>{% endif %}</div>
+                  <div><strong>🛍 Items:</strong>{% if order.orderItems %}<ul>{% for item in order.orderItems %}<li style="display:flex;align-items:center;gap:8px;padding:4px 0;">{% if item.image %}<a href="{{ item.image }}" target="_blank" title="Open full image"><img src="{{ item.image }}" alt="{{ item.name }}" style="width:36px;height:36px;object-fit:cover;border-radius:4px;border:1px solid var(--border-light);"></a>{% endif %}<span>{{ item.name }}{% if item.size %} <strong>Size {{ item.size }}</strong>{% endif %}{% if item.color %} <strong>{{ item.color }}</strong>{% endif %} (×{{ item.quantity|default(1) }})</span></li>{% endfor %}</ul>{% else %}<p>No items listed</p>{% endif %}</div>
                   <div><strong>📍 Address:</strong><p>{{ order.deliveryAddress or 'Not provided' }}</p></div>
                 </div>
               </details>

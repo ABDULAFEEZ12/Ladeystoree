@@ -97,7 +97,7 @@
     document.getElementById("orderDetails").style.display = "block";
     document.getElementById("detailName").innerText = orderData.name || 'N/A';
     document.getElementById("detailPhone").innerText = orderData.phone || 'N/A';
-    const itemsSummary = (orderData.cart || []).map(i => `${i.name}${i.size ? ' (Size ' + i.size + ')' : ''} ×${i.quantity || 1}`).join(', ');
+    const itemsSummary = (orderData.cart || []).map(i => `${i.name}${i.size ? ' (Size ' + i.size + ')' : ''}${i.color ? ', ' + i.color : ''} ×${i.quantity || 1}`).join(', ');
     document.getElementById("detailItems").innerText = itemsSummary || 'N/A';
     document.getElementById("detailTotal").innerText = '₦' + (orderData.total || 0).toLocaleString();
 

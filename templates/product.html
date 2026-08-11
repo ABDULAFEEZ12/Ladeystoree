@@ -85,9 +85,9 @@
       background: #fff; cursor: default;
       transition: all 0.2s;
     }
-    .size-chip { cursor: pointer; font-family: inherit; text-align: center; position: relative; }
-    .size-chip:hover:not(.sold-out) { border-color: var(--charcoal); color: var(--charcoal); }
-    .size-chip.selected { background: var(--charcoal); color: #fff; border-color: var(--charcoal); }
+    .size-chip, .color-chip { cursor: pointer; font-family: inherit; text-align: center; position: relative; }
+    .size-chip:hover:not(.sold-out), .color-chip:hover { border-color: var(--charcoal); color: var(--charcoal); }
+    .size-chip.selected, .color-chip.selected { background: var(--charcoal); color: #fff; border-color: var(--charcoal); }
     .size-chip.sold-out {
       cursor: not-allowed; color: #bbb; background: #f7f7f7; border-color: #eee;
       text-decoration: line-through;
@@ -247,13 +247,13 @@
         </div>
         {% endif %}
 
-        <!-- ✅ COLOR DISPLAY -->
+        <!-- ✅ COLOR SELECTION -->
         {% if product.colors and product.colors|length > 0 %}
         <div class="product-variants">
-          <div class="variant-label">Available Colors</div>
-          <div class="variant-options">
+          <div class="variant-label">Select Color</div>
+          <div class="variant-options" id="colorChips">
             {% for color in product.colors %}
-            <span class="variant-chip">{{ color }}</span>
+            <button type="button" class="variant-chip color-chip" data-color="{{ color }}">{{ color }}</button>
             {% endfor %}
           </div>
         </div>
@@ -341,9 +341,10 @@
       if (countEl) countEl.innerText = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
     }
     
-    function addToCart(productId, productName, productPrice, quantity, size, maxStock) {
-      const existing = cart.find(item => item.id === productId && (item.size || '') === (size || ''));
-      const alreadyInCart = existing ? existing.quantity : 0;
+    function addToCart(productId, productName, productPrice, quantity, size, maxStock, color) {
+      // Stock is tracked per size only (not per color), so the cap must combine every color of this size already in the cart.
+      const sameSizeItems = cart.filter(item => item.id === productId && (item.size || '') === (size || ''));
+      const alreadyInCart = sameSizeItems.reduce((sum, item) => sum + (item.quantity || 0), 0);
       if (alreadyInCart + quantity > maxStock) {
         const canAdd = maxStock - alreadyInCart;
         showModal('error', 'Limited Stock', canAdd > 0
@@ -351,14 +352,15 @@
           : `You already have all ${maxStock} in stock of this item in your cart.`);
         return;
       }
+      const existing = cart.find(item => item.id === productId && (item.size || '') === (size || '') && (item.color || '') === (color || ''));
       if (existing) {
         existing.quantity += quantity;
       } else {
-        cart.push({ id: productId, name: productName, price: productPrice, quantity: quantity, size: size || '' });
+        cart.push({ id: productId, name: productName, price: productPrice, quantity: quantity, size: size || '', color: color || '' });
       }
       localStorage.setItem('ladeyCart', JSON.stringify(cart));
       updateCartCount();
-      showModal('success', 'Added to Bag', `${quantity} × ${productName}${size ? ' (Size ' + size + ')' : ''} added to your cart.`);
+      showModal('success', 'Added to Bag', `${quantity} × ${productName}${size ? ' (Size ' + size + ')' : ''}${color ? ', ' + color : ''} added to your cart.`);
     }
     
     function showModal(type, title, msg) {
@@ -401,6 +403,21 @@
       });
     });
 
+    let selectedColor = null;
+    const colorChips = document.querySelectorAll('.color-chip');
+    colorChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        if (chip.classList.contains('selected')) {
+          chip.classList.remove('selected');
+          selectedColor = null;
+        } else {
+          document.querySelectorAll('.color-chip').forEach(c => c.classList.remove('selected'));
+          chip.classList.add('selected');
+          selectedColor = chip.dataset.color;
+        }
+      });
+    });
+
     let qty = 1;
     const qtyValueSpan = document.getElementById('qtyValue');
     const qtyMinus = document.getElementById('qtyMinus');
@@ -421,7 +438,7 @@
           if (sizeSelectError) sizeSelectError.classList.add('show');
           return;
         }
-        addToCart(productId, productName, productPrice, qty, selectedSize, currentMaxStock);
+        addToCart(productId, productName, productPrice, qty, selectedSize, currentMaxStock, selectedColor);
       });
     }
     

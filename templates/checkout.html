@@ -192,7 +192,8 @@
       const subtotal = item.price * (item.quantity || 1);
       total += subtotal;
       const sizeLabel = item.size ? ` · Size ${item.size}` : '';
-      html += `<div class="cart-item"><span>${item.name}${sizeLabel} (×${item.quantity||1})</span><span>₦${subtotal.toLocaleString()}</span></div>`;
+      const colorLabel = item.color ? ` · ${item.color}` : '';
+      html += `<div class="cart-item"><span>${item.name}${sizeLabel}${colorLabel} (×${item.quantity||1})</span><span>₦${subtotal.toLocaleString()}</span></div>`;
     });
 
     html += `<div class="cart-total"><span>Total</span><span class="total-amount">₦${total.toLocaleString()}</span></div>`;
