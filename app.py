@@ -50,7 +50,7 @@ def send_order_notification(order_data):
         return
     try:
         items_text = "\n".join(
-            f"- {item.get('name', 'Item')} x{item.get('quantity', 1)} (₦{item.get('price', 0):,.0f})"
+            f"- {item.get('name', 'Item')}{' (Size ' + item['size'] + ')' if item.get('size') else ''} x{item.get('quantity', 1)} (₦{item.get('price', 0):,.0f})"
             for item in order_data.get("items", [])
         ) or "No items listed"
         body = (
@@ -62,8 +62,7 @@ def send_order_notification(order_data):
             f"Email: {order_data.get('customerEmail')}\n"
             f"Amount: ₦{order_data.get('amount', 0):,.0f}\n\n"
             f"Items:\n{items_text}\n\n"
-            f"Delivery: {order_data.get('deliveryAddress')}, {order_data.get('state')}, {order_data.get('country')}\n"
-            f"Size: {order_data.get('size')}  Color: {order_data.get('color')}"
+            f"Delivery: {order_data.get('deliveryAddress')}, {order_data.get('state')}, {order_data.get('country')}"
         )
         msg = MIMEText(body)
         msg["Subject"] = f"New Order - {order_data.get('paymentReference')}"
@@ -146,6 +145,22 @@ def convert_doc(doc):
 
 def convert_cursor(cursor):
     return [convert_doc(doc) for doc in cursor]
+
+SIZE_OPTIONS = ['4', '6', '8', '10', '12', '14', '16', '18', '20']
+
+def parse_size_stock(form):
+    """Read per-size quantity fields (size_qty_4, size_qty_6, ...) into a {size: qty} dict, dropping zero/blank entries."""
+    size_stock = {}
+    for s in SIZE_OPTIONS:
+        raw = form.get(f"size_qty_{s}", "").strip()
+        if raw:
+            try:
+                qty = int(raw)
+                if qty > 0:
+                    size_stock[s] = qty
+            except ValueError:
+                pass
+    return size_stock
 
 def validate_product_data(name, price, stock, category):
     if not name or not name.strip(): return False, "Product name is required."
@@ -442,8 +457,6 @@ def save_order():
         "deliveryAddress": data.get("deliveryAddress", ""),
         "state": data.get("state", ""),
         "country": data.get("country", "Nigeria"),
-        "size": data.get("size", ""),
-        "color": data.get("color", ""),
         "items": enriched_items,
         "amount": float(data.get("totalAmount", 0)),
         "paymentMethod": data.get("paymentMethod", "SquadCo"),
@@ -455,15 +468,26 @@ def save_order():
         for item in enriched_items:
             product_id = safe_objectid(item.get("id", ""))
             qty = int(item.get("quantity") or 1)
+            size = (item.get("size") or "").strip()
             if not product_id or qty <= 0:
                 continue
-            # Only decrement if enough stock is on record; otherwise clamp to 0 rather than go negative.
-            result = products_collection.update_one(
-                {"_id": product_id, "stock": {"$gte": qty}},
-                {"$inc": {"stock": -qty}}
-            )
-            if result.matched_count == 0:
-                products_collection.update_one({"_id": product_id}, {"$set": {"stock": 0}})
+            if size:
+                # Sized product: decrement that size's stock and the overall total together.
+                size_field = f"sizeStock.{size}"
+                result = products_collection.update_one(
+                    {"_id": product_id, size_field: {"$gte": qty}},
+                    {"$inc": {size_field: -qty, "stock": -qty}}
+                )
+                if result.matched_count == 0:
+                    products_collection.update_one({"_id": product_id}, {"$set": {size_field: 0}})
+            else:
+                # Only decrement if enough stock is on record; otherwise clamp to 0 rather than go negative.
+                result = products_collection.update_one(
+                    {"_id": product_id, "stock": {"$gte": qty}},
+                    {"$inc": {"stock": -qty}}
+                )
+                if result.matched_count == 0:
+                    products_collection.update_one({"_id": product_id}, {"$set": {"stock": 0}})
         send_order_notification(order_data)
         return jsonify({"message": "Order saved", "reference": reference})
     except Exception as e:
@@ -551,8 +575,6 @@ def _prepare_orders_for_admin(orders):
         order.setdefault('deliveryAddress', '—')
         order.setdefault('state', '—')
         order.setdefault('country', '—')
-        order.setdefault('size', '—')
-        order.setdefault('color', '—')
         order.setdefault('amount', 0)
         order.setdefault('status', 'Pending')
         order.setdefault('paymentReference', '—')
@@ -611,16 +633,16 @@ def edit_product(current_admin, product_id):
         name = request.form.get("name","").strip()
         price = request.form.get("price")
         category = request.form.get("category","").strip()
-        stock = request.form.get("stock")
         description = request.form.get("description","").strip()
-        sizes = request.form.getlist("size")
         colors = request.form.getlist("color")
+        size_stock = parse_size_stock(request.form)
+        stock = sum(size_stock.values()) if size_stock else request.form.get("stock")
         valid, msg = validate_product_data(name, price, stock, category)
         if not valid: flash(msg, "error"); return redirect(url_for("edit_product", product_id=product_id))
         update_data = {
             "name": name, "price": float(price), "category": category,
             "stock": int(stock), "description": description,
-            "sizes": sizes, "colors": colors
+            "sizes": list(size_stock.keys()), "sizeStock": size_stock, "colors": colors
         }
         if 'image' in request.files and request.files['image'].filename:
             file = request.files['image']
@@ -639,10 +661,10 @@ def add_product(current_admin):
     name = request.form.get("name","").strip()
     price = request.form.get("price")
     description = request.form.get("description","").strip()
-    stock = request.form.get("stock")
     category = request.form.get("category","").strip()
-    sizes = request.form.getlist("size")
     colors = request.form.getlist("color")
+    size_stock = parse_size_stock(request.form)
+    stock = sum(size_stock.values()) if size_stock else request.form.get("stock")
     valid, msg = validate_product_data(name, price, stock, category)
     if not valid: flash(msg, "error"); return redirect(url_for("admin_add_product_page"))
     if 'image' not in request.files: flash("No image.", "error"); return redirect(url_for("admin_add_product_page"))
@@ -654,7 +676,7 @@ def add_product(current_admin):
     products_collection.insert_one({
         "name": name, "price": float(price), "image": url,
         "description": description, "stock": int(stock),
-        "category": category, "sizes": sizes, "colors": colors,
+        "category": category, "sizes": list(size_stock.keys()), "sizeStock": size_stock, "colors": colors,
         "created_at": datetime.datetime.utcnow()
     })
     flash("Added!", "success")

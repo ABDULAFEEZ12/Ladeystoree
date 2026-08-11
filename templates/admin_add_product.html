@@ -53,6 +53,10 @@
     .file-input-custom { width: 100%; padding: 12px 16px; background: var(--charcoal); border: 1px solid var(--border-light); color: var(--ash-dark); font-size: 0.85rem; cursor: pointer; transition: border-color 0.2s; }
     .file-input-custom i { margin-right: 8px; }
     .file-input-wrapper:hover .file-input-custom { border-color: var(--ash); }
+    .size-qty-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; }
+    .size-qty-row { display: flex; flex-direction: column; align-items: center; gap: 6px; background: var(--charcoal); border: 1px solid var(--border-light); border-radius: 4px; padding: 10px 4px; }
+    .size-qty-label { font-size: 0.8rem; color: var(--ash); font-weight: 600; }
+    .size-qty-input { width: 100%; text-align: center; padding: 6px 2px; font-size: 0.8rem; }
     .table-wrapper { overflow-x: auto; }
     table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
     th { text-align: left; padding: 1rem 0.75rem; font-weight: 500; text-transform: uppercase; letter-spacing: 1.5px; color: var(--ash); font-size: 0.65rem; border-bottom: 1px solid var(--border-light); }
@@ -122,15 +126,19 @@
             <option value="Others">Others</option>
           </select>
         </div>
-        <div class="form-group"><label>Stock *</label><input type="number" name="stock" placeholder="0" min="0" required></div>
+        <div class="form-group"><label>Stock * <small style="color: var(--ash-dark); text-transform: none; letter-spacing: 0;">(auto-fills from sizes below if used)</small></label><input type="number" name="stock" id="stockInput" placeholder="0" min="0" required></div>
 
-        <div class="form-group">
-          <label>Available Sizes</label>
-          <select name="size" multiple style="min-height: 100px;">
-            <option>4</option><option>6</option><option>8</option><option>10</option>
-            <option>12</option><option>14</option><option>16</option><option>18</option><option>20</option>
-          </select>
-          <small style="color: var(--ash-dark); font-size: 0.6rem; margin-top: 4px;">Hold Ctrl/Cmd to select multiple sizes. For Jeans/Denims, put the waist size in the product name instead (e.g. "Waist 28") - that's what the waist filter matches on.</small>
+        <div class="form-group" style="grid-column: span 2;">
+          <label>Available Sizes &amp; Quantity</label>
+          <div class="size-qty-grid">
+            {% for s in ['4','6','8','10','12','14','16','18','20'] %}
+            <div class="size-qty-row">
+              <span class="size-qty-label">{{ s }}</span>
+              <input type="number" name="size_qty_{{ s }}" min="0" placeholder="0" class="size-qty-input">
+            </div>
+            {% endfor %}
+          </div>
+          <small style="color: var(--ash-dark); font-size: 0.6rem; margin-top: 4px;">Enter quantity for each size you're stocking - blank or 0 means that size isn't available. Leave all blank for non-sized products (bags, etc.) and just fill in Stock above. For Jeans/Denims, put the waist size in the product name instead (e.g. "Waist 28") - that's what the waist filter matches on.</small>
         </div>
 
         <div class="form-group">
@@ -163,6 +171,17 @@
       }
     });
   });
+
+  (function() {
+    const qtyInputs = document.querySelectorAll('.size-qty-input');
+    const stockInput = document.getElementById('stockInput');
+    function updateStock() {
+      let total = 0;
+      qtyInputs.forEach(inp => { const v = parseInt(inp.value, 10); if (!isNaN(v) && v > 0) total += v; });
+      if (total > 0) stockInput.value = total;
+    }
+    qtyInputs.forEach(inp => inp.addEventListener('input', updateStock));
+  })();
 </script>
 </body>
 </html>

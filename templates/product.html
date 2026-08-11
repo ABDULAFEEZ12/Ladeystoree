@@ -85,6 +85,21 @@
       background: #fff; cursor: default;
       transition: all 0.2s;
     }
+    .size-chip { cursor: pointer; font-family: inherit; text-align: center; position: relative; }
+    .size-chip:hover:not(.sold-out) { border-color: var(--charcoal); color: var(--charcoal); }
+    .size-chip.selected { background: var(--charcoal); color: #fff; border-color: var(--charcoal); }
+    .size-chip.sold-out {
+      cursor: not-allowed; color: #bbb; background: #f7f7f7; border-color: #eee;
+      text-decoration: line-through;
+    }
+    .sold-out-label {
+      display: block; font-size: 0.55rem; text-decoration: none;
+      letter-spacing: 1px; text-transform: uppercase; margin-top: 2px; color: #c0392b;
+    }
+    .size-select-error {
+      display: none; color: #c0392b; font-size: 0.8rem; margin-top: 8px;
+    }
+    .size-select-error.show { display: block; }
 
     .product-description { margin: 25px 0; color: #555; line-height: 1.8; }
     .product-description h3 { color: var(--charcoal); margin-bottom: 12px; font-size: 1.4rem; font-family: var(--font-serif); }
@@ -217,15 +232,18 @@
           {% endif %}
         {% endif %}
 
-        <!-- ✅ SIZE DISPLAY -->
+        <!-- ✅ SIZE SELECTION -->
         {% if product.sizes and product.sizes|length > 0 %}
         <div class="product-variants">
-          <div class="variant-label">Available Sizes</div>
-          <div class="variant-options">
+          <div class="variant-label">Select Size *</div>
+          <div class="variant-options" id="sizeChips">
             {% for size in product.sizes %}
-            <span class="variant-chip">{{ size }}</span>
+              {% set qty = (product.sizeStock or {}).get(size) %}
+              {% set sold_out = product.sizeStock and (qty is none or qty <= 0) %}
+              <button type="button" class="variant-chip size-chip{% if sold_out %} sold-out{% endif %}" data-size="{{ size }}" data-stock="{{ qty if qty is not none else '' }}" {% if sold_out %}disabled title="Sold out"{% endif %}>{{ size }}{% if sold_out %}<span class="sold-out-label">Sold Out</span>{% endif %}</button>
             {% endfor %}
           </div>
+          <div id="sizeSelectError" class="size-select-error">Please select a size.</div>
         </div>
         {% endif %}
 
@@ -323,24 +341,24 @@
       if (countEl) countEl.innerText = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
     }
     
-    function addToCart(productId, productName, productPrice, quantity) {
-      const existing = cart.find(item => item.id === productId);
+    function addToCart(productId, productName, productPrice, quantity, size, maxStock) {
+      const existing = cart.find(item => item.id === productId && (item.size || '') === (size || ''));
       const alreadyInCart = existing ? existing.quantity : 0;
-      if (alreadyInCart + quantity > productStock) {
-        const canAdd = productStock - alreadyInCart;
+      if (alreadyInCart + quantity > maxStock) {
+        const canAdd = maxStock - alreadyInCart;
         showModal('error', 'Limited Stock', canAdd > 0
-          ? `Only ${canAdd} more can be added - you already have ${alreadyInCart} of ${productStock} in stock in your cart.`
-          : `You already have all ${productStock} in stock of this item in your cart.`);
+          ? `Only ${canAdd} more can be added - you already have ${alreadyInCart} of ${maxStock} in stock in your cart.`
+          : `You already have all ${maxStock} in stock of this item in your cart.`);
         return;
       }
       if (existing) {
         existing.quantity += quantity;
       } else {
-        cart.push({ id: productId, name: productName, price: productPrice, quantity: quantity });
+        cart.push({ id: productId, name: productName, price: productPrice, quantity: quantity, size: size || '' });
       }
       localStorage.setItem('ladeyCart', JSON.stringify(cart));
       updateCartCount();
-      showModal('success', 'Added to Bag', `${quantity} × ${productName} added to your cart.`);
+      showModal('success', 'Added to Bag', `${quantity} × ${productName}${size ? ' (Size ' + size + ')' : ''} added to your cart.`);
     }
     
     function showModal(type, title, msg) {
@@ -364,6 +382,24 @@
     const productName = "{{ product.name }}";
     const productPrice = {{ product.price }};
     const productStock = {{ product.stock if product.stock is defined else 999999 }};
+    const hasSizes = {{ 'true' if product.sizes and product.sizes|length > 0 else 'false' }};
+
+    let selectedSize = null;
+    let currentMaxStock = hasSizes ? 0 : productStock;
+
+    const sizeChips = document.querySelectorAll('.size-chip:not(.sold-out)');
+    const sizeSelectError = document.getElementById('sizeSelectError');
+    sizeChips.forEach(chip => {
+      chip.addEventListener('click', () => {
+        document.querySelectorAll('.size-chip').forEach(c => c.classList.remove('selected'));
+        chip.classList.add('selected');
+        selectedSize = chip.dataset.size;
+        currentMaxStock = chip.dataset.stock ? parseInt(chip.dataset.stock, 10) : productStock;
+        qty = Math.min(qty, currentMaxStock) || 1;
+        qtyValueSpan.innerText = qty;
+        if (sizeSelectError) sizeSelectError.classList.remove('show');
+      });
+    });
 
     let qty = 1;
     const qtyValueSpan = document.getElementById('qtyValue');
@@ -374,14 +410,18 @@
     if (qtyMinus && qtyPlus && qtyValueSpan) {
       qtyMinus.addEventListener('click', () => { if (qty > 1) { qty--; qtyValueSpan.innerText = qty; } });
       qtyPlus.addEventListener('click', () => {
-        if (qty < productStock) { qty++; qtyValueSpan.innerText = qty; }
-        else { showModal('error', 'Limited Stock', `Only ${productStock} left in stock - you can't add more than that.`); }
+        if (qty < currentMaxStock) { qty++; qtyValueSpan.innerText = qty; }
+        else { showModal('error', 'Limited Stock', `Only ${currentMaxStock} left in stock - you can't add more than that.`); }
       });
     }
-    
+
     if (addToCartBtn) {
       addToCartBtn.addEventListener('click', () => {
-        addToCart(productId, productName, productPrice, qty);
+        if (hasSizes && !selectedSize) {
+          if (sizeSelectError) sizeSelectError.classList.add('show');
+          return;
+        }
+        addToCart(productId, productName, productPrice, qty, selectedSize, currentMaxStock);
       });
     }
     

@@ -54,8 +54,7 @@
   <div class="order-details" id="orderDetails">
     <p><strong>Name:</strong> <span id="detailName"></span></p>
     <p><strong>Phone:</strong> <span id="detailPhone"></span></p>
-    <p><strong>Size:</strong> <span id="detailSize"></span></p>
-    <p><strong>Color:</strong> <span id="detailColor"></span></p>
+    <p><strong>Items:</strong> <span id="detailItems"></span></p>
     <p><strong>Total Paid:</strong> <span id="detailTotal"></span></p>
   </div>
 
@@ -98,8 +97,8 @@
     document.getElementById("orderDetails").style.display = "block";
     document.getElementById("detailName").innerText = orderData.name || 'N/A';
     document.getElementById("detailPhone").innerText = orderData.phone || 'N/A';
-    document.getElementById("detailSize").innerText = orderData.size || 'N/A';
-    document.getElementById("detailColor").innerText = orderData.color || 'Not specified';
+    const itemsSummary = (orderData.cart || []).map(i => `${i.name}${i.size ? ' (Size ' + i.size + ')' : ''} ×${i.quantity || 1}`).join(', ');
+    document.getElementById("detailItems").innerText = itemsSummary || 'N/A';
     document.getElementById("detailTotal").innerText = '₦' + (orderData.total || 0).toLocaleString();
 
     // The server independently verifies payment with SquadCo before recording anything -
@@ -116,8 +115,6 @@
         deliveryAddress: orderData.address,
         state: orderData.state || '',
         country: orderData.country || '',
-        size: orderData.size,
-        color: orderData.color,
         items: orderData.cart || [],
         totalAmount: orderData.total,
         paymentMethod: "SquadCo"

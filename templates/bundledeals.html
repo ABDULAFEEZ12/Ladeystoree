@@ -237,7 +237,7 @@
         <a href="/product/{{ product._id }}">
           <div class="product-img-wrap">
             <img src="{{ product.image or 'https://via.placeholder.com/400x500/f0f0f0/9E9E9E?text=LADEY' }}" alt="{{ product.name }}" loading="lazy">
-            <button class="quick-add" data-id="{{ product._id }}" data-name="{{ product.name }}" data-price="{{ product.price }}" data-stock="{{ product.stock if product.stock is defined else '' }}" aria-label="Quick add" {% if product.stock is defined and product.stock <= 0 %}disabled{% endif %}><i class="ri-add-line"></i></button>
+            <button class="quick-add" data-id="{{ product._id }}" data-name="{{ product.name }}" data-price="{{ product.price }}" data-stock="{{ product.stock if product.stock is defined else '' }}" data-has-sizes="{{ '1' if product.sizes else '' }}" aria-label="Quick add" {% if product.stock is defined and product.stock <= 0 %}disabled{% endif %}><i class="ri-add-line"></i></button>
           </div>
           <div class="product-info">
             <div class="product-brand">LADEY STOREE</div>
@@ -365,7 +365,7 @@
     cartIcon.addEventListener('click', () => cartSidebar.classList.add('open'));
     closeCart.addEventListener('click', () => cartSidebar.classList.remove('open'));
     window.addEventListener('click', (e) => { if(e.target === cartSidebar) cartSidebar.classList.remove('open'); });
-    document.querySelectorAll('.quick-add').forEach(btn => { btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); addToCart(btn.dataset.id, btn.dataset.name, parseFloat(btn.dataset.price), btn.dataset.stock); }); });
+    document.querySelectorAll('.quick-add').forEach(btn => { btn.addEventListener('click', (e) => { e.preventDefault(); e.stopPropagation(); if (btn.dataset.hasSizes) { window.location.href = '/product/' + btn.dataset.id; return; } addToCart(btn.dataset.id, btn.dataset.name, parseFloat(btn.dataset.price), btn.dataset.stock); }); });
     updateCartUI();
     document.getElementById('checkoutBtn').addEventListener('click', () => { window.location.href = '/checkout'; });
     setTimeout(() => document.querySelectorAll('.product-card.fade-up').forEach(card => observer.observe(card)), 100);

@@ -35,6 +35,10 @@
     .btn-secondary:hover { background: var(--ash); color: var(--charcoal); }
     .current-image { margin-top: 0.5rem; }
     .current-image img { max-width: 150px; border-radius: 4px; }
+    .size-qty-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(70px, 1fr)); gap: 10px; }
+    .size-qty-row { display: flex; flex-direction: column; align-items: center; gap: 6px; background: var(--charcoal); border: 1px solid var(--border-light); border-radius: 4px; padding: 10px 4px; }
+    .size-qty-label { font-size: 0.8rem; color: var(--ash); font-weight: 600; }
+    .size-qty-input { width: 100%; text-align: center; padding: 6px 2px; font-size: 0.8rem; }
     .flash { padding: 14px 20px; margin-bottom: 1.5rem; background: var(--charcoal-light); border-left: 3px solid var(--ash); color: var(--off-white); font-size: 0.8rem; }
     .flash.error { border-left-color: #E8A0A0; }
     .flash.success { border-left-color: #4CAF50; }
@@ -88,19 +92,22 @@
         </div>
         
         <div class="form-group">
-          <label>Stock *</label>
-          <input type="number" name="stock" value="{{ product.stock }}" min="0" required>
+          <label>Stock * <small style="color: var(--ash-dark); text-transform: none; letter-spacing: 0;">(auto-fills from sizes below if used)</small></label>
+          <input type="number" name="stock" id="stockInput" value="{{ product.stock }}" min="0" required>
         </div>
-        
-        <div class="form-group">
-          <label>Available Sizes</label>
+
+        <div class="form-group full-width">
+          <label>Available Sizes &amp; Quantity</label>
           {% set size_options = ['4','6','8','10','12','14','16','18','20'] %}
-          <select name="size" multiple style="min-height: 100px;">
+          <div class="size-qty-grid">
             {% for s in size_options %}
-            <option {% if s in (product.sizes or []) %}selected{% endif %}>{{ s }}</option>
+            <div class="size-qty-row">
+              <span class="size-qty-label">{{ s }}</span>
+              <input type="number" name="size_qty_{{ s }}" min="0" placeholder="0" value="{{ (product.sizeStock or {}).get(s, '') }}" class="size-qty-input">
+            </div>
             {% endfor %}
-          </select>
-          <small style="color: var(--ash-dark); font-size: 0.6rem; margin-top: 4px;">Hold Ctrl/Cmd to select multiple. For Jeans/Denims, put the waist size in the product name instead (e.g. "Waist 28") - that's what the waist filter matches on.</small>
+          </div>
+          <small style="color: var(--ash-dark); font-size: 0.6rem; margin-top: 4px;">Enter quantity for each size you're stocking - blank or 0 means that size isn't available. Leave all blank for non-sized products (bags, etc.) and just fill in Stock above. For Jeans/Denims, put the waist size in the product name instead (e.g. "Waist 28") - that's what the waist filter matches on.</small>
         </div>
 
         <div class="form-group">
@@ -141,5 +148,17 @@
   </div>
 </div>
 
+<script>
+  (function() {
+    const qtyInputs = document.querySelectorAll('.size-qty-input');
+    const stockInput = document.getElementById('stockInput');
+    function updateStock() {
+      let total = 0;
+      qtyInputs.forEach(inp => { const v = parseInt(inp.value, 10); if (!isNaN(v) && v > 0) total += v; });
+      if (total > 0) stockInput.value = total;
+    }
+    qtyInputs.forEach(inp => inp.addEventListener('input', updateStock));
+  })();
+</script>
 </body>
 </html>
