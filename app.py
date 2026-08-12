@@ -11,6 +11,8 @@ import uuid
 import base64
 import math
 import smtplib
+import hmac
+import hashlib
 from email.mime.text import MIMEText
 from io import BytesIO
 from PIL import Image
@@ -18,7 +20,7 @@ from functools import wraps
 from flask import Flask, render_template, request, redirect, url_for, jsonify, flash, send_from_directory, abort
 from flask_cors import CORS
 from werkzeug.utils import secure_filename
-from pymongo import MongoClient
+from pymongo import MongoClient, ReturnDocument, errors as mongo_errors
 from dotenv import load_dotenv
 from bson.objectid import ObjectId
 from bson.errors import InvalidId
@@ -120,6 +122,11 @@ products_collection = db["products"]
 orders_collection = db["orders"]
 admins_collection = db["admins"]
 messages_collection = db["messages"]
+
+try:
+    orders_collection.create_index("paymentReference", unique=True)
+except Exception as e:
+    print(f"Could not create unique index on paymentReference: {e}")
 
 PRODUCTS_PER_PAGE = 10
 
@@ -367,6 +374,77 @@ def verify_squad_transaction(reference):
         print(f"SquadCo verify error: {e}")
         return None
 
+def enrich_items_with_images(items):
+    """Attach each item's current product image so admin can see what was bought at a glance."""
+    enriched = []
+    for item in items:
+        product_id = safe_objectid(item.get("id", ""))
+        image = None
+        if product_id:
+            product = products_collection.find_one({"_id": product_id}, {"image": 1})
+            if product:
+                image = product.get("image")
+        enriched.append({**item, "image": image})
+    return enriched
+
+def decrement_stock_for_items(items):
+    for item in items:
+        product_id = safe_objectid(item.get("id", ""))
+        qty = int(item.get("quantity") or 1)
+        size = (item.get("size") or "").strip()
+        if not product_id or qty <= 0:
+            continue
+        if size:
+            # Sized product: decrement that size's stock and the overall total together.
+            size_field = f"sizeStock.{size}"
+            result = products_collection.update_one(
+                {"_id": product_id, size_field: {"$gte": qty}},
+                {"$inc": {size_field: -qty, "stock": -qty}}
+            )
+            if result.matched_count == 0:
+                products_collection.update_one({"_id": product_id}, {"$set": {size_field: 0}})
+        else:
+            # Only decrement if enough stock is on record; otherwise clamp to 0 rather than go negative.
+            result = products_collection.update_one(
+                {"_id": product_id, "stock": {"$gte": qty}},
+                {"$inc": {"stock": -qty}}
+            )
+            if result.matched_count == 0:
+                products_collection.update_one({"_id": product_id}, {"$set": {"stock": 0}})
+
+def finalize_paid_order(reference, extra_fields=None):
+    """Atomically transition an order to Paid and run the paid-side effects (stock, email) exactly
+    once - safe to call from both the browser callback and the SquadCo webhook without either one
+    double-processing if they both arrive for the same payment."""
+    update_fields = dict(extra_fields or {})
+    update_fields["status"] = "Paid"
+
+    # Atomic claim: only succeeds if this order isn't already Paid, so a concurrent second
+    # call (webhook + browser racing) can't both think they're the one finalizing it.
+    claimed = orders_collection.find_one_and_update(
+        {"paymentReference": reference, "status": {"$ne": "Paid"}},
+        {"$set": update_fields},
+        return_document=ReturnDocument.AFTER
+    )
+    if claimed is None:
+        existing = orders_collection.find_one({"paymentReference": reference})
+        if existing:
+            return existing  # already Paid - another trigger already finalized it
+        # No pre-saved order exists at all (e.g. the pre-save at checkout failed). Insert fresh;
+        # the unique index on paymentReference means a concurrent duplicate insert fails safely
+        # instead of creating two records.
+        update_fields["paymentReference"] = reference
+        update_fields.setdefault("createdAt", datetime.datetime.utcnow())
+        try:
+            orders_collection.insert_one(update_fields)
+        except mongo_errors.DuplicateKeyError:
+            return orders_collection.find_one({"paymentReference": reference})
+        claimed = orders_collection.find_one({"paymentReference": reference})
+
+    decrement_stock_for_items(claimed.get("items", []))
+    send_order_notification(claimed)
+    return claimed
+
 @app.route("/create-payment-link", methods=["POST"])
 def create_payment_link():
     data = request.get_json()
@@ -382,6 +460,33 @@ def create_payment_link():
         return jsonify({"error": "Missing order reference"}), 400
     if not SQUADCO_SECRET_KEY:
         return jsonify({"error": "Payment not configured"}), 500
+
+    # Save the full order as Pending *before* redirecting to SquadCo, so the order details are
+    # never lost even if the customer's browser never makes it back to /order-confirmed - the
+    # webhook (or the browser callback, whichever arrives) only has to flip the status afterward.
+    try:
+        items = enrich_items_with_images(data.get("items", []))
+        orders_collection.update_one(
+            {"paymentReference": reference},
+            {"$setOnInsert": {
+                "paymentReference": reference,
+                "customerName": data.get("customerName", name),
+                "customerPhone": data.get("customerPhone", ""),
+                "customerWhatsapp": data.get("customerWhatsapp", ""),
+                "customerEmail": data.get("customerEmail", email),
+                "deliveryAddress": data.get("deliveryAddress", ""),
+                "state": data.get("state", ""),
+                "country": data.get("country", "Nigeria"),
+                "items": items,
+                "amount": float(amount),
+                "paymentMethod": "SquadCo",
+                "status": "Pending",
+                "createdAt": datetime.datetime.utcnow()
+            }},
+            upsert=True
+        )
+    except Exception as e:
+        print(f"Could not pre-save pending order: {e}")
 
     try:
         response = requests.post(
@@ -415,6 +520,47 @@ def create_payment_link():
         print(f"SquadCo error: {e}")
         return jsonify({"error": "Payment service unavailable"}), 502
 
+@app.route("/squadco-webhook", methods=["POST"])
+def squadco_webhook():
+    """Server-to-server confirmation from SquadCo - the reliable path that doesn't depend on the
+    customer's browser making it back to the site after paying."""
+    raw_body = request.get_data()
+    signature = request.headers.get("x-squad-encrypted-body", "")
+    if not SQUADCO_SECRET_KEY or not signature:
+        return jsonify({"message": "missing signature"}), 401
+    expected = hmac.new(SQUADCO_SECRET_KEY.encode(), raw_body, hashlib.sha512).hexdigest().upper()
+    if not hmac.compare_digest(expected, signature.upper()):
+        return jsonify({"message": "invalid signature"}), 401
+
+    payload = request.get_json(silent=True) or {}
+    if payload.get("Event") != "charge_successful":
+        return jsonify({"message": "ignored"}), 200
+
+    body = payload.get("Body", {})
+    reference = body.get("transaction_ref")
+    status = str(body.get("transaction_status", "")).lower()
+    if not reference or status != "success":
+        return jsonify({"message": "ignored"}), 200
+
+    extra_fields = {}
+    if not orders_collection.find_one({"paymentReference": reference}):
+        # No pre-saved order (older flow, or the pre-save at checkout failed) - record what
+        # SquadCo gave us so the payment isn't silently lost, flagged for manual follow-up.
+        extra_fields = {
+            "customerName": "Unknown - recovered from SquadCo webhook, check SquadCo dashboard",
+            "customerEmail": body.get("email", ""),
+            "amount": float(body.get("amount", 0)) / 100,
+            "items": [],
+            "paymentMethod": "SquadCo",
+        }
+
+    try:
+        finalize_paid_order(reference, extra_fields)
+        return jsonify({"message": "ok"}), 200
+    except Exception as e:
+        print(f"Webhook finalize error: {e}")
+        return jsonify({"message": "error"}), 500
+
 @app.route("/save-order", methods=["POST"])
 def save_order():
     data = request.get_json()
@@ -423,7 +569,6 @@ def save_order():
     if not reference:
         return jsonify({"message": "Missing order reference"}), 400
 
-    # Idempotent: if this reference was already recorded as paid, don't re-verify or duplicate it.
     existing = orders_collection.find_one({"paymentReference": reference})
     if existing and existing.get("status") == "Paid":
         return jsonify({"message": "Order already recorded", "reference": reference})
@@ -437,19 +582,7 @@ def save_order():
     if expected_kobo > 0 and paid_kobo < expected_kobo * 0.99:
         return jsonify({"message": "Paid amount does not match order total. Order was not recorded.", "verified": False}), 402
 
-    # Attach each item's current product image so admin can see what was bought at a glance.
-    enriched_items = []
-    for item in data.get("items", []):
-        product_id = safe_objectid(item.get("id", ""))
-        image = None
-        if product_id:
-            product = products_collection.find_one({"_id": product_id}, {"image": 1})
-            if product:
-                image = product.get("image")
-        enriched_items.append({**item, "image": image})
-
-    order_data = {
-        "paymentReference": reference,
+    extra_fields = {
         "customerName": data.get("customerName", "Unknown"),
         "customerPhone": data.get("customerPhone", ""),
         "customerWhatsapp": data.get("customerWhatsapp", ""),
@@ -457,38 +590,16 @@ def save_order():
         "deliveryAddress": data.get("deliveryAddress", ""),
         "state": data.get("state", ""),
         "country": data.get("country", "Nigeria"),
-        "items": enriched_items,
         "amount": float(data.get("totalAmount", 0)),
         "paymentMethod": data.get("paymentMethod", "SquadCo"),
-        "status": "Paid",
-        "createdAt": datetime.datetime.utcnow()
     }
+    # Prefer the items already pre-saved at payment-init time (already image-enriched); only
+    # fall back to what the browser sends now if that pre-save never happened.
+    if not existing or not existing.get("items"):
+        extra_fields["items"] = enrich_items_with_images(data.get("items", []))
+
     try:
-        orders_collection.update_one({"paymentReference": reference}, {"$set": order_data}, upsert=True)
-        for item in enriched_items:
-            product_id = safe_objectid(item.get("id", ""))
-            qty = int(item.get("quantity") or 1)
-            size = (item.get("size") or "").strip()
-            if not product_id or qty <= 0:
-                continue
-            if size:
-                # Sized product: decrement that size's stock and the overall total together.
-                size_field = f"sizeStock.{size}"
-                result = products_collection.update_one(
-                    {"_id": product_id, size_field: {"$gte": qty}},
-                    {"$inc": {size_field: -qty, "stock": -qty}}
-                )
-                if result.matched_count == 0:
-                    products_collection.update_one({"_id": product_id}, {"$set": {size_field: 0}})
-            else:
-                # Only decrement if enough stock is on record; otherwise clamp to 0 rather than go negative.
-                result = products_collection.update_one(
-                    {"_id": product_id, "stock": {"$gte": qty}},
-                    {"$inc": {"stock": -qty}}
-                )
-                if result.matched_count == 0:
-                    products_collection.update_one({"_id": product_id}, {"$set": {"stock": 0}})
-        send_order_notification(order_data)
+        finalize_paid_order(reference, extra_fields)
         return jsonify({"message": "Order saved", "reference": reference})
     except Exception as e:
         return jsonify({"message": "Failed", "error": str(e)}), 500

@@ -248,7 +248,15 @@
         amount: total,
         email: email || 'customer@ladeystoree.com',
         name: name,
-        reference: reference
+        reference: reference,
+        customerName: name,
+        customerPhone: phone,
+        customerWhatsapp: whatsapp,
+        customerEmail: email,
+        deliveryAddress: address,
+        state: state,
+        country: country,
+        items: getCart()
       })
     })
     .then(res => res.json())
