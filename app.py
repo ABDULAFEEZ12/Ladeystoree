@@ -340,6 +340,29 @@ def cart(): return render_template("cart.html")
 @app.route("/contact")
 def contact(): return render_template("contact.html")
 
+@app.route("/track-order", methods=["GET", "POST"])
+def track_order():
+    orders = None
+    searched = False
+    if request.method == "POST":
+        query_value = request.form.get("lookup", "").strip()
+        searched = True
+        if query_value:
+            orders = convert_cursor(orders_collection.find({
+                "$or": [
+                    {"customerPhone": query_value},
+                    {"customerWhatsapp": query_value},
+                    {"customerEmail": {"$regex": f"^{re.escape(query_value)}$", "$options": "i"}}
+                ]
+            }).sort("createdAt", -1))
+            # dict.items is a built-in method - Jinja's `order.items` would resolve to that
+            # method object instead of the "items" key, so rename it like the admin view does.
+            for order in orders:
+                order["orderItems"] = order.pop("items", [])
+        else:
+            orders = []
+    return render_template("track-order.html", orders=orders, searched=searched)
+
 @app.route("/product/<product_id>")
 def product_detail(product_id):
     obj_id = safe_objectid(product_id)

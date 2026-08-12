@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, viewport-fit=cover, shrink-to-fit=no">
-  <title>Search · Ladey Storee</title>
+  <title>Track Order · Ladey Storee</title>
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&family=Dancing+Script:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.3.0/fonts/remixicon.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -84,6 +84,28 @@
     .product-name { font-family: var(--font-serif); font-size: 1.1rem; margin: 6px 0; }
     .product-price { font-weight: 500; }
     .empty-state { text-align: center; padding: 5rem; color: var(--ash-dark); grid-column: 1 / -1; }
+    .track-order-form { display: flex; gap: 10px; margin-bottom: 2.5rem; }
+    .track-order-form input { flex: 1; padding: 14px 18px; border: 1.5px solid rgba(184,184,184,0.4); border-radius: 40px; font-family: var(--font-sans); font-size: 0.9rem; outline: none; transition: border-color 0.2s; }
+    .track-order-form input:focus { border-color: var(--charcoal); }
+    .track-order-form .btn { width: auto; white-space: nowrap; border-radius: 40px; display: flex; align-items: center; gap: 8px; }
+    .track-order-results { display: flex; flex-direction: column; gap: 1.2rem; padding-bottom: 4rem; }
+    .order-card { border: 1px solid rgba(184,184,184,0.25); border-radius: 12px; padding: 1.4rem; background: #fff; }
+    .order-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 8px; }
+    .order-ref { background: var(--cream); padding: 5px 10px; border-radius: 6px; font-size: 0.75rem; font-weight: 600; }
+    .order-date { margin-left: 10px; font-size: 0.8rem; color: var(--ash-dark); }
+    .order-status-badge { display: inline-block; padding: 6px 14px; font-size: 0.65rem; text-transform: uppercase; letter-spacing: 1px; border-radius: 20px; font-weight: 600; }
+    .order-status-badge.status-pending { background: rgba(212,175,55,0.15); color: #9c7a1d; }
+    .order-status-badge.status-paid { background: rgba(76,175,80,0.15); color: #2e7d32; }
+    .order-status-badge.status-shipped { background: rgba(33,150,243,0.15); color: #1565c0; }
+    .order-status-badge.status-delivered { background: rgba(46,125,50,0.15); color: #1b5e20; }
+    .order-card-items { display: flex; flex-direction: column; gap: 10px; border-top: 1px solid rgba(184,184,184,0.15); border-bottom: 1px solid rgba(184,184,184,0.15); padding: 1rem 0; margin-bottom: 1rem; }
+    .order-card-item { display: flex; align-items: center; gap: 12px; }
+    .order-card-item img, .order-card-item-noimg { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; background: var(--cream); flex-shrink: 0; }
+    .order-card-item-noimg { display: flex; align-items: center; justify-content: center; color: var(--ash-dark); }
+    .order-card-item-name { font-size: 0.88rem; font-weight: 500; }
+    .order-card-item-qty { font-size: 0.75rem; color: var(--ash-dark); }
+    .order-card-footer { display: flex; justify-content: space-between; align-items: center; font-size: 0.95rem; }
+    @media (max-width: 550px) { .track-order-form { flex-direction: column; } .track-order-form .btn { width: 100%; justify-content: center; } }
     footer { background: var(--charcoal-soft); color: var(--ash); padding: 4rem 5% 2rem; }
     .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1.5fr; gap: 2.5rem; margin-bottom: 3rem; }
     .footer-col h4 { color: white; font-size: 0.9rem; letter-spacing: 3px; margin-bottom: 1.5rem; text-transform: uppercase; }
@@ -171,28 +193,51 @@
 
 <main>
   <div class="page-header container">
-    <div class="breadcrumb"><a href="/">Home</a> / Search</div>
-    <h1>{% if search_query %}Results for "{{ search_query }}"{% else %}Search{% endif %}</h1>
-    <div class="product-count">{{ total_products }} product{{ 's' if total_products != 1 else '' }}</div>
+    <div class="breadcrumb"><a href="/">Home</a> / Track Order</div>
+    <h1>Track Your Order</h1>
+    <div class="product-count">Enter the phone number or email you used at checkout</div>
   </div>
-  <div class="container">
-    {% if products %}
-    <div class="product-grid">
-      {% for product in products %}
-      <div class="product-card">
-        <a href="/product/{{ product._id }}">
-          <div class="product-img-wrap">
-            <img src="{{ product.image or 'https://via.placeholder.com/400x500/f0f0f0/9E9E9E?text=LADEY' }}" alt="{{ product.name }}" loading="lazy">
-            <button class="quick-add" data-id="{{ product._id }}" data-name="{{ product.name }}" data-price="{{ product.price }}" data-stock="{{ product.stock if product.stock is defined else '' }}" {% if product.stock is defined and product.stock <= 0 %}disabled{% endif %}><i class="ri-add-line"></i></button>
+  <div class="container" style="max-width:640px;">
+    <form method="POST" class="track-order-form">
+      <input type="text" name="lookup" placeholder="Phone number or email" value="{{ request.form.get('lookup', '') }}" required>
+      <button type="submit" class="btn"><i class="ri-search-line"></i> Find My Orders</button>
+    </form>
+
+    {% if searched %}
+      {% if orders %}
+      <div class="track-order-results">
+        {% for order in orders %}
+        <div class="order-card">
+          <div class="order-card-header">
+            <div>
+              <code class="order-ref">{{ order.paymentReference }}</code>
+              <span class="order-date">{% if order.createdAt %}{{ order.createdAt.strftime('%d %b %Y') }}{% endif %}</span>
+            </div>
+            <span class="order-status-badge status-{{ order.status|lower if order.status else 'pending' }}">{{ order.status or 'Pending' }}</span>
           </div>
-          <div class="product-info"><div class="product-brand">LADEY STOREE</div><div class="product-name">{{ product.name }}</div><div class="product-price">{{ format_currency(product.price) }}</div></div>
-        </a>
+          <div class="order-card-items">
+            {% for item in order.orderItems %}
+            <div class="order-card-item">
+              {% if item.image %}<img src="{{ item.image }}" alt="{{ item.name }}">{% else %}<div class="order-card-item-noimg"><i class="ri-image-line"></i></div>{% endif %}
+              <div>
+                <div class="order-card-item-name">{{ item.name }}{% if item.size %} · Size {{ item.size }}{% endif %}{% if item.color %} · {{ item.color }}{% endif %}</div>
+                <div class="order-card-item-qty">Qty {{ item.quantity|default(1) }}</div>
+              </div>
+            </div>
+            {% else %}
+            <p style="color:var(--ash-dark);font-size:0.85rem;">Item details unavailable for this order - contact us with your reference above if you need specifics.</p>
+            {% endfor %}
+          </div>
+          <div class="order-card-footer">
+            <span>Total</span>
+            <strong>{{ format_currency(order.amount|default(0)) }}</strong>
+          </div>
+        </div>
+        {% endfor %}
       </div>
-      {% endfor %}
-    </div>
-    {% include "_pagination.html" %}
-    {% else %}
-    <div class="empty-state"><i class="ri-search-line" style="font-size:3rem;display:block;margin-bottom:1rem;"></i><p>{% if search_query %}No products found for "{{ search_query }}". Try a different search.{% else %}Type something in the search bar above to find products.{% endif %}</p></div>
+      {% else %}
+      <div class="empty-state"><i class="ri-inbox-line" style="font-size:3rem;display:block;margin-bottom:1rem;"></i><p>No orders found for that phone number or email. Double-check what you entered at checkout, or <a href="/contact">contact us</a> for help.</p></div>
+      {% endif %}
     {% endif %}
   </div>
 </main>
@@ -238,7 +283,7 @@ document.querySelectorAll('.remove-item').forEach(b=>b.addEventListener('click',
 document.getElementById('clearCartBtn').addEventListener('click',()=>{cart=[];saveCart();});
 cartIcon.addEventListener('click',()=>cartSidebar.classList.add('open'));
 closeCart.addEventListener('click',()=>cartSidebar.classList.remove('open'));
-document.querySelectorAll('.quick-add').forEach(btn=>{btn.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();const existing=cart.find(i=>i.id===btn.dataset.id);const stock=parseInt(btn.dataset.stock,10);if(existing){if(!isNaN(stock)&&existing.quantity>=stock){alert('Only '+stock+' left in stock.');return;}existing.quantity++;}else cart.push({id:btn.dataset.id,name:btn.dataset.name,price:parseFloat(btn.dataset.price),quantity:1});saveCart();cartSidebar.classList.add('open');});});
+document.querySelectorAll('.quick-add').forEach(btn=>{btn.addEventListener('click',(e)=>{e.preventDefault();e.stopPropagation();if(btn.dataset.hasSizes){window.location.href='/product/'+btn.dataset.id;return;}const existing=cart.find(i=>i.id===btn.dataset.id);const stock=parseInt(btn.dataset.stock,10);if(existing){if(!isNaN(stock)&&existing.quantity>=stock){alert('Only '+stock+' left in stock.');return;}existing.quantity++;}else cart.push({id:btn.dataset.id,name:btn.dataset.name,price:parseFloat(btn.dataset.price),quantity:1});saveCart();cartSidebar.classList.add('open');});});
 updateCartUI();
 document.getElementById('checkoutBtn').addEventListener('click',()=>{window.location.href='/checkout';});
 })();
