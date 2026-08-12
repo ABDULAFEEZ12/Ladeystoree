@@ -100,6 +100,9 @@
       display: none; color: #c0392b; font-size: 0.8rem; margin-top: 8px;
     }
     .size-select-error.show { display: block; }
+    .multi-size-note { display: none; color: #777; font-size: 0.75rem; margin-left: 10px; }
+    .multi-size-note.show { display: inline; }
+    .quantity-selector.disabled-multi .quantity-input { opacity: 0.4; pointer-events: none; }
 
     .product-description { margin: 25px 0; color: #555; line-height: 1.8; }
     .product-description h3 { color: var(--charcoal); margin-bottom: 12px; font-size: 1.4rem; font-family: var(--font-serif); }
@@ -262,13 +265,14 @@
 
         <div class="product-description"><h3>Description</h3><p>{{ product.description or "Timeless elegance crafted with care." }}</p></div>
         
-        <div class="quantity-selector">
+        <div class="quantity-selector" id="quantitySelector">
           <label>Quantity:</label>
           <div class="quantity-input">
             <button class="qty-btn" id="qtyMinus">−</button>
             <span class="qty-num" id="qtyValue">1</span>
             <button class="qty-btn" id="qtyPlus">+</button>
           </div>
+          <small id="multiSizeNote" class="multi-size-note">1 of each selected size will be added</small>
         </div>
         <button class="add-to-cart-btn-main" id="mainAddToCart" {% if product.stock is defined and product.stock <= 0 %}disabled{% endif %}><i class="ri-shopping-bag-line"></i> {% if product.stock is defined and product.stock <= 0 %}Out of Stock{% else %}Add to Cart{% endif %}</button>
         
@@ -342,16 +346,12 @@
       if (countEl) countEl.innerText = cart.reduce((sum, item) => sum + (item.quantity || 1), 0);
     }
     
-    function addToCart(productId, productName, productPrice, quantity, size, maxStock, color) {
+    function addOneCartLine(productId, productName, productPrice, quantity, size, maxStock, color) {
       // Stock is tracked per size only (not per color), so the cap must combine every color of this size already in the cart.
       const sameSizeItems = cart.filter(item => item.id === productId && (item.size || '') === (size || ''));
       const alreadyInCart = sameSizeItems.reduce((sum, item) => sum + (item.quantity || 0), 0);
       if (alreadyInCart + quantity > maxStock) {
-        const canAdd = maxStock - alreadyInCart;
-        showModal('error', 'Limited Stock', canAdd > 0
-          ? `Only ${canAdd} more can be added - you already have ${alreadyInCart} of ${maxStock} in stock in your cart.`
-          : `You already have all ${maxStock} in stock of this item in your cart.`);
-        return;
+        return { ok: false, canAdd: Math.max(0, maxStock - alreadyInCart) };
       }
       const existing = cart.find(item => item.id === productId && (item.size || '') === (size || '') && (item.color || '') === (color || ''));
       if (existing) {
@@ -359,9 +359,7 @@
       } else {
         cart.push({ id: productId, name: productName, price: productPrice, quantity: quantity, size: size || '', color: color || '' });
       }
-      localStorage.setItem('ladeyCart', JSON.stringify(cart));
-      updateCartCount();
-      showModal('success', 'Added to Bag', `${quantity} × ${productName}${size ? ' (Size ' + size + ')' : ''}${color ? ', ' + color : ''} added to your cart.`);
+      return { ok: true };
     }
     
     function showModal(type, title, msg) {
@@ -387,35 +385,48 @@
     const productStock = {{ product.stock if product.stock is defined else 999999 }};
     const hasSizes = {{ 'true' if product.sizes and product.sizes|length > 0 else 'false' }};
 
-    let selectedSize = null;
-    let currentMaxStock = hasSizes ? 0 : productStock;
+    // Sizes and colors are both multi-selectable: pick several sizes and/or colors at once.
+    const selectedSizes = new Set();
+    const selectedColors = new Set();
+    const sizeStockMap = {};
 
     const sizeChips = document.querySelectorAll('.size-chip:not(.sold-out)');
     const sizeSelectError = document.getElementById('sizeSelectError');
-    sizeChips.forEach(chip => {
-      chip.addEventListener('click', () => {
-        document.querySelectorAll('.size-chip').forEach(c => c.classList.remove('selected'));
-        chip.classList.add('selected');
-        selectedSize = chip.dataset.size;
-        currentMaxStock = chip.dataset.stock ? parseInt(chip.dataset.stock, 10) : productStock;
-        qty = Math.min(qty, currentMaxStock) || 1;
+    const quantitySelector = document.getElementById('quantitySelector');
+    const multiSizeNote = document.getElementById('multiSizeNote');
+
+    function refreshQuantityControls() {
+      if (selectedSizes.size > 1) {
+        qty = 1;
+        qtyValueSpan.innerText = 1;
+        if (quantitySelector) quantitySelector.classList.add('disabled-multi');
+        if (multiSizeNote) multiSizeNote.classList.add('show');
+      } else {
+        if (quantitySelector) quantitySelector.classList.remove('disabled-multi');
+        if (multiSizeNote) multiSizeNote.classList.remove('show');
+        const max = selectedSizes.size === 1 ? sizeStockMap[[...selectedSizes][0]] : productStock;
+        qty = Math.min(qty, max) || 1;
         qtyValueSpan.innerText = qty;
+      }
+    }
+
+    sizeChips.forEach(chip => {
+      const s = chip.dataset.size;
+      sizeStockMap[s] = chip.dataset.stock ? parseInt(chip.dataset.stock, 10) : productStock;
+      chip.addEventListener('click', () => {
+        if (selectedSizes.has(s)) { selectedSizes.delete(s); chip.classList.remove('selected'); }
+        else { selectedSizes.add(s); chip.classList.add('selected'); }
         if (sizeSelectError) sizeSelectError.classList.remove('show');
+        refreshQuantityControls();
       });
     });
 
-    let selectedColor = null;
     const colorChips = document.querySelectorAll('.color-chip');
     colorChips.forEach(chip => {
       chip.addEventListener('click', () => {
-        if (chip.classList.contains('selected')) {
-          chip.classList.remove('selected');
-          selectedColor = null;
-        } else {
-          document.querySelectorAll('.color-chip').forEach(c => c.classList.remove('selected'));
-          chip.classList.add('selected');
-          selectedColor = chip.dataset.color;
-        }
+        const c = chip.dataset.color;
+        if (selectedColors.has(c)) { selectedColors.delete(c); chip.classList.remove('selected'); }
+        else { selectedColors.add(c); chip.classList.add('selected'); }
       });
     });
 
@@ -426,20 +437,50 @@
     const addToCartBtn = document.getElementById('mainAddToCart');
 
     if (qtyMinus && qtyPlus && qtyValueSpan) {
-      qtyMinus.addEventListener('click', () => { if (qty > 1) { qty--; qtyValueSpan.innerText = qty; } });
+      qtyMinus.addEventListener('click', () => {
+        if (selectedSizes.size > 1) return;
+        if (qty > 1) { qty--; qtyValueSpan.innerText = qty; }
+      });
       qtyPlus.addEventListener('click', () => {
-        if (qty < currentMaxStock) { qty++; qtyValueSpan.innerText = qty; }
-        else { showModal('error', 'Limited Stock', `Only ${currentMaxStock} left in stock - you can't add more than that.`); }
+        if (selectedSizes.size > 1) return;
+        const max = selectedSizes.size === 1 ? sizeStockMap[[...selectedSizes][0]] : productStock;
+        if (qty < max) { qty++; qtyValueSpan.innerText = qty; }
+        else { showModal('error', 'Limited Stock', `Only ${max} left in stock - you can't add more than that.`); }
       });
     }
 
     if (addToCartBtn) {
       addToCartBtn.addEventListener('click', () => {
-        if (hasSizes && !selectedSize) {
+        if (hasSizes && selectedSizes.size === 0) {
           if (sizeSelectError) sizeSelectError.classList.add('show');
           return;
         }
-        addToCart(productId, productName, productPrice, qty, selectedSize, currentMaxStock, selectedColor);
+        const colorLabel = [...selectedColors].join(', ');
+        const sizesToAdd = hasSizes ? [...selectedSizes] : [null];
+        const multi = sizesToAdd.length > 1;
+        const added = [];
+        const blocked = [];
+
+        sizesToAdd.forEach(size => {
+          const maxStock = size ? sizeStockMap[size] : productStock;
+          const perSizeQty = multi ? 1 : qty;
+          const result = addOneCartLine(productId, productName, productPrice, perSizeQty, size, maxStock, colorLabel);
+          if (result.ok) added.push(size);
+          else blocked.push(size);
+        });
+
+        localStorage.setItem('ladeyCart', JSON.stringify(cart));
+        updateCartCount();
+
+        let msg = '';
+        if (added.length > 0) {
+          const sizeLabel = hasSizes ? added.map(s => 'Size ' + s).join(', ') : '';
+          msg += `${productName}${sizeLabel ? ' (' + sizeLabel + ')' : ''}${colorLabel ? ', ' + colorLabel : ''} added to your cart.`;
+        }
+        if (blocked.length > 0) {
+          msg += (msg ? '<br><br>' : '') + `Could not add size${blocked.length > 1 ? 's' : ''} ${blocked.join(', ')} - not enough stock available.`;
+        }
+        showModal(added.length > 0 ? 'success' : 'error', added.length > 0 ? 'Added to Bag' : 'Limited Stock', msg);
       });
     }
     
