@@ -10,6 +10,7 @@
 <nav class="admin-nav-bar">
   <a href="{{ url_for('admin_add_product_page') }}" class="admin-nav-link {{ 'active' if active_page == 'add_product' else '' }}"><i class="ri-add-line"></i> Add Product</a>
   <a href="{{ url_for('admin_products') }}" class="admin-nav-link {{ 'active' if active_page == 'products' else '' }}"><i class="ri-shirt-line"></i> Products</a>
+  <a href="{{ url_for('admin_stock') }}" class="admin-nav-link {{ 'active' if active_page == 'stock' else '' }}"><i class="ri-archive-line"></i> Stock</a>
   <a href="{{ url_for('admin_orders') }}" class="admin-nav-link {{ 'active' if active_page == 'orders' else '' }}"><i class="ri-shopping-bag-line"></i> Orders</a>
   <a href="{{ url_for('admin_messages') }}" class="admin-nav-link {{ 'active' if active_page == 'messages' else '' }}"><i class="ri-message-line"></i> Messages</a>
 </nav>

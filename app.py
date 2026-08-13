@@ -733,6 +733,49 @@ def admin_messages(current_admin):
         messages = []
     return render_template("admin_messages.html", messages=messages)
 
+@app.route("/admin/stock")
+@token_required
+def admin_stock(current_admin):
+    try:
+        products = convert_cursor(products_collection.find())
+    except:
+        products = []
+
+    # Sold counts come from real Paid order data, not inferred from stock deltas -
+    # that stays accurate even if an admin manually edits a stock number later.
+    sold_totals, sold_by_size, sold_by_color = {}, {}, {}
+    try:
+        for order in orders_collection.find({"status": "Paid"}, {"items": 1}):
+            for item in order.get("items", []):
+                pid = item.get("id")
+                if not pid:
+                    continue
+                qty = int(item.get("quantity") or 1)
+                sold_totals[pid] = sold_totals.get(pid, 0) + qty
+                size = (item.get("size") or "").strip()
+                if size:
+                    sold_by_size.setdefault(pid, {})
+                    sold_by_size[pid][size] = sold_by_size[pid].get(size, 0) + qty
+                color = (item.get("color") or "").strip()
+                if color:
+                    sold_by_color.setdefault(pid, {})
+                    sold_by_color[pid][color] = sold_by_color[pid].get(color, 0) + qty
+    except Exception as e:
+        print(f"Stock aggregation error: {e}")
+
+    for product in products:
+        pid = str(product["_id"])
+        product["sold"] = sold_totals.get(pid, 0)
+        product["soldBySize"] = sold_by_size.get(pid, {})
+        product["soldByColor"] = sold_by_color.get(pid, {})
+
+    total_stock = sum(p.get("stock", 0) or 0 for p in products)
+    total_sold = sum(p.get("sold", 0) for p in products)
+    sold_out_count = sum(1 for p in products if (p.get("stock") or 0) <= 0)
+
+    return render_template("admin_stock.html", products=products,
+                            total_stock=total_stock, total_sold=total_sold, sold_out_count=sold_out_count)
+
 @app.route("/admin/logout")
 def admin_logout():
     response = redirect(url_for("admin_login_page"))
