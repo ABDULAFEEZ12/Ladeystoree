@@ -254,12 +254,13 @@
         <!-- ✅ COLOR SELECTION -->
         {% if product.colors and product.colors|length > 0 %}
         <div class="product-variants">
-          <div class="variant-label">Select Color</div>
+          <div class="variant-label">Select Color{% if per_color_variants %} *{% endif %}</div>
           <div class="variant-options" id="colorChips">
             {% for color in product.colors %}
             <button type="button" class="variant-chip color-chip" data-color="{{ color }}">{{ color }}</button>
             {% endfor %}
           </div>
+          {% if per_color_variants %}<div id="colorSelectError" class="size-select-error">Please select a color.</div>{% endif %}
         </div>
         {% endif %}
 
@@ -384,6 +385,8 @@
     const productPrice = {{ product.price }};
     const productStock = {{ product.stock if product.stock is defined else 999999 }};
     const hasSizes = {{ 'true' if product.sizes and product.sizes|length > 0 else 'false' }};
+    // When true (T-shirts), a color is required and every selected size/color pair is added as its own cart line.
+    const colorRequired = {{ 'true' if per_color_variants else 'false' }};
 
     // Sizes and colors are both multi-selectable: pick several sizes and/or colors at once.
     const selectedSizes = new Set();
@@ -395,8 +398,16 @@
     const quantitySelector = document.getElementById('quantitySelector');
     const multiSizeNote = document.getElementById('multiSizeNote');
 
+    const colorSelectError = document.getElementById('colorSelectError');
+    if (colorRequired && multiSizeNote) multiSizeNote.textContent = '1 of each selected size/color will be added';
+
+    // More than one line will be added when several sizes are picked, or (T-shirts) several colors.
+    function isMultiSelection() {
+      return selectedSizes.size > 1 || (colorRequired && selectedColors.size > 1);
+    }
+
     function refreshQuantityControls() {
-      if (selectedSizes.size > 1) {
+      if (isMultiSelection()) {
         qty = 1;
         qtyValueSpan.innerText = 1;
         if (quantitySelector) quantitySelector.classList.add('disabled-multi');
@@ -427,6 +438,8 @@
         const c = chip.dataset.color;
         if (selectedColors.has(c)) { selectedColors.delete(c); chip.classList.remove('selected'); }
         else { selectedColors.add(c); chip.classList.add('selected'); }
+        if (colorSelectError) colorSelectError.classList.remove('show');
+        refreshQuantityControls();
       });
     });
 
@@ -438,11 +451,11 @@
 
     if (qtyMinus && qtyPlus && qtyValueSpan) {
       qtyMinus.addEventListener('click', () => {
-        if (selectedSizes.size > 1) return;
+        if (isMultiSelection()) return;
         if (qty > 1) { qty--; qtyValueSpan.innerText = qty; }
       });
       qtyPlus.addEventListener('click', () => {
-        if (selectedSizes.size > 1) return;
+        if (isMultiSelection()) return;
         const max = selectedSizes.size === 1 ? sizeStockMap[[...selectedSizes][0]] : productStock;
         if (qty < max) { qty++; qtyValueSpan.innerText = qty; }
         else { showModal('error', 'Limited Stock', `Only ${max} left in stock - you can't add more than that.`); }
@@ -455,30 +468,44 @@
           if (sizeSelectError) sizeSelectError.classList.add('show');
           return;
         }
+        if (colorRequired && selectedColors.size === 0) {
+          if (colorSelectError) colorSelectError.classList.add('show');
+          return;
+        }
         const colorLabel = [...selectedColors].join(', ');
         const sizesToAdd = hasSizes ? [...selectedSizes] : [null];
-        const multi = sizesToAdd.length > 1;
+        // T-shirts: one line per size/color pair. Everything else keeps a single (comma-joined) color label per size.
+        const colorsToAdd = colorRequired ? [...selectedColors] : [colorLabel];
+        const lines = [];
+        sizesToAdd.forEach(size => colorsToAdd.forEach(color => lines.push({ size, color })));
+        const multi = lines.length > 1;
         const added = [];
         const blocked = [];
 
-        sizesToAdd.forEach(size => {
-          const maxStock = size ? sizeStockMap[size] : productStock;
-          const perSizeQty = multi ? 1 : qty;
-          const result = addOneCartLine(productId, productName, productPrice, perSizeQty, size, maxStock, colorLabel);
-          if (result.ok) added.push(size);
-          else blocked.push(size);
+        lines.forEach(line => {
+          const maxStock = line.size ? sizeStockMap[line.size] : productStock;
+          const perLineQty = multi ? 1 : qty;
+          const result = addOneCartLine(productId, productName, productPrice, perLineQty, line.size, maxStock, line.color);
+          if (result.ok) added.push(line);
+          else blocked.push(line);
         });
 
         localStorage.setItem('ladeyCart', JSON.stringify(cart));
         updateCartCount();
 
+        const describeLine = line => [line.size ? 'Size ' + line.size : '', line.color].filter(Boolean).join(', ');
         let msg = '';
-        if (added.length > 0) {
-          const sizeLabel = hasSizes ? added.map(s => 'Size ' + s).join(', ') : '';
-          msg += `${productName}${sizeLabel ? ' (' + sizeLabel + ')' : ''}${colorLabel ? ', ' + colorLabel : ''} added to your cart.`;
-        }
-        if (blocked.length > 0) {
-          msg += (msg ? '<br><br>' : '') + `Could not add size${blocked.length > 1 ? 's' : ''} ${blocked.join(', ')} - not enough stock available.`;
+        if (colorRequired) {
+          if (added.length > 0) msg += `${productName}:<br>${added.map(describeLine).join('<br>')}<br>added to your cart.`;
+          if (blocked.length > 0) msg += (msg ? '<br><br>' : '') + `Could not add ${blocked.map(describeLine).join('; ')} - not enough stock available.`;
+        } else {
+          if (added.length > 0) {
+            const sizeLabel = hasSizes ? added.map(l => 'Size ' + l.size).join(', ') : '';
+            msg += `${productName}${sizeLabel ? ' (' + sizeLabel + ')' : ''}${colorLabel ? ', ' + colorLabel : ''} added to your cart.`;
+          }
+          if (blocked.length > 0) {
+            msg += (msg ? '<br><br>' : '') + `Could not add size${blocked.length > 1 ? 's' : ''} ${blocked.map(l => l.size).join(', ')} - not enough stock available.`;
+          }
         }
         showModal(added.length > 0 ? 'success' : 'error', added.length > 0 ? 'Added to Bag' : 'Limited Stock', msg);
       });

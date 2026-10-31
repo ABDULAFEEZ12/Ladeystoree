@@ -73,10 +73,11 @@
         
         <div class="form-group">
           <label>Category *</label>
-          <select name="category" required>
+          <select name="category" id="categorySelect" required>
             <option value="New Arrivals" {% if product.category == 'New Arrivals' %}selected{% endif %}>New Arrivals</option>
             <option value="Dresses" {% if product.category == 'Dresses' %}selected{% endif %}>Dresses</option>
             <option value="Tops" {% if product.category == 'Tops' %}selected{% endif %}>Tops</option>
+            <option value="{{ tshirt_category }}" {% if product.category == tshirt_category %}selected{% endif %}>{{ tshirt_category }}</option>
             <option value="Jeans/Denims" {% if product.category == 'Jeans/Denims' %}selected{% endif %}>Jeans/Denims</option>
             <option value="Denims" {% if product.category == 'Denims' %}selected{% endif %}>Denims</option>
             <option value="Jumpsuit" {% if product.category == 'Jumpsuit' %}selected{% endif %}>Jumpsuit</option>
@@ -99,8 +100,17 @@
         <div class="form-group full-width">
           <label>Available Sizes &amp; Quantity</label>
           {% set size_options = ['4','6','8','10','12','14','16','18','20'] %}
-          <div class="size-qty-grid">
+          {% set is_tshirt = product.category == tshirt_category %}
+          <div class="size-qty-grid" id="numericSizeGrid"{% if is_tshirt %} style="display:none;"{% endif %}>
             {% for s in size_options %}
+            <div class="size-qty-row">
+              <span class="size-qty-label">{{ s }}</span>
+              <input type="number" name="size_qty_{{ s }}" min="0" placeholder="0" value="{{ (product.sizeStock or {}).get(s, '') }}" class="size-qty-input">
+            </div>
+            {% endfor %}
+          </div>
+          <div class="size-qty-grid" id="tshirtSizeGrid"{% if not is_tshirt %} style="display:none;"{% endif %}>
+            {% for s in tshirt_sizes %}
             <div class="size-qty-row">
               <span class="size-qty-label">{{ s }}</span>
               <input type="number" name="size_qty_{{ s }}" min="0" placeholder="0" value="{{ (product.sizeStock or {}).get(s, '') }}" class="size-qty-input">
@@ -112,7 +122,6 @@
 
         <div class="form-group">
           <label>Available Colors</label>
-          {% set color_options = ['Black','White','Red','Blue','Green','Pink','Grey','Brown','Navy','Beige','Purple','Yellow','Orange','Multi'] %}
           <select name="color" multiple style="min-height: 100px;">
             {% for c in color_options %}
             <option {% if c in (product.colors or []) %}selected{% endif %}>{{ c }}</option>
@@ -158,6 +167,20 @@
       if (total > 0) stockInput.value = total;
     }
     qtyInputs.forEach(inp => inp.addEventListener('input', updateStock));
+  })();
+
+  // Swap between the numeric size grid and the T-shirt letter-size grid when the category changes.
+  (function() {
+    const TSHIRT_CATEGORY = {{ tshirt_category|tojson }};
+    const categorySelect = document.getElementById('categorySelect');
+    const numericGrid = document.getElementById('numericSizeGrid');
+    const tshirtGrid = document.getElementById('tshirtSizeGrid');
+    categorySelect.addEventListener('change', () => {
+      const isTshirt = categorySelect.value === TSHIRT_CATEGORY;
+      numericGrid.style.display = isTshirt ? 'none' : '';
+      tshirtGrid.style.display = isTshirt ? '' : 'none';
+      (isTshirt ? numericGrid : tshirtGrid).querySelectorAll('.size-qty-input').forEach(inp => { inp.value = ''; });
+    });
   })();
 </script>
 </body>

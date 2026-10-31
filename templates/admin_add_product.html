@@ -113,6 +113,7 @@
             <option value="Bundle Deals">Bundle Deals</option>
             <option value="New Arrivals">New Arrivals</option>
             <option value="Tops">Tops</option>
+            <option value="{{ tshirt_category }}">{{ tshirt_category }}</option>
             <option value="Jeans/Denims">Jeans/Denims</option>
             <option value="Denims">Denims</option>
             <option value="Jumpsuit">Jumpsuit</option>
@@ -130,8 +131,16 @@
 
         <div class="form-group" style="grid-column: span 2;" id="sizeSection">
           <label>Available Sizes &amp; Quantity</label>
-          <div class="size-qty-grid">
+          <div class="size-qty-grid" id="numericSizeGrid">
             {% for s in ['4','6','8','10','12','14','16','18','20'] %}
+            <div class="size-qty-row">
+              <span class="size-qty-label">{{ s }}</span>
+              <input type="number" name="size_qty_{{ s }}" min="0" placeholder="0" class="size-qty-input">
+            </div>
+            {% endfor %}
+          </div>
+          <div class="size-qty-grid" id="tshirtSizeGrid" style="display:none;">
+            {% for s in tshirt_sizes %}
             <div class="size-qty-row">
               <span class="size-qty-label">{{ s }}</span>
               <input type="number" name="size_qty_{{ s }}" min="0" placeholder="0" class="size-qty-input">
@@ -146,11 +155,8 @@
 
         <div class="form-group">
           <label>Available Colors</label>
-          <select name="color" multiple style="min-height: 100px;">
-            <option>Black</option><option>White</option><option>Red</option><option>Blue</option>
-            <option>Green</option><option>Pink</option><option>Grey</option><option>Brown</option>
-            <option>Navy</option><option>Beige</option><option>Purple</option><option>Yellow</option>
-            <option>Orange</option><option>Multi</option>
+          <select name="color" id="colorSelect" multiple style="min-height: 100px;">
+            {% for c in color_options %}<option>{{ c }}</option>{% endfor %}
           </select>
           <small style="color: var(--ash-dark); font-size: 0.6rem; margin-top: 4px;">Hold Ctrl/Cmd to select multiple colors</small>
         </div>
@@ -192,12 +198,34 @@
     const sizeSection = document.getElementById('sizeSection');
     const sizeDisabledNote = document.getElementById('sizeDisabledNote');
     const qtyInputs = document.querySelectorAll('.size-qty-input');
+    const TSHIRT_CATEGORY = {{ tshirt_category|tojson }};
+    const TSHIRT_COLORS = {{ tshirt_colors|tojson }};
+    const numericGrid = document.getElementById('numericSizeGrid');
+    const tshirtGrid = document.getElementById('tshirtSizeGrid');
+    const colorSelect = document.getElementById('colorSelect');
+    const nameInput = document.querySelector('input[name="name"]');
+    let tshirtColorsAutoSelected = false;
 
     function applyCategoryRules() {
       const hidden = NO_SIZE_CATEGORIES.includes(categorySelect.value);
+      const isTshirt = categorySelect.value === TSHIRT_CATEGORY;
       sizeSection.style.display = hidden ? 'none' : '';
       sizeDisabledNote.style.display = hidden ? '' : 'none';
+      // T-shirts use letter sizes (M-XXXL); every other category keeps the numeric sizes.
+      numericGrid.style.display = isTshirt ? 'none' : '';
+      tshirtGrid.style.display = isTshirt ? '' : 'none';
+      (isTshirt ? numericGrid : tshirtGrid).querySelectorAll('.size-qty-input').forEach(inp => { inp.value = ''; });
       if (hidden) qtyInputs.forEach(inp => { inp.value = ''; });
+
+      // Pre-select the T-shirt colour range (still editable) so it doesn't need 13 Ctrl-clicks.
+      if (isTshirt && !tshirtColorsAutoSelected) {
+        Array.from(colorSelect.options).forEach(opt => { opt.selected = TSHIRT_COLORS.includes(opt.value); });
+        tshirtColorsAutoSelected = true;
+        if (nameInput && !nameInput.value.trim()) nameInput.value = 'T-Shirt';
+      } else if (!isTshirt && tshirtColorsAutoSelected) {
+        Array.from(colorSelect.options).forEach(opt => { opt.selected = false; });
+        tshirtColorsAutoSelected = false;
+      }
     }
     categorySelect.addEventListener('change', applyCategoryRules);
     applyCategoryRules();

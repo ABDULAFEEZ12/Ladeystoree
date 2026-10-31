@@ -52,7 +52,7 @@ def send_order_notification(order_data):
         return
     try:
         items_text = "\n".join(
-            f"- {item.get('name', 'Item')}{' (Size ' + item['size'] + ')' if item.get('size') else ''} x{item.get('quantity', 1)} (₦{item.get('price', 0):,.0f})"
+            f"- {item.get('name', 'Item')}{' (Size ' + item['size'] + ')' if item.get('size') else ''}{', ' + item['color'] if item.get('color') else ''} x{item.get('quantity', 1)} (₦{item.get('price', 0):,.0f})"
             for item in order_data.get("items", [])
         ) or "No items listed"
         body = (
@@ -154,11 +154,17 @@ def convert_cursor(cursor):
     return [convert_doc(doc) for doc in cursor]
 
 SIZE_OPTIONS = ['4', '6', '8', '10', '12', '14', '16', '18', '20']
+TSHIRT_CATEGORY = 'T-Shirts'
+TSHIRT_SIZE_OPTIONS = ['M', 'L', 'XL', 'XXL', 'XXXL']
+TSHIRT_COLOR_OPTIONS = ['Black', 'White', 'Nude', 'Yellow', 'Purple', 'Pink', 'Brown', 'Cream', 'Wine', 'Blue', 'Green', 'Lilac', 'Red']
+# Admin colour picker: the long-standing colours first, then any T-shirt colours that weren't already there.
+COLOR_OPTIONS = ['Black', 'White', 'Red', 'Blue', 'Green', 'Pink', 'Grey', 'Brown', 'Navy', 'Beige', 'Purple', 'Yellow', 'Orange', 'Multi']
+COLOR_OPTIONS += [c for c in TSHIRT_COLOR_OPTIONS if c not in COLOR_OPTIONS]
 
 def parse_size_stock(form):
-    """Read per-size quantity fields (size_qty_4, size_qty_6, ...) into a {size: qty} dict, dropping zero/blank entries."""
+    """Read per-size quantity fields (size_qty_4, size_qty_M, ...) into a {size: qty} dict, dropping zero/blank entries."""
     size_stock = {}
-    for s in SIZE_OPTIONS:
+    for s in SIZE_OPTIONS + TSHIRT_SIZE_OPTIONS:
         raw = form.get(f"size_qty_{s}", "").strip()
         if raw:
             try:
@@ -291,6 +297,10 @@ def bum_shorts():
 def joggers():
     return render_product_page("joggers.html", {"category": {"$regex": "^joggers$", "$options": "i"}}, "Joggers")
 
+@app.route("/t-shirts")
+def t_shirts():
+    return render_product_page("t-shirts.html", {"category": {"$regex": "^t-shirts$", "$options": "i"}}, "T-Shirts")
+
 @app.route("/jogger-shorts")
 def jogger_shorts():
     return render_product_page("jogger-shorts.html", {"category": {"$regex": "^jogger shorts$", "$options": "i"}}, "Jogger Shorts")
@@ -374,7 +384,9 @@ def product_detail(product_id):
     related_products = []
     if product.get("category"):
         related_products = convert_cursor(products_collection.find({"_id": {"$ne": obj_id}, "category": product["category"]}).limit(4))
-    return render_template("product.html", product=product, related_products=related_products)
+    # T-shirt colours are separate variants: a colour must be chosen and each size/colour pair becomes its own cart line.
+    per_color_variants = bool(product.get("colors")) and (product.get("category") or "").lower() == TSHIRT_CATEGORY.lower()
+    return render_template("product.html", product=product, related_products=related_products, per_color_variants=per_color_variants)
 
 @app.route("/checkout")
 def checkout(): return render_template("checkout.html")
@@ -418,6 +430,15 @@ def decrement_stock_for_items(items):
         if not product_id or qty <= 0:
             continue
         if size:
+            product = products_collection.find_one({"_id": product_id}, {"sizeStock": 1})
+            if product is not None and not product.get("sizeStock"):
+                # Sizes exist but per-size inventory hasn't been entered yet. Writing a sizeStock entry here
+                # would make every other size read as "Sold Out", so only draw down the overall stock.
+                products_collection.update_one(
+                    {"_id": product_id, "stock": {"$gte": qty}},
+                    {"$inc": {"stock": -qty}}
+                )
+                continue
             # Sized product: decrement that size's stock and the overall total together.
             size_field = f"sizeStock.{size}"
             result = products_collection.update_one(
@@ -694,7 +715,8 @@ def admin_products(current_admin):
 @app.route("/admin/add-product-page")
 @token_required
 def admin_add_product_page(current_admin):
-    return render_template("admin_add_product.html")
+    return render_template("admin_add_product.html", tshirt_category=TSHIRT_CATEGORY,
+                            tshirt_sizes=TSHIRT_SIZE_OPTIONS, tshirt_colors=TSHIRT_COLOR_OPTIONS, color_options=COLOR_OPTIONS)
 
 def _prepare_orders_for_admin(orders):
     for order in orders:
@@ -830,7 +852,8 @@ def edit_product(current_admin, product_id):
         products_collection.update_one({"_id": obj_id}, {"$set": update_data})
         flash("Updated!", "success")
         return redirect(url_for("admin_products"))
-    return render_template("edit_product.html", product=convert_doc(product))
+    return render_template("edit_product.html", product=convert_doc(product), tshirt_category=TSHIRT_CATEGORY,
+                            tshirt_sizes=TSHIRT_SIZE_OPTIONS, color_options=COLOR_OPTIONS)
 
 @app.route("/admin/add-product", methods=["POST"])
 @token_required
